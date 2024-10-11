@@ -8,10 +8,10 @@
             </div>
             <div class="flex items-center gap-x-3 h-10">
                 <div class="bg-white h-full w-fit flex items-center px-3 rounded shadow">
-                    <input type="text" placeholder="Search" class="bg-transparent h-8 lg:h-5 focus:outline-none">
+                    <input type="text" placeholder="Search" v-model="searchQuery" class="bg-transparent h-8 lg:h-5 focus:outline-none">
                     <Icon icon="iconoir:search" />
                 </div>
-                <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1">
+                <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="downloadCSV">
                     <Icon icon="ph:export" />
                     Export
                 </button>
@@ -20,22 +20,22 @@
         <!-- table -->
         <div v-if="route.query.page === 'expired'" class="w-full mt-12 flex flex-col gap-y-5">
             <div class="w-full overflow-x-auto  rounded-md">
-                <table class="w-[150dvw] lg:w-full border-collapse">
+                <table class="w-[150dvw] lg:w-full border-collapse" id="expired">
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
-                            <th class="md:w-1/12">CONTROL NUMBER</th>
-                            <th class="md:w-2/12">Full Name</th>
-                            <th class="md:w-2/12">EMAIL</th>
-                            <th class="md:w-2/12">AGE</th>
-                            <th class="md:w-2/12">gender</th>
-                            <th class="md:w-2/12">BARANGAY</th>
-                            <th class="md:w-1/12">DISABILITY</th>
-                            <th class="md:w-1/12">DATE REGISTERED</th>
-                            <th class="md:w-2/12">STATUS</th>
+                            <th class="text-xs">CONTROL NUMBER</th>
+                            <th class="text-sm">Full Name</th>
+                            <th class="text-sm">EMAIL</th>
+                            <th class="text-sm">AGE</th>
+                            <th class="text-sm">gender</th>
+                            <th class="text-sm">BARANGAY</th>
+                            <th class="text-sm">DISABILITY</th>
+                            <th class="text-xs">DATE REGISTERED</th>
+                            <th class="text-sm">STATUS</th>
                         </tr>
                     </thead>
                     <tbody v-if="!noExpiredApplicants" class="bg-white text-center">
-                        <tr v-for="applicant in paginatedExpiredApplicants" :key="applicant.id" class="border-b border-gray-500">
+                        <tr v-if="paginatedExpiredApplicants.length > 0" v-for="applicant in paginatedExpiredApplicants" :key="applicant.id" class="border-b border-gray-500">
                             <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
                             <td class="text-sm">{{ applicant.user?.email }}</td>
@@ -45,10 +45,13 @@
                             <td class="text-sm">{{ applicant.typeOfDisability }}</td>
                             <td class="text-sm">{{ applicant.dateApplied?.split('T')[0] }}</td>
                             <td class="text-sm">
-                                <div class="bg-red-200 py-1 text-red-700 text-sm px-3 rounded-md w-fit mx-2">
+                                <div class="bg-red-200 py-1 text-red-700 text-sm px-3 rounded-md w-fit mx-auto">
                                     {{ applicant.status }}
                                 </div>
                             </td>
+                        </tr>
+                        <tr v-else class="border-b border-gray-500 text-center">
+                            <td colspan="9" class="text-sm py-2">Can't find applicant</td>
                         </tr>
                     </tbody>
                     <tbody v-else class="bg-white text-center">
@@ -71,22 +74,23 @@
         </div>
         <div v-else class="w-full mt-12 flex flex-col gap-y-5">
             <div class="w-full overflow-x-auto  rounded-md">
-                <table class="w-[150dvw] lg:w-full border-collapse">
+                <table class="w-[150dvw] lg:w-full border-collapse" id="active">
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
-                            <th class="md:w-1/12">CONTROL NUMBER</th>
-                            <th class="md:w-2/12">Full Name</th>
-                            <th class="md:w-2/12">EMAIL</th>
-                            <th class="md:w-2/12">AGE</th>
-                            <th class="md:w-2/12">gender</th>
-                            <th class="md:w-2/12">BARANGAY</th>
-                            <th class="md:w-1/12">DISABILITY</th>
-                            <th class="md:w-1/12">DATE REGISTERED</th>
-                            <th class="md:w-2/12">STATUS</th>
+                            <th class="text-xs">CONTROL NUMBER</th>
+                            <th class="text-sm">Full Name</th>
+                            <th class="text-sm">EMAIL</th>
+                            <th class="text-sm">AGE</th>
+                            <th class="text-sm">gender</th>
+                            <th class="text-sm">BARANGAY</th>
+                            <th class="text-sm">DISABILITY</th>
+                            <th class="text-xs">DATE REGISTERED</th>
+                            <th class="text-sm">STATUS</th>
+                            <th class="text-sm">Action</th>
                         </tr>
                     </thead>
                     <tbody v-if="!noApplicants" class="bg-white text-center">
-                        <tr v-for="applicant in paginatedApplicants" :key="applicant.id" class="border-b border-gray-500">
+                        <tr v-if="paginatedApplicants.length > 0" v-for="applicant in paginatedApplicants" :key="applicant._id" class="border-b border-gray-500">
                             <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
                             <td class="text-sm">{{ applicant.user?.email }}</td>
@@ -96,15 +100,21 @@
                             <td class="text-sm">{{ applicant.typeOfDisability }}</td>
                             <td class="text-sm">{{ applicant.dateApplied?.split('T')[0] }}</td>
                             <td class="text-sm">
-                                <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-2">
+                                <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto">
                                     {{ applicant.status }}
                                 </div>
                             </td>
+                            <td class="text-sm">
+                                <button class="bg-green-200 py-1 text-green-700 text-sm px-3 rounded-md w-fit mx-auto" @click="releasedId(applicant._id)">Release ID</button>
+                            </td>
+                        </tr>
+                        <tr v-else class="border-b border-gray-500 text-center">
+                            <td colspan="10" class="text-sm py-2">Can't find applicant</td>
                         </tr>
                     </tbody>
                     <tbody v-else class="bg-white text-center">
                         <tr class="border-b border-gray-500">
-                            <td class="md:py-3" colspan="9">No registered PWD</td>
+                            <td class="md:py-3" colspan="10">No registered PWD</td>
                         </tr>
                     </tbody>
                 </table>
@@ -135,7 +145,20 @@ const route = useRoute()
 const applicants = ref(null)
 const noApplicants = ref(false)
 
-const getPendingApplications = async () => {
+const searchQuery = ref('');
+
+const filteredApplicants = computed(() => {
+    if (!searchQuery.value) return applicants.value || [];
+    return applicants.value.filter(applicant => {
+        const fullName = `${applicant.firstName} ${applicant.middleName} ${applicant.lastName}`.toLowerCase();
+        const barangay = applicant.barangay.toLowerCase();
+        const gender = applicant.gender.toLowerCase();
+        const disability = applicant.typeOfDisability.toLowerCase();
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || disability.includes(searchQuery.value.toLowerCase());
+    });
+});
+
+const getApprovedApplications = async () => {
     try {
         const res = await axios.get(`${serverUrl}/get-all-approved-applications`,{
             headers: {
@@ -159,7 +182,7 @@ const totalPages = computed(() => Math.ceil(applicants.value?.length / itemsPerP
 const paginatedApplicants = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage.value
     const end = start + itemsPerPage.value
-    return applicants.value?.slice(start, end)
+    return filteredApplicants.value?.slice(start, end)
 })
 
 const prevPage = () => {
@@ -173,10 +196,6 @@ const nextPage = () => {
     currentPage.value++
   }
 }
-
-
-
-
 
 const expiredApplicants = ref(null)
 const noExpiredApplicants = ref(false)
@@ -201,10 +220,22 @@ const expiredCurrentPage = ref(1)
 const expiredItemsPerPage = ref(10)
 const expiredTotalPages = computed(() => Math.ceil(expiredApplicants.value?.length / expiredItemsPerPage.value))
 
+
+const filteredExpiredApplicants = computed(() => {
+    if (!searchQuery.value) return expiredApplicants.value || [];
+    return expiredApplicants.value.filter(applicant => {
+        const fullName = `${applicant.firstName} ${applicant.middleName} ${applicant.lastName}`.toLowerCase();
+        const barangay = applicant.barangay.toLowerCase();
+        const gender = applicant.gender.toLowerCase();
+        const disability = applicant.typeOfDisability.toLowerCase();
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || disability.includes(searchQuery.value.toLowerCase());
+    });
+});
+
 const paginatedExpiredApplicants = computed(() => {
     const start = (expiredCurrentPage.value - 1) * expiredItemsPerPage.value
     const end = start + expiredItemsPerPage.value
-    return expiredApplicants.value?.slice(start, end)
+    return filteredExpiredApplicants.value?.slice(start, end)
 })
 
 const expiredPrevPage = () => {
@@ -241,8 +272,65 @@ const convertApplicationNum = (num) => {
     if(convertedToString?.length === 5) return num
 }
 
+
+const releasedId = async (appId) => {
+    try {
+        const res = await axios.patch(`${serverUrl}/release-id/${appId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        console.log(res.data)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const downloadCSV = () => {
+    if(route.query.page === 'expired'){
+            let table = document.getElementById('expired');
+            let rows = table.querySelectorAll('tr');
+            let csvContent = '';
+
+            rows.forEach(row => {
+                let rowData = [];
+                let cols = row.querySelectorAll('td, th');
+                for (let i = 0; i < cols.length - 1; i++) {
+                    rowData.push(cols[i].innerText);
+                }
+                csvContent += rowData.join(',') + '\n';
+            });
+
+            let blob = new Blob([csvContent], { type: 'text/csv' });
+            let link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'table.csv';
+            link.click();
+    }else{
+        let table = document.getElementById('active');
+        let rows = table.querySelectorAll('tr');
+        let csvContent = '';
+
+        rows.forEach(row => {
+            let rowData = [];
+            let cols = row.querySelectorAll('td, th');
+            for (let i = 0; i < cols.length - 1; i++) {
+                rowData.push(cols[i].innerText);
+            }
+            csvContent += rowData.join(',') + '\n';
+        });
+
+        let blob = new Blob([csvContent], { type: 'text/csv' });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'table.csv';
+        link.click();
+    }
+}
+
 onMounted(() => {
-    getPendingApplications()
+    getApprovedApplications()
     getExpiredApplications()
 })
 </script>

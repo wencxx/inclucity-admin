@@ -12,10 +12,10 @@
                     <option>10-23-2025</option>
                     <option>10-23-2026</option>
                 </select> -->
-                <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center">
+                <!-- <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center">
                     <Icon icon="typcn:user-add-outline" />
                     Add
-                </button>
+                </button> -->
                 <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center" @click="downloadCSV">
                     <Icon icon="ph:export" />
                     Export
@@ -47,8 +47,7 @@
                             <td>{{ user.gender }}</td>
                             <td>
                                 <div class="flex justify-center w-full gap-x-2">
-                                    <Icon icon="iconamoon:edit-fill" class="text-2xl text-gray-900 hover:text-gray-700" @click="updateUser(user._id)" />
-                                    <Icon icon="mdi:trash" class="text-2xl text-red-500 hover:text-red-700" @click="deleteConfirmation = true, userTobeDeleted = user._id" />
+                                    <Icon icon="mdi:restore" class="text-2xl text-green-500 hover:text-green-700" @click="deleteConfirmation = true, userTobeDeleted = user._id" />
                                 </div>
                             </td>
                         </tr>
@@ -81,43 +80,12 @@
         <!-- delete modal -->
         <div v-if="deleteConfirmation" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
             <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
-                <Icon icon="uiw:warning" class="text-[6rem] text-gray-500" />
-                <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Do you want to delete this user?</p>
+                <Icon icon="uiw:warning" class="text-[6rem] text-green-500" />
+                <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Do you want to restore this user?</p>
                 <div class="flex items-center w-4/5 gap-x-5">
                     <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="deleteConfirmation = false">Cancel</button>
                     <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="deleteUser">Delete</button>
                     <button v-else class="bg-blue-500 text-white w-1/2 py-1 rounded animate-pulse" disabled>Deleting</button>
-                </div>
-            </div>
-        </div>
-        <!-- update modal -->
-        <div v-if="updateConfirmation" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
-            <div class="w-[20dvw] h-fit bg-white rounded-md flex flex-col gap-y-5 items-center justify-between py-10">
-                <h1 class="font-medium text-lg">Update User</h1>
-                <div class="flex flex-col gap-y-2 w-4/5">
-                    <label>Full name</label>
-                    <input type="text" class="border h-8 rounded pl-2" v-model="userDetails.name">
-                </div>
-                <div class="flex flex-col gap-y-2 w-4/5">
-                    <label>Email</label>
-                    <input type="email" class="border h-8 rounded pl-2" v-model="userDetails.email">
-                </div>
-                <div class="flex flex-col gap-y-2 w-4/5">
-                    <label>Phone Number</label>
-                    <input type="number" class="border h-8 rounded pl-2" v-model="userDetails.contactNumber" />
-                </div>
-                <div class="flex flex-col gap-y-2 w-4/5">
-                    <label>Address</label>
-                    <input type="text" class="border h-8 rounded pl-2" v-model="userDetails.address">
-                </div>
-                <div class="flex flex-col gap-y-2 w-4/5">
-                    <label>Gender</label>
-                    <input type="text" class="border h-8 rounded pl-2" v-model="userDetails.gender">
-                </div>
-                <div class="flex items-center w-4/5 gap-x-5">
-                    <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="updateConfirmation = false">Cancel</button>
-                    <button v-if="!updating" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="update">Update</button>
-                    <button v-else class="bg-blue-500 text-white w-1/2 py-1 rounded animate-pulse" disabled>Updating</button>
                 </div>
             </div>
         </div>
@@ -134,7 +102,7 @@ const noUsers = ref(false)
 
 const getAllUsers = async () => {
     try {
-        const res = await axios.get(`${serverUrl}/get-all-users`,{
+        const res = await axios.get(`${serverUrl}/get-all-deleted-users`,{
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -190,57 +158,18 @@ const failedToDelete = ref(false)
 
 const deleteUser = async () => {
     try {
-        const res = await axios.patch(`${serverUrl}/delete-user/${userTobeDeleted.value}`, {},{
+        const res = await axios.patch(`${serverUrl}/restore-user/${userTobeDeleted.value}`, {},{
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
 
-        if(res.data === 'failed to delete user') return failedToDelete.value = true
+        if(res.data === 'failed to restore user') return failedToDelete.value = true
 
         users.value = users.value.filter(user => user._id != userTobeDeleted.value)
         deleteConfirmation.value = false
     } catch (error) {
         console.log(error)
-    }
-}
-
-// update user
-const userDetails = ref({})
-
-const updateConfirmation = ref(false)
-const updating = ref(false)
-
-const updateUser = (userId) => {
-    updateConfirmation.value = true
-
-    const user = users.value.find(u => u._id === userId)
-
-    userDetails.value = { ...user }
-}
-
-const update = async () => {
-    try {
-        updating.value = true
-        const res = await axios.patch(`${serverUrl}/update-user/${userDetails.value._id}` , userDetails.value,
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            }
-        )
-
-        if(res.data === 'failed to update user') return
-
-        userDetails.value = {}
-        getAllUsers()
-        
-        console.log(res.data)
-    } catch (error) {
-        console.log(error)
-    }finally{
-        updating.value = false
-        updateConfirmation.value = false
     }
 }
 

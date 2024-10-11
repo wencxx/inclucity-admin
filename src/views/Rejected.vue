@@ -14,13 +14,7 @@
         </div>
         <!-- table -->
         <p v-if="declinedSuccessful" class="absolute right-0 bottom-10 bg-green-500 py-1 px-2 rounded text-white animate-pulse">Application declined</p>
-        <div v-if="approvedSuccessful" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
-            <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
-                <Icon icon="lets-icons:check-fill" class="text-[6rem] text-green-500" />
-                <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Application has been approved</p>
-                <button class="border border-green-500 text-green-500 w-1/4 py-1 rounded" @click="approvedSuccessful = false">Ok</button>
-            </div>
-        </div>
+        <p v-if="approvedSuccessful" class="absolute right-0 bottom-10 bg-green-500 py-1 px-2 rounded text-white animate-pulse">Application approved</p>
         <div class="w-full mt-12 flex flex-col gap-y-5">
             <div class="w-full overflow-x-auto  rounded-md">
                 <table class="w-[150dvw] lg:w-full border-collapse" id="userTable">
@@ -35,7 +29,6 @@
                             <th class=" text-sm">Barangay</th>
                             <th class=" text-xs">Application Date</th> 
                             <th class=" text-sm">Status</th>
-                            <th class=" text-sm px-1">Actions</th>
                         </tr>
                     </thead>
                     <tbody v-if="!noApplicants" class="bg-white text-center">
@@ -51,13 +44,6 @@
                             <td class="text-sm">
                                 <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto">
                                     {{ applicant.status }}
-                                </div>
-                            </td>
-                            <td>
-                                <div class="flex flex-wrap justify-center gap-1 cursor-pointer">
-                                    <button class="bg-green-200 py-1 text-green-700 text-xs px-2 rounded-md w-fit hover:shadow" @click="showModalRetype(applicant.user?._id, applicant._id)">approve</button>
-                                    <button class="bg-orange-200 py-1 text-orange-700 text-xs px-2 rounded-md w-fit hover:shadow" @click="showModal(applicant.user?._id, applicant._id)">decline</button>
-                                    <button class="bg-red-200 py-1 text-red-700 text-xs px-2 rounded-md hover:shadow" @click="showAttachment(applicant.photo1x1, applicant.medicalCert, applicant.barangayCert)">attachments</button>
                                 </div>
                             </td>
                         </tr>
@@ -116,20 +102,6 @@
             </div>
         </div>
 
-        <div v-if="retypeModal" @click.self="retypeModal = false" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
-            <div class="w-[30dvw] flex flex-col items-center gap-y-5 p-5 xl:w-[20dvw] h-fit bg-white rounded-md shadow">
-                <h1 class="font-medium text-xl">Retype Password</h1>
-                <div class="w-full flex flex-col gap-x-2 items-center">
-                    <p v-if="invalidPassword" class="w-full text-start bg-red-500 mb-1 rounded pl-2 text-white">Invalid Password</p>
-                    <input type="text" name="reasons" v-model="password" class="w-full border rounded h-10 pl-2" placeholder="Enter password">
-                </div>
-                <div class="w-full flex justify-end items-center gap-x-2">
-                    <button class="bg-green-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" type="button" @click="declineModal = false">Cancel</button>
-                    <button class="bg-red-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" @click="verifyPassword()">Approve</button>
-                </div>
-            </div>
-        </div>
-
         <div v-if="images.length > 0" @click.self="images = []" class="absolute flex items-center justify-center gap-x-10 bg-black/10 w-screen h-screen top-0 !left-0 !z-50">
             <button @click="prevImage" class="bg-gray-300 rounded-full flex items-center justify-center p-3">
                 <Icon icon="oui:arrow-left" class="text-3xl" />
@@ -163,7 +135,7 @@ const noApplicants = ref(false)
 
 const getPendingApplications = async () => {
     try {
-        const res = await axios.get(`${serverUrl}/get-all-pending-applications`,{
+        const res = await axios.get(`${serverUrl}/get-all-rejected-applications`,{
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -271,42 +243,6 @@ const showModal = async (userId, appId) => {
     aid.value = appId
 }
 
-const retypeModal = ref(false)
-const password = ref('')
-
-const showModalRetype = async (userId, appId) => {
-    retypeModal.value = true
-
-    uid.value = userId.toString()
-    aid.value = appId
-}
-
-const invalidPassword = ref(false)
-
-const verifyPassword = async () => {
-    try {
-        const res = await axios.post(`${import.meta.env.VITE_SERVER_URL}/verify-password`, {
-            password: password.value
-        }, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-
-        if(res.data === 'password match'){
-            updateApplicant('approved', uid.value, aid.value )
-            uid.value = ''
-            aid.value = ''
-        }else{
-            invalidPassword.value = true
-        }
-    } catch (error) {
-        console.log(error)
-    }finally{
-        retypeModal.value = false
-    }
-}
-
 const declinedSuccessful = ref(false)
 const approvedSuccessful = ref(false)
 
@@ -367,8 +303,6 @@ const updateApplicant = async (status, userId, appId) => {
                 setTimeout(() => {
                     approvedSuccessful.value = false
                 }, 3000)
-
-                console.log(res.data)
             }
         } catch (error) {
             console.log(error)

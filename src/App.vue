@@ -1,7 +1,7 @@
 <template>
   <section :class="{ 'lg:flex': isAuth }">
-    <Sidebar v-if="isAuth" :class="sidebarDisplay" @toggleSidebar="toggleSidebar" />
-    <div class="h-screen" :class="{'lg:w-4/5': isAuth}">
+    <Sidebar v-if="isAuth" :class="sidebarDisplay" @toggleSidebar="toggleSidebar" class="w-3/5 md:w-2/5 lg:w-1/6" />
+    <div class="h-screen" :class="{'lg:w-5/6': isAuth}">
       <Header v-if="isAuth" :pageName="$route.name" @toggleSidebar="toggleSidebar" />
       <router-view />
     </div
