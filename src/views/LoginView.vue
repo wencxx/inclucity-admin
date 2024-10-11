@@ -1,5 +1,5 @@
 <template>
-  <section class="h-screen bg-bg1 bg-center bg-no-repeat bg-cover flex items-center justify-center font-poppins">
+  <section id="section" class="h-screen bg-center bg-no-repeat bg-cover flex items-center justify-center font-poppins">
     <form @submit.prevent="login" class="glass-morphism w-3/4 h-fit py-5 lg:py-10 md:w-2/4 lg:w-1/4 flex flex-col items-center px-10">
         <!-- logo -->
         <div class="w-3/4 lg:w-3/4 flex justify-center">
@@ -96,5 +96,8 @@ const login = async () => {
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.3);
+}
+#section {
+    background-image: url('../assets/background.jpg');
 }
 </style>
