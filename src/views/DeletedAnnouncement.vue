@@ -101,7 +101,7 @@
         <div v-if="deleteConfirmation" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
             <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
                 <Icon icon="uiw:warning" class="text-[6rem] text-green-500" />
-                <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Do you want to restpre this post?</p>
+                <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Do you want to restore this announcement?</p>
                 <div class="flex items-center w-4/5 gap-x-5">
                     <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="deleteConfirmation = false">Cancel</button>
                     <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="deletePost">Restore</button>
@@ -112,8 +112,8 @@
 
         <div v-if="deletedSuccessfully" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
             <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
-                <Icon icon="lets-icons:check-fill" class="text-[6rem] text-red-500" />
-                <p class="text-gray-500 font-manrope text-lg">The post has been successfully restored.</p>
+                <Icon icon="lets-icons:check-fill" class="text-[6rem] text-green-500" />
+                <p class="text-gray-500 font-manrope text-lg text-center">The announcement has been successfully restored.</p>
                 <button class="border border-green-500 text-green-500 w-1/4 py-1 rounded" @click="deletedSuccessfully = false">Ok</button>
             </div>
         </div>

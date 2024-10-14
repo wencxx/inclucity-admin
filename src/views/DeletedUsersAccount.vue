@@ -16,10 +16,15 @@
                     <Icon icon="typcn:user-add-outline" />
                     Add
                 </button> -->
-                <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center" @click="downloadCSV">
+                <!-- <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center" @click="downloadCSV">
                     <Icon icon="ph:export" />
                     Export
-                </button>
+                </button> -->
+                <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
+                    <option value="" disabled>Export</option>
+                    <option>pdf</option>
+                    <option>csv</option>
+                </select>
             </div>
         </div>
         <!-- table -->
@@ -84,7 +89,7 @@
                 <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Do you want to restore this user?</p>
                 <div class="flex items-center w-4/5 gap-x-5">
                     <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="deleteConfirmation = false">Cancel</button>
-                    <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="deleteUser">Delete</button>
+                    <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="deleteUser">Restore</button>
                     <button v-else class="bg-blue-500 text-white w-1/2 py-1 rounded animate-pulse" disabled>Deleting</button>
                 </div>
             </div>
@@ -95,6 +100,8 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import axios from 'axios'
+import { jsPDF } from "jspdf"
+import html2canvas from "html2canvas"
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
 const users = ref(null)
@@ -173,6 +180,17 @@ const deleteUser = async () => {
     }
 }
 
+// export
+const typeOfExport = ref('')
+
+const handleExportChange = () => {
+    if(typeOfExport.value === 'csv'){
+        downloadCSV()
+    }else{
+        downloadPDF()
+    }
+}
+
 // download as csv
 const downloadCSV = () => {
     let table = document.getElementById('userTable');
@@ -193,6 +211,33 @@ const downloadCSV = () => {
     link.href = URL.createObjectURL(blob);
     link.download = 'table.csv';
     link.click();
+}
+
+const downloadPDF = () => {
+    const pdf = new jsPDF();
+    const table = document.getElementById("userTable");
+
+    html2canvas(table).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = 190;
+        const pageHeight = pdf.internal.pageSize.height;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 10;
+
+        pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight + 10;
+            pdf.addPage();
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        pdf.save("table.pdf");
+    });
 }
 
 onMounted(() => {

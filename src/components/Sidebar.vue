@@ -13,7 +13,7 @@
                     <Icon icon="ion:person-outline" class="text-3xl" />
                     <span class="mt-1">Users</span>
                 </router-link>
-                <div class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink" @click="recordsDropdown = !recordsDropdown, changeIcon()">
+                <div class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink cursor-pointer" @click="recordsDropdown = !recordsDropdown, changeIcon()">
                     <Icon icon="gg:notes" class="text-3xl" />
                     <span class="mt-1">Records</span>
                     <Icon :icon="recordsDropdownIcon" class="text-3xl ml-auto" />
@@ -52,7 +52,7 @@
                     <Icon icon="ri:telegram-2-line" class="text-3xl" />
                     <span class="mt-1">Announcement</span>
                 </router-link>
-                <div class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink" @click="archivesDropdown = !archivesDropdown, changeIconArchives()">
+                <div class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink cursor-pointer" @click="archivesDropdown = !archivesDropdown, changeIconArchives()">
                     <Icon icon="gg:notes" class="text-3xl" />
                     <span class="mt-1">Archives</span>
                     <Icon :icon="archivesDropdownIcon" class="text-3xl ml-auto" />

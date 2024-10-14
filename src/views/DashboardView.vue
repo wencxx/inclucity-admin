@@ -19,7 +19,7 @@
                 </button>
             </div>
         </div>
-       <div class="grid lg:grid-cols-7 place-items-center lg:place-items-start gap-y-10 gap-x-10 mt-5" ref="captureDiv">
+       <div class="grid lg:grid-cols-7 place-items-center lg:place-items-start gap-y-10 gap-x-10 mt-5" ref="captureDiv" id="dashboard">
             <div class="bg-white shadow font-poppins p-3 md:p-5 lg:p-5 w-full lg:w-full lg:h-[20dvh] lg:col-span-7 rounded-md cursor-pointer grid grid-cols-4 gap-x-10" @click="redirect()">
                 <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white">
                     <Icon class="text-5xl" icon="heroicons:user-group" />
@@ -58,7 +58,7 @@
                         :data="chartDataBar"
                     />
             </div>
-            <div v-if="userMaleCount != 0" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()">
+            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()">
                     <h1 class="font-bold text-gray-600 text-sm xl:text-lg">Total number of PWDs in Malolos</h1>
                     <Doughnut
                         class="!w-2/4 !h-2/4  xl:!w-4/5 xl:!h-full"
@@ -66,7 +66,7 @@
                         :data="chartDataDoughnut"
                     />
             </div>
-            <div class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-5 rounded cursor-pointer" @click="redirect()">
+            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-5 rounded cursor-pointer" @click="redirectEmploy()">
                     <h1 class="font-bold text-gray-600 text-sm lg:text-lg">Employment Rate Status</h1>
                     <Bar
                         class="!w-full block"
@@ -74,7 +74,7 @@
                         :data="chartDataBar2"
                     />
             </div>
-            <div class="bg-white shadow font-poppins p-4 w-full lg:w-full lg:h-[35dvh] lg:col-span-2 rounded cursor-pointer grid grid-rows-3 gap-y-2" @click="redirect()">
+            <div class="bg-white shadow font-poppins p-4 w-full lg:w-full lg:h-[35dvh] lg:col-span-2 rounded cursor-pointer grid grid-rows-3 gap-y-2" @click="redirectEmploy()">
                 <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white">
                     <Icon class="text-5xl" icon="uit:bag" />
                     <div class="flex flex-col gap-2 items-end">
@@ -97,6 +97,8 @@
                     </div>
                 </div>
             </div>
+
+            {{  }}
        </div>
     </section>
 </template>
@@ -108,7 +110,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import html2canvas from 'html2canvas'
+import { jsPDF } from "jspdf"
+import html2canvas from "html2canvas"
 
 const router = useRouter()
 
@@ -421,19 +424,48 @@ const getGroupedEmployment = async () => {
 const captureDiv = ref(null);
 const saved = ref(false)
 
-const saveDashboard = async () => {
-  if (captureDiv.value) {
-    const canvas = await html2canvas(captureDiv.value);
+// const saveDashboard = async () => {
+//   if (captureDiv.value) {
+//     const canvas = await html2canvas(captureDiv.value);
 
-    const image = canvas.toDataURL('image/png');
+//     const image = canvas.toDataURL('image/png');
 
-    const link = document.createElement('a');
-    link.href = image;
-    link.download = 'dashboard.png';
-    link.click();
-    saved.value = true
-  }
-};
+//     const link = document.createElement('a');
+//     link.href = image;
+//     link.download = 'dashboard.png';
+//     link.click();
+//     saved.value = true
+//   }
+// };
+
+const saveDashboard = () => {
+    if(captureDiv.value){
+        const pdf = new jsPDF();
+        const table = document.getElementById("dashboard");
+
+        html2canvas(table).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            const imgWidth = 190;
+            const pageHeight = pdf.internal.pageSize.height;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let heightLeft = imgHeight;
+            let position = 10;
+
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight + 10;
+                pdf.addPage();
+                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            pdf.save("dashboard.pdf");
+        });
+    }
+}
 
 const redirect = () => {
     router.push('/pwd-per-barangay')
@@ -441,6 +473,10 @@ const redirect = () => {
 
 const redirectTotal = () => {
     router.push('/total-pwd')
+}
+
+const redirectEmploy = () => {
+    router.push('/total-employment')
 }
 </script>
 

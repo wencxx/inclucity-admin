@@ -6,10 +6,15 @@
                     <input type="text" placeholder="Search" v-model="searchQuery" class="bg-transparent h-8 lg:h-5 focus:outline-none">
                     <Icon icon="iconoir:search" />
                 </div>
-                <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="downloadCSV()">
+                <!-- <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="downloadCSV()">
                     <Icon icon="ph:export" />
                     Export
-                </button>
+                </button> -->
+                <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
+                    <option value="" disabled>Export</option>
+                    <option>pdf</option>
+                    <option>csv</option>
+                </select>
             </div>
         </div>
         <!-- table -->
@@ -74,6 +79,8 @@
 import { computed, onMounted, ref } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
+import { jsPDF } from "jspdf"
+import html2canvas from "html2canvas"
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
 const router = useRouter()
@@ -111,7 +118,6 @@ const getApprovedApplications = async () => {
     }
 }
 
-
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
 const totalPages = computed(() => Math.ceil(applicants.value?.length / itemsPerPage.value))
@@ -143,7 +149,6 @@ const convertApplicationNum = (num) => {
     if(convertedToString?.length === 5) return num
 }
 
-
 const releasedId = async (appId) => {
     try {
         const res = await axios.patch(`${serverUrl}/release-id/${appId}`, {}, {
@@ -155,6 +160,18 @@ const releasedId = async (appId) => {
         console.log(res.data)
     } catch (error) {
         console.log(error)
+    }
+}
+
+// export 
+
+const typeOfExport = ref('')
+
+const handleExportChange = () => {
+    if(typeOfExport.value === 'csv'){
+        downloadCSV()
+    }else{
+        downloadPDF()
     }
 }
 
@@ -179,6 +196,32 @@ const downloadCSV = () => {
     link.click();
 }
 
+const downloadPDF = () => {
+    const pdf = new jsPDF();
+    const table = document.getElementById("userTable");
+
+    html2canvas(table).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = 190;
+        const pageHeight = pdf.internal.pageSize.height;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 10;
+
+        pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight + 10;
+            pdf.addPage();
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        pdf.save("table.pdf");
+    });
+}
 onMounted(() => {
     getApprovedApplications()
 })

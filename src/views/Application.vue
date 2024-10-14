@@ -6,10 +6,16 @@
                 <Icon icon="iconoir:search" />
             </div>
             <div class="flex items-center gap-x-3 h-10">
-                <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="downloadCSV">
+                <!-- <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="downloadCSV">
                     <Icon icon="ph:export" />
                     Export
-                </button>
+                </button> -->
+
+                <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
+                    <option value="" disabled>Export</option>
+                    <option>pdf</option>
+                    <option>csv</option>
+                </select>
             </div>
         </div>
         <!-- table -->
@@ -57,7 +63,8 @@
                                 <div class="flex flex-wrap justify-center gap-1 cursor-pointer">
                                     <button class="bg-green-200 py-1 text-green-700 text-xs px-2 rounded-md w-fit hover:shadow" @click="showModalRetype(applicant.user?._id, applicant._id)">approve</button>
                                     <button class="bg-orange-200 py-1 text-orange-700 text-xs px-2 rounded-md w-fit hover:shadow" @click="showModal(applicant.user?._id, applicant._id)">decline</button>
-                                    <button class="bg-red-200 py-1 text-red-700 text-xs px-2 rounded-md hover:shadow" @click="showAttachment(applicant.photo1x1, applicant.medicalCert, applicant.barangayCert)">attachments</button>
+                                    <!-- <button class="bg-red-200 py-1 text-red-700 text-xs px-2 rounded-md hover:shadow" @click="showAttachment(applicant.photo1x1, applicant.medicalCert, applicant.barangayCert)">attachments</button> -->
+                                    <button class="bg-red-200 py-1 text-red-700 text-xs px-2 rounded-md hover:shadow" @click="viewAppInfo(applicant._id)">View Info</button>
                                 </div>
                             </td>
                         </tr>
@@ -144,6 +151,89 @@
                 <Icon icon="oui:arrow-right" class="text-3xl" />
             </button>
         </div>
+
+
+        <!-- application information -->
+        <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex items-center justify-center">
+            <div class="h-[90%] w-3/4 bg-gray-300 rounded-xl flex relative">
+                <Icon icon="mdi:close" class="absolute right-5 top-4 text-2xl cursor-pointer" @click="showAppDetails = false" />
+                <div class="w-1/5 h-full flex flex-col items-center py-10 gap-y-3">
+                    <div class="rounded-full bg-gray-200 w-[150px] aspect-square border flex items-center justify-center">
+                        <img v-if="infoToShow.photo1x1" :src="infoToShow.photo1x1" alt="1x1 photo" class="w-[130px] aspect-square rounded-full">
+                        <Icon v-else icon="mdi:user-circle" class="w-full h-full text-custom-primary"/>
+                    </div>
+                    <h2 class="text-sm">{{ infoToShow.status }}</h2>
+                    <h1 class="-my-2 capitalize">{{ infoToShow.firstName }} {{ infoToShow.middleName }} {{ infoToShow.lastName }}</h1>
+                    <h1 class="text-sm text-green-900">{{ convertApplicationNum(infoToShow.applicationNumber) }}</h1>
+
+                    <button class="bg-gray-200 px-3 py-1 rounded mt-20" @click="currentPageDets = 1">Details</button>
+                    <button class=" bg-gray-200 px-3 py-1 rounded" @click="currentPageDets = 2">View Attachments</button>
+                </div>
+                <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 h-full p-20 capitalize">
+                    <div class="w-full h-full flex flex-col gap-y-10">
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Gender:</p>
+                            <p>{{ infoToShow.gender }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Contact Details:</p>
+                            <p>{{ infoToShow.mobileNo }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Email Address:</p>
+                            <p>{{ infoToShow.emailAddress }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Age:</p>
+                            <p>{{ infoToShow.user.age }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Birthday:</p>
+                            <p>{{ infoToShow.dateOfBirth }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Civil Status:</p>
+                            <p>{{ infoToShow.civilStatus }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Educational Attainment:</p>
+                            <p>{{ infoToShow.educationalAttainment }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Status of employment:</p>
+                            <p>{{ infoToShow.statusOfEmployment }}</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-full flex flex-col gap-y-10">
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Type of Disability:</p>
+                            <p>{{ infoToShow.typeOfDisability }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Cause of Disability:</p>
+                            <p>{{ infoToShow.causeOfDisability }} {{ infoToShow.otherCauseOfDisability }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Occupation:</p>
+                            <p>{{ infoToShow.occupation }} {{ infoToShow.otherOccupation }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Accomplished by:</p>
+                            <p>{{ infoToShow.accomplishedBy }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Type of employment:</p>
+                            <p>{{ infoToShow.typeOfEmployment }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="w-4/5 h-full p-20 grid grid-cols-2 grid-rows-2 gap-10 overflow-auto">
+                    <img :src="infoToShow.photo1x1" alt="1x1 photo" class="w-full h-full">
+                    <img :src="infoToShow.barangayCert" alt="barangay certitificate" class="max-w-full max-h-full">
+                    <img :src="infoToShow.medicalCert" alt="medical certitificate" class="max-w-full max-h-full">
+                </div>
+            </div>
+        </div>
         </section>
 </template>
 
@@ -151,7 +241,9 @@
 import { computed, onMounted, ref, useId } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
-import * as mammoth from 'mammoth'
+import { jsPDF } from "jspdf"
+import html2canvas from "html2canvas"
+// import * as mammoth from 'mammoth'
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
 const router = useRouter()
@@ -175,6 +267,25 @@ const getPendingApplications = async () => {
     } catch (error) {
         console.log(error)
     }
+}
+
+// show app details
+const showAppDetails = ref(false)
+const infoToShow = ref({})
+
+const currentPageDets = ref(1)
+
+const viewAppInfo = (appId) => {
+    const appli = applicants.value.filter(applicant => applicant._id == appId)
+
+    const applicantObject = appli.reduce((acc, applicant) => {
+        acc[applicant._id] = applicant;
+        return acc;
+    }, {});
+
+    infoToShow.value = applicantObject[appId]
+
+    showAppDetails.value = true
 }
 
 const searchQuery = ref('');
@@ -392,6 +503,16 @@ const prevImage = () => {
     currentIndex.value = (currentIndex.value - 1 + images.value.length) % images.value.length;
 }
 
+const typeOfExport = ref('')
+
+const handleExportChange = () => {
+    if(typeOfExport.value === 'csv'){
+        downloadCSV()
+    }else{
+        downloadPDF()
+    }
+}
+
 const downloadCSV = () => {
     let table = document.getElementById('userTable');
     let rows = table.querySelectorAll('tr');
@@ -411,6 +532,33 @@ const downloadCSV = () => {
     link.href = URL.createObjectURL(blob);
     link.download = 'table.csv';
     link.click();
+}
+
+const downloadPDF = () => {
+    const pdf = new jsPDF();
+    const table = document.getElementById("userTable");
+
+    html2canvas(table).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = 190;
+        const pageHeight = pdf.internal.pageSize.height;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 10;
+
+        pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight + 10;
+            pdf.addPage();
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        pdf.save("table.pdf");
+    });
 }
 
 onMounted(() => {

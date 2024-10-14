@@ -16,10 +16,15 @@
                     <Icon icon="typcn:user-add-outline" />
                     Add
                 </button>
-                <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center" @click="downloadCSV">
+                <!-- <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center" @click="downloadCSV">
                     <Icon icon="ph:export" />
                     Export
-                </button>
+                </button> -->
+                <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-8">
+                    <option value="" disabled>Export</option>
+                    <option>pdf</option>
+                    <option>csv</option>
+                </select>
             </div>
         </div>
         <!-- table -->
@@ -127,6 +132,8 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import axios from 'axios'
+import { jsPDF } from "jspdf"
+import html2canvas from "html2canvas"
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
 const users = ref(null)
@@ -244,6 +251,16 @@ const update = async () => {
     }
 }
 
+const typeOfExport = ref('')
+
+const handleExportChange = () => {
+    if(typeOfExport.value === 'csv'){
+        downloadCSV()
+    }else{
+        downloadPDF()
+    }
+}
+
 // download as csv
 const downloadCSV = () => {
     let table = document.getElementById('userTable');
@@ -266,6 +283,32 @@ const downloadCSV = () => {
     link.click();
 }
 
+const downloadPDF = () => {
+    const pdf = new jsPDF();
+    const table = document.getElementById("userTable");
+
+    html2canvas(table).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = 190;
+        const pageHeight = pdf.internal.pageSize.height;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 10;
+
+        pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight + 10;
+            pdf.addPage();
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        pdf.save("table.pdf");
+    });
+}
 onMounted(() => {
     getAllUsers()
 })

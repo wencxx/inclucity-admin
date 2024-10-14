@@ -11,10 +11,15 @@
                     <input type="text" placeholder="Search" v-model="searchQuery" class="bg-transparent h-8 lg:h-5 focus:outline-none">
                     <Icon icon="iconoir:search" />
                 </div>
-                <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="downloadCSV">
+                <!-- <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="downloadCSV">
                     <Icon icon="ph:export" />
                     Export
-                </button>
+                </button> -->
+                <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
+                    <option value="" disabled>Export</option>
+                    <option>pdf</option>
+                    <option>csv</option>
+                </select>
             </div>
         </div>
         <!-- table -->
@@ -105,7 +110,7 @@
                                 </div>
                             </td>
                             <td class="text-sm">
-                                <button class="bg-green-200 py-1 text-green-700 text-sm px-3 rounded-md w-fit mx-auto" @click="releasedId(applicant._id)">Release ID</button>
+                                <button class="bg-green-200 py-1 text-green-700 text-sm px-3 rounded-md w-fit mx-auto" @click="showReleaseModal(applicant._id)">Release ID</button>
                             </td>
                         </tr>
                         <tr v-else class="border-b border-gray-500 text-center">
@@ -119,6 +124,19 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- release id confimartion -->
+            <div v-if="releaseModal" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
+                <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
+                    <Icon icon="uiw:warning" class="text-[6rem] text-gray-500" />
+                    <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Release ID?</p>
+                    <div class="flex items-center w-4/5 gap-x-5">
+                        <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="releaseModal = false">Cancel</button>
+                        <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="releasedId">Release</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- pagination -->
             <div class="flex gap-x-2 font-manrope ml-auto">
                 <button class="bg-custom-primary text-white w-6 aspect-square flex justify-center items-center rounded-full" @click="prevPage()" :disabled="currentPage == 1">
@@ -137,6 +155,8 @@
 import { computed, onMounted, ref } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
+import { jsPDF } from "jspdf"
+import html2canvas from "html2canvas"
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
 const router = useRouter()
@@ -272,18 +292,36 @@ const convertApplicationNum = (num) => {
     if(convertedToString?.length === 5) return num
 }
 
+const idToReleased = ref('')
+const releaseModal = ref(false)
 
-const releasedId = async (appId) => {
+const showReleaseModal = (id) => {
+    idToReleased.value = id
+    releaseModal.value = true
+}
+
+const releasedId = async () => {
     try {
-        const res = await axios.patch(`${serverUrl}/release-id/${appId}`, {}, {
+        const res = await axios.patch(`${serverUrl}/release-id/${idToReleased.value}`, {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
 
+        releaseModal.value = false
         console.log(res.data)
     } catch (error) {
         console.log(error)
+    }
+}
+
+const typeOfExport = ref('')
+
+const handleExportChange = () => {
+    if(typeOfExport.value === 'csv'){
+        downloadCSV()
+    }else{
+        downloadPDF()
     }
 }
 
@@ -327,6 +365,64 @@ const downloadCSV = () => {
         link.download = 'table.csv';
         link.click();
     }
+
+    typeOfExport.value = ''
+}
+
+const downloadPDF = () => {
+    if(route.query.page === 'expired'){
+        const pdf = new jsPDF();
+        const table = document.getElementById("expired");
+
+        html2canvas(table).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            const imgWidth = 190;
+            const pageHeight = pdf.internal.pageSize.height;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let heightLeft = imgHeight;
+            let position = 10;
+
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight + 10;
+                pdf.addPage();
+                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            pdf.save("table.pdf");
+        });
+    }else{
+        const pdf = new jsPDF();
+        const table = document.getElementById("active");
+
+        html2canvas(table).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            const imgWidth = 190;
+            const pageHeight = pdf.internal.pageSize.height;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let heightLeft = imgHeight;
+            let position = 10;
+
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight + 10;
+                pdf.addPage();
+                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            pdf.save("table.pdf");
+        });
+    }
+
+    typeOfExport.value = ''
 }
 
 onMounted(() => {
