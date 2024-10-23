@@ -12,10 +12,10 @@
                     <option>10-23-2025</option>
                     <option>10-23-2026</option>
                 </select> -->
-                <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center">
+                <!-- <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center">
                     <Icon icon="typcn:user-add-outline" />
                     Add
-                </button>
+                </button> -->
                 <!-- <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center" @click="downloadCSV">
                     <Icon icon="ph:export" />
                     Export
@@ -53,7 +53,7 @@
                             <td>
                                 <div class="flex justify-center w-full gap-x-2">
                                     <Icon icon="iconamoon:edit-fill" class="text-2xl text-gray-900 hover:text-gray-700" @click="updateUser(user._id)" />
-                                    <Icon icon="mdi:trash" class="text-2xl text-red-500 hover:text-red-700" @click="deleteConfirmation = true, userTobeDeleted = user._id" />
+                                    <Icon icon="fluent:archive-16-filled" class="text-2xl text-red-500 hover:text-red-700" @click="deleteConfirmation = true, userTobeDeleted = user._id" />
                                 </div>
                             </td>
                         </tr>
@@ -86,8 +86,10 @@
         <!-- delete modal -->
         <div v-if="deleteConfirmation" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
             <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
-                <Icon icon="uiw:warning" class="text-[6rem] text-gray-500" />
-                <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Do you want to delete this user?</p>
+                <div class="flex flex-col gap-y-3 items-center w-full">
+                    <Icon icon="uiw:warning" class="text-[6rem] text-gray-500" />
+                    <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Do you want to archive this user?</p>
+                </div>
                 <div class="flex items-center w-4/5 gap-x-5">
                     <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="deleteConfirmation = false">Cancel</button>
                     <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="deleteUser">Delete</button>
@@ -286,6 +288,9 @@ const downloadCSV = () => {
 const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
+    const headerImage = "../../public/header.png"; 
+
+    pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 
     html2canvas(table).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
@@ -294,21 +299,25 @@ const downloadPDF = () => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         let heightLeft = imgHeight;
-        let position = 10;
+        let position = 50; 
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        heightLeft -= pageHeight - 40; 
 
         while (heightLeft >= 0) {
-            position = heightLeft - imgHeight + 10;
-            pdf.addPage();
-            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            pdf.addPage(); 
+            pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+            position = heightLeft - imgHeight + 40; 
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+            heightLeft -= pageHeight - 40;
         }
 
         pdf.save("table.pdf");
     });
+
+    typeOfExport.value = ''
 }
+
 onMounted(() => {
     getAllUsers()
 })

@@ -19,7 +19,7 @@
                 </button>
             </div>
         </div>
-       <div class="grid lg:grid-cols-7 place-items-center lg:place-items-start gap-y-10 gap-x-10 mt-5" ref="captureDiv" id="dashboard">
+       <div class="grid lg:grid-cols-7 place-items-center lg:place-items-start gap-5 mt-5" ref="captureDiv" id="dashboard">
             <div class="bg-white shadow font-poppins p-3 md:p-5 lg:p-5 w-full lg:w-full lg:h-[20dvh] lg:col-span-7 rounded-md cursor-pointer grid grid-cols-4 gap-x-10" @click="redirect()">
                 <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white">
                     <Icon class="text-5xl" icon="heroicons:user-group" />
@@ -97,8 +97,14 @@
                     </div>
                 </div>
             </div>
-
-            {{  }}
+            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-7 rounded cursor-pointer">
+                    <h1 class="font-bold text-gray-600 text-sm lg:text-lg">Top 5 Disability in Malolos</h1>
+                    <Bar
+                        class="!w-full block"
+                        :options="chartOptionsBar3"
+                        :data="chartDataBar3"
+                    />
+            </div>
        </div>
     </section>
 </template>
@@ -124,6 +130,7 @@ onMounted(() => {
     getRejectedApplicant()
     getExpiredApplicant()
     getTotalEmployment()
+    getGroupedDisablity()
 })
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement, ChartDataLabels)
@@ -169,6 +176,43 @@ const chartOptionsBar = {
     },
     devicePixelRatio: 4
 }
+
+const disability = ref([]);
+const disabilityData = ref([]);
+
+const chartDataBar3 = computed(() => ({
+    labels: disability.value,
+    datasets: [{ 
+        data: disabilityData.value,
+        backgroundColor: ['#7B080E', '#0641d8']
+    }],
+}));
+
+const getGroupedDisablity = async () => {
+    try {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/get-group-disability-per-barangay`);
+
+        if (res.data) {
+            disability.value = res.data.map(dis => dis._id);
+            disabilityData.value = res.data.map(dis => dis.count);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const chartOptionsBar3 = {
+    responsive: true,
+    plugins: {
+        legend: {
+            display: false,
+        },
+        datalabels: {
+            display: false
+        }
+    },
+    devicePixelRatio: 4
+};
 
 const maleCount = ref(0)
 const femaleCount = ref(0)
@@ -442,6 +486,9 @@ const saveDashboard = () => {
     if(captureDiv.value){
         const pdf = new jsPDF();
         const table = document.getElementById("dashboard");
+        const headerImage = "../../public/header.png"; 
+
+        pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 
         html2canvas(table).then((canvas) => {
             const imgData = canvas.toDataURL("image/png");
@@ -450,16 +497,17 @@ const saveDashboard = () => {
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
             let heightLeft = imgHeight;
-            let position = 10;
+            let position = 50; 
 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            heightLeft -= pageHeight - 40; 
 
             while (heightLeft >= 0) {
-                position = heightLeft - imgHeight + 10;
-                pdf.addPage();
-                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                pdf.addPage(); 
+                pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+                position = heightLeft - imgHeight + 40; 
+                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+                heightLeft -= pageHeight - 40;
             }
 
             pdf.save("dashboard.pdf");

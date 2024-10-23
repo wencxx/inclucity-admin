@@ -27,7 +27,7 @@
                             <th class="text-sm">Full Name</th>
                             <th class="text-sm">EMAIL</th>
                             <th class="text-sm">AGE</th>
-                            <th class="text-sm">gender</th>
+                            <th class="text-sm">GENDER</th>
                             <th class="text-sm">BARANGAY</th>
                             <th class="text-sm">DISABILITY</th>
                             <th class="text-xs">DATE REGISTERED</th>
@@ -36,7 +36,7 @@
                     </thead>
                     <tbody v-if="!noApplicants" class="bg-white text-center">
                         <tr v-if="paginatedApplicants.length > 0" v-for="applicant in paginatedApplicants" :key="applicant._id" class="border-b border-gray-500">
-                            <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
+                            <td class="md:py-3 text-sm">{{ applicant.controlNumber }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
                             <td class="text-sm">{{ applicant.user?.email }}</td>
                             <td class="text-sm">{{ applicant.user?.age }}</td>
@@ -140,15 +140,6 @@ const nextPage = () => {
   }
 }
 
-const convertApplicationNum = (num) => {
-    const convertedToString = num?.toString()
-    if(convertedToString?.length === 1) return `0000${num}`
-    if(convertedToString?.length === 2) return `000${num}`
-    if(convertedToString?.length === 3) return `00${num}`
-    if(convertedToString?.length === 4) return `0${num}`
-    if(convertedToString?.length === 5) return num
-}
-
 const releasedId = async (appId) => {
     try {
         const res = await axios.patch(`${serverUrl}/release-id/${appId}`, {}, {
@@ -199,6 +190,9 @@ const downloadCSV = () => {
 const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
+    const headerImage = "../../public/header.png"; 
+
+    pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 
     html2canvas(table).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
@@ -207,21 +201,25 @@ const downloadPDF = () => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         let heightLeft = imgHeight;
-        let position = 10;
+        let position = 50; 
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        heightLeft -= pageHeight - 40; 
 
         while (heightLeft >= 0) {
-            position = heightLeft - imgHeight + 10;
-            pdf.addPage();
-            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            pdf.addPage(); 
+            pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+            position = heightLeft - imgHeight + 40; 
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+            heightLeft -= pageHeight - 40;
         }
 
         pdf.save("table.pdf");
     });
+
+    typeOfExport.value = ''
 }
+
 onMounted(() => {
     getApprovedApplications()
 })

@@ -1,0 +1,68 @@
+<template>
+  <div>
+    <button
+      @click="generateDocx('https://firebasestorage.googleapis.com/v0/b/nopsscea-client.appspot.com/o/profilePictures%2Fdownload-removebg-preview.png?alt=media&token=7ec8d577-fa5c-43a2-9632-45c229dbb35d')"
+      class="border"
+    >
+      Generate docx
+    </button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import PizZip from 'pizzip';
+import Docxtemplater from 'docxtemplater';
+import { saveAs } from 'file-saver';
+import ImageModule from 'docxtemplater-image-module-free';
+
+const loadImageAsArrayBuffer = async (imageUrl) => {
+  const response = await fetch(imageUrl);
+  if (!response.ok) throw new Error('Network response was not ok');
+  return await response.arrayBuffer(); 
+};
+
+const generateDocx = async (img) => {
+  try {
+    const response = await fetch('/public/docx/try.docx'); 
+    if (!response.ok) throw new Error('Failed to fetch DOCX template');
+    
+    const docxArrayBuffer = await response.arrayBuffer();
+
+    const imageArrayBuffer = await loadImageAsArrayBuffer(img); 
+
+    const zip = new PizZip(docxArrayBuffer);
+
+    const imageModule = new ImageModule({
+      centered: false,
+      getImage: function (tagValue) {
+        return imageArrayBuffer;
+      },
+      getSize: function (img, tagValue) {
+        return [200, 150];
+      },
+    });
+
+    const doc = new Docxtemplater(zip, {
+      modules: [imageModule],
+    });
+
+    doc.setData({
+      image: img,
+      name: 'wency',
+    });
+
+    doc.render();
+
+    const output = doc.getZip().generate({
+      type: 'blob',
+      mimeType:
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+
+    saveAs(output, 'generated-with-image.docx');
+  } catch (error) {
+    console.error('Error generating document:', error);
+  }
+};
+</script>

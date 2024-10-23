@@ -10,6 +10,7 @@
                     <Icon icon="ph:export" />
                     Export
                 </button> -->
+
                 <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
                     <option value="" disabled>Export</option>
                     <option>pdf</option>
@@ -19,13 +20,19 @@
         </div>
         <!-- table -->
         <p v-if="declinedSuccessful" class="absolute right-0 bottom-10 bg-green-500 py-1 px-2 rounded text-white animate-pulse">Application declined</p>
-        <p v-if="approvedSuccessful" class="absolute right-0 bottom-10 bg-green-500 py-1 px-2 rounded text-white animate-pulse">Application approved</p>
+        <div v-if="approvedSuccessful" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
+            <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
+                <Icon icon="lets-icons:check-fill" class="text-[6rem] text-green-500" />
+                <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Application has been approved</p>
+                <button class="border border-green-500 text-green-500 w-1/4 py-1 rounded" @click="approvedSuccessful = false">Ok</button>
+            </div>
+        </div>
         <div class="w-full mt-12 flex flex-col gap-y-5">
             <div class="w-full overflow-x-auto  rounded-md">
                 <table class="w-[150dvw] lg:w-full border-collapse" id="userTable">
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
-                            <th class=" text-xs">Control Number</th>
+                            <th class=" text-xs">Application Number</th>
                             <th class=" text-sm">Full Name</th>
                             <th class=" text-sm">Email</th>
                             <th class=" text-sm">Age</th>
@@ -34,11 +41,12 @@
                             <th class=" text-sm">Barangay</th>
                             <th class=" text-xs">Application Date</th> 
                             <th class=" text-sm">Status</th>
+                            <th class=" text-sm px-1">Actions</th>
                         </tr>
                     </thead>
                     <tbody v-if="!noApplicants" class="bg-white text-center">
                         <tr v-if="paginatedApplicants.length > 0" v-for="applicant in paginatedApplicants" :key="applicant.id" class="border-b border-gray-500">
-                            <td class="md:py-3 text-sm">{{ applicant.controlNumber }}</td>
+                            <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
                             <td class="text-sm">{{ applicant.user?.email }}</td>
                             <td class="text-sm">{{ applicant.user?.age }}</td>
@@ -49,6 +57,20 @@
                             <td class="text-sm">
                                 <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto">
                                     {{ applicant.status }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex flex-wrap justify-center gap-1 cursor-pointer">
+                                    <button class="bg-green-200 py-1 text-green-700 text-sm px-2 rounded-md w-fit hover:shadow" @click="showModalRetype(applicant.user?._id, applicant._id)">
+                                        <Icon icon="mdi:check" />
+                                    </button>
+                                    <button class="bg-orange-200 py-1 text-orange-700 text-sm px-2 rounded-md w-fit hover:shadow" @click="showModal(applicant.user?._id, applicant._id)">
+                                        <Icon icon="mdi:close" />
+                                    </button>
+                                    <!-- <button class="bg-red-200 py-1 text-red-700 text-sm px-2 rounded-md hover:shadow" @click="showAttachment(applicant.photo1x1, applicant.medicalCert, applicant.barangayCert)">attachments</button> -->
+                                    <button class="bg-red-200 py-1 text-red-700 text-sm px-2 rounded-md hover:shadow" @click="viewAppInfo(applicant._id)">
+                                        <Icon icon="mdi:eye" />
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -80,22 +102,18 @@
         <!-- modal for declining -->
         <div v-if="declineModal" @click.self="declineModal = false" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
             <div class="w-[30dvw] flex flex-col items-center gap-y-5 p-5 xl:w-[20dvw] h-fit bg-white rounded-md shadow">
-                <h1 class="font-medium text-xl">Reasons</h1>
+                <h1 class="font-medium text-xl">Reason</h1>
                 <div class="w-full flex gap-x-2 items-center">
-                    <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Outdated Barangay Indigency" >
-                    <label>Outdated Barangay Indigency</label>
-                </div>
-                <div class="w-full flex gap-x-2 items-center">
-                    <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Legality Issues" >
-                    <label>Legality Issues</label>
-                </div>
-                <div class="w-full flex gap-x-2 items-center">
-                    <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Invalid Forms" >
-                    <label>Invalid Forms</label>
-                </div>
-                <div class="w-full flex gap-x-2 items-center">
-                    <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Others" >
-                    <label>Others</label>
+                    <input type="input" v-model="reasonForDeclining" placeholder="Enter reason of rejection" class="w-full h-8 rounded border pl-2" list="reasons">
+                    <datalist id="reasons">
+                        <option>Outdated Barangay Indigency</option>
+                        <option>Legality Issues</option>
+                        <option>Invalid Forms</option>
+                        <option>Invalid 1x1 Picture</option>
+                        <option>Invalid Barangay Certificate</option>
+                        <option>Invalid Medical Certificate</option>
+                        <option>Others</option>
+                    </datalist>
                 </div>
                 <div v-if="reasonForDeclining === 'Others'" class="w-full flex gap-x-2 items-center">
                     <input type="text" class="border w-full h-10 rounded pl-2 text-sm" v-model="otherReason" placeholder="State reason for rejection">
@@ -103,6 +121,27 @@
                 <div class="w-full flex justify-end items-center gap-x-2">
                     <button class="bg-green-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" type="button" @click="declineModal = false">Cancel</button>
                     <button class="bg-red-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" @click="updateApplicant('decline', uid, aid)">Decline</button>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="retypeModal" @click.self="retypeModal = false" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
+            <div class="w-[30dvw] flex flex-col items-center gap-y-5 p-5 xl:w-[20dvw] h-fit bg-white rounded-md shadow">
+                <h1 class="font-medium text-xl">Retype Password</h1>
+                <div class="w-full flex flex-col gap-x-2 items-center">
+                    <p v-if="invalidPassword" class="w-full text-start bg-red-500 mb-1 rounded pl-2 text-white">Invalid Password</p>
+                    <div class="w-full my-2">
+                        <label>Control Number</label>
+                        <input type="text" v-model="controlNumber" class="w-full border rounded h-10 pl-2" placeholder="Enter control number">
+                    </div>
+                    <div class="w-full my-2">
+                        <label>Retype Password</label>
+                        <input type="password" v-model="password" class="w-full border rounded h-10 pl-2" placeholder="Enter password">
+                    </div>
+                </div>
+                <div class="w-full flex justify-end items-center gap-x-2">
+                    <button class="bg-green-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" type="button" @click="retypeModal = false">Cancel</button>
+                    <button class="bg-red-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" @click="verifyPassword()">Approve</button>
                 </div>
             </div>
         </div>
@@ -121,6 +160,90 @@
                 <Icon icon="oui:arrow-right" class="text-3xl" />
             </button>
         </div>
+
+
+        <!-- application information -->
+        <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex items-center justify-center">
+            <div class="h-[90%] w-3/4 bg-gray-300 rounded-xl flex relative">
+                <Icon icon="mdi:close" class="absolute right-5 top-4 text-2xl cursor-pointer" @click="showAppDetails = false" />
+                <div class="w-1/5 h-full flex flex-col items-center py-10 gap-y-3">
+                    <div class="rounded-full bg-gray-200 w-[150px] aspect-square border flex items-center justify-center">
+                        <img v-if="infoToShow.photo1x1" :src="infoToShow.photo1x1" alt="1x1 photo" class="w-[130px] aspect-square rounded-full">
+                        <Icon v-else icon="mdi:user-circle" class="w-full h-full text-custom-primary"/>
+                    </div>
+                    <h2 class="text-sm">{{ infoToShow.status }}</h2>
+                    <h1 class="-my-2 capitalize">{{ infoToShow.firstName }} {{ infoToShow.middleName }} {{ infoToShow.lastName }}</h1>
+                    <h1 class="text-sm text-green-900">{{ convertApplicationNum(infoToShow.applicationNumber) }}</h1>
+
+                    <button class="bg-gray-200 px-3 py-1 rounded mt-20" @click="currentPageDets = 1">Details</button>
+                    <button class=" bg-gray-200 px-3 py-1 rounded" @click="currentPageDets = 2">View Attachments</button>
+                    <button class=" bg-gray-200 px-3 py-1 rounded" @click="generateForm()">Download Form</button>
+                </div>
+                <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 h-full p-20 capitalize">
+                    <div class="w-full h-full flex flex-col gap-y-10">
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Gender:</p>
+                            <p>{{ infoToShow.gender }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Contact Details:</p>
+                            <p>{{ infoToShow.mobileNo }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Email Address:</p>
+                            <p>{{ infoToShow.emailAddress }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Age:</p>
+                            <p>{{ infoToShow.user?.age }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Birthday:</p>
+                            <p>{{ infoToShow.dateOfBirth }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Civil Status:</p>
+                            <p>{{ infoToShow.civilStatus }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Educational Attainment:</p>
+                            <p>{{ infoToShow.educationalAttainment }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Status of employment:</p>
+                            <p>{{ infoToShow.statusOfEmployment }}</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-full flex flex-col gap-y-10">
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Type of Disability:</p>
+                            <p>{{ infoToShow.typeOfDisability }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Cause of Disability:</p>
+                            <p>{{ infoToShow.causeOfDisability }} {{ infoToShow.otherCauseOfDisability }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Occupation:</p>
+                            <p>{{ infoToShow.occupation }} {{ infoToShow.otherOccupation }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Accomplished by:</p>
+                            <p>{{ infoToShow.accomplishedBy }}</p>
+                        </div>
+                        <div class="flex items-center pl-10 gap-x-14">
+                            <p class="text-gray-600 font-semibold">Type of employment:</p>
+                            <p>{{ infoToShow.typeOfEmployment }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="w-4/5 h-full p-20 grid grid-cols-2 grid-rows-2 gap-10 overflow-auto">
+                    <img :src="infoToShow.photo1x1" alt="1x1 photo" class="w-full h-full">
+                    <img :src="infoToShow.barangayCert" alt="barangay certitificate" class="max-w-full max-h-full">
+                    <img :src="infoToShow.medicalCert" alt="medical certitificate" class="max-w-full max-h-full">
+                </div>
+            </div>
+        </div>
         </section>
 </template>
 
@@ -128,9 +251,13 @@
 import { computed, onMounted, ref, useId } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
-import * as mammoth from 'mammoth'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
+import PizZip from 'pizzip'
+import Docxtemplater from 'docxtemplater'
+import { saveAs } from 'file-saver'
+import ImageModule from 'docxtemplater-image-module-free'
+// import * as mammoth from 'mammoth'
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
 const router = useRouter()
@@ -142,7 +269,7 @@ const noApplicants = ref(false)
 
 const getPendingApplications = async () => {
     try {
-        const res = await axios.get(`${serverUrl}/get-all-rejected-applications`,{
+        const res = await axios.get(`${serverUrl}/get-all-pending-renewal`,{
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -154,6 +281,25 @@ const getPendingApplications = async () => {
     } catch (error) {
         console.log(error)
     }
+}
+
+// show app details
+const showAppDetails = ref(false)
+const infoToShow = ref({})
+
+const currentPageDets = ref(1)
+
+const viewAppInfo = (appId) => {
+    const appli = applicants.value.filter(applicant => applicant._id == appId)
+
+    const applicantObject = appli.reduce((acc, applicant) => {
+        acc[applicant._id] = applicant;
+        return acc;
+    }, {});
+
+    infoToShow.value = applicantObject[appId]
+
+    showAppDetails.value = true
 }
 
 const searchQuery = ref('');
@@ -187,6 +333,15 @@ const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++
   }
+}
+
+const convertApplicationNum = (num) => {
+    const convertedToString = num?.toString()
+    if(convertedToString?.length === 1) return `0000${num}`
+    if(convertedToString?.length === 2) return `000${num}`
+    if(convertedToString?.length === 3) return `00${num}`
+    if(convertedToString?.length === 4) return `0${num}`
+    if(convertedToString?.length === 5) return num
 }
 
 const docxContent = ref('');
@@ -239,6 +394,43 @@ const showModal = async (userId, appId) => {
 
     uid.value = userId.toString()
     aid.value = appId
+
+}
+
+const retypeModal = ref(false)
+const password = ref('')
+const controlNumber = ref('')
+
+const showModalRetype = async (userId, appId) => {
+    retypeModal.value = true
+
+    uid.value = userId.toString()
+    aid.value = appId
+}
+
+const invalidPassword = ref(false)
+
+const verifyPassword = async () => {
+    try {
+        const res = await axios.post(`${import.meta.env.VITE_SERVER_URL}/verify-password`, {
+            password: password.value
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        if(res.data === 'password match'){
+            updateApplicant('approved', uid.value, aid.value )
+            uid.value = ''
+            aid.value = ''
+            retypeModal.value = false
+        }else{
+            invalidPassword.value = true
+        }
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const declinedSuccessful = ref(false)
@@ -270,11 +462,13 @@ const updateApplicant = async (status, userId, appId) => {
                 applicants.value = applicants.value.filter(applicant => applicant._id != appId)
                 reasonForDeclining.value = ''
                 otherReason.value = ''
-                fetchDoc()
+                // fetchDoc()
                 declinedSuccessful.value = true
                 setTimeout(() => {
                     declinedSuccessful.value = false
                 }, 3000)
+
+                console.log(res.data)
             }
         } catch (error) {
             console.log(error)
@@ -287,6 +481,7 @@ const updateApplicant = async (status, userId, appId) => {
         data.userId = userId
         data.applicationId = appId
         data.status = status
+        data.controlNumber = controlNumber.value
 
         try {
             const res = await axios.post(`${serverUrl}/update-application`, data ,{
@@ -301,6 +496,8 @@ const updateApplicant = async (status, userId, appId) => {
                 setTimeout(() => {
                     approvedSuccessful.value = false
                 }, 3000)
+
+                console.log(res.data)
             }
         } catch (error) {
             console.log(error)
@@ -323,8 +520,6 @@ const nextImage = () => {
 const prevImage = () => {
     currentIndex.value = (currentIndex.value - 1 + images.value.length) % images.value.length;
 }
-
-// export 
 
 const typeOfExport = ref('')
 
@@ -388,6 +583,69 @@ const downloadPDF = () => {
     });
 
     typeOfExport.value = ''
+}
+
+
+// download form
+const loadImageAsArrayBuffer = async (imageUrl) => {
+  const response = await fetch(imageUrl)
+  if (!response.ok) throw new Error('Network response was not ok')
+  return await response.arrayBuffer()
+}
+
+const generateForm = async (index) => {
+    try {
+        const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
+
+        if (!response.ok) throw new Error('Failed to fetch DOCX template')
+
+        const docxArrayBuffer = await response.arrayBuffer()
+
+        const imageArrayBuffer = await loadImageAsArrayBuffer(infoToShow.value.photo1x1)
+
+        const zip = new PizZip(docxArrayBuffer)
+
+        const imageModule = new ImageModule({
+            centered: false,
+            getImage: function () {
+                return imageArrayBuffer
+            },
+            getSize: function () {
+                return [200, 200]
+            },
+        })
+
+        const doc = new Docxtemplater(zip, {
+            modules: [imageModule],
+        })
+
+        doc.setData({
+            // image: infoToShow.value.photo1x1,
+            first: infoToShow.value.firstName,
+            middle: infoToShow.value.middleName,
+            last: infoToShow.value.lastName,
+            fathersLname: infoToShow.value.fathersLname,
+            fathersFname: infoToShow.value.fathersFname,
+            fathersMname: infoToShow.value.fathersMname,
+            mothersLname: infoToShow.value.mothersLname,
+            mothersFname: infoToShow.value.mothersFname,
+            mothersMname: infoToShow.value.mothersMname,
+            guardiansLname: infoToShow.value.guardiansLname,
+            guardiansFname: infoToShow.value.guardiansFname,
+            guardiansMname: infoToShow.value.guardiansMname,
+        })
+
+        doc.render()
+
+        const output = doc.getZip().generate({
+            type: 'blob',
+            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        })
+
+        saveAs(output, 'parents-consent.docx')
+    } catch (error) {
+        console.error('Error generating document:', error)
+    }
 }
 
 onMounted(() => {

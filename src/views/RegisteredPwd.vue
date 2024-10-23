@@ -11,10 +11,10 @@
                     <input type="text" placeholder="Search" v-model="searchQuery" class="bg-transparent h-8 lg:h-5 focus:outline-none">
                     <Icon icon="iconoir:search" />
                 </div>
-                <!-- <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="downloadCSV">
-                    <Icon icon="ph:export" />
-                    Export
-                </button> -->
+                <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="addApplicant">
+                    <Icon icon="mingcute:user-add-line" />
+                    add
+                </button>
                 <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
                     <option value="" disabled>Export</option>
                     <option>pdf</option>
@@ -32,16 +32,18 @@
                             <th class="text-sm">Full Name</th>
                             <th class="text-sm">EMAIL</th>
                             <th class="text-sm">AGE</th>
-                            <th class="text-sm">gender</th>
+                            <th class="text-sm">GENDER</th>
                             <th class="text-sm">BARANGAY</th>
                             <th class="text-sm">DISABILITY</th>
                             <th class="text-xs">DATE REGISTERED</th>
+                            <th class="text-sm">Application type</th>
                             <th class="text-sm">STATUS</th>
+                            <th class="text-sm">ACTION</th>
                         </tr>
                     </thead>
                     <tbody v-if="!noExpiredApplicants" class="bg-white text-center">
                         <tr v-if="paginatedExpiredApplicants.length > 0" v-for="applicant in paginatedExpiredApplicants" :key="applicant.id" class="border-b border-gray-500">
-                            <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
+                            <td class="md:py-3 text-sm">{{ applicant.controlNumber }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
                             <td class="text-sm">{{ applicant.user?.email }}</td>
                             <td class="text-sm">{{ applicant.user?.age }}</td>
@@ -50,18 +52,30 @@
                             <td class="text-sm">{{ applicant.typeOfDisability }}</td>
                             <td class="text-sm">{{ applicant.dateApplied?.split('T')[0] }}</td>
                             <td class="text-sm">
+                                <div class="bg-yellow-200 py-1 text-yellow-700 text-sm px-3 rounded-md w-fit mx-auto">
+                                    {{ applicant.typeOfApplication }}
+                                </div>
+                            </td>
+                            <td class="text-sm">
                                 <div class="bg-red-200 py-1 text-red-700 text-sm px-3 rounded-md w-fit mx-auto">
                                     {{ applicant.status }}
                                 </div>
                             </td>
+                            <td class="text-sm">
+                                <div class="space-x-1">
+                                    <button class="bg-gray-200 py-1 text-gray-700 text-lg px-3 rounded-md w-fit mx-auto" @click="generateFormExpired(index)">
+                                        <Icon icon="fluent:form-24-regular" />
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
                         <tr v-else class="border-b border-gray-500 text-center">
-                            <td colspan="9" class="text-sm py-2">Can't find applicant</td>
+                            <td colspan="10" class="text-sm py-2">Can't find applicant</td>
                         </tr>
                     </tbody>
                     <tbody v-else class="bg-white text-center">
                         <tr class="border-b border-gray-500">
-                            <td class="md:py-3" colspan="9">No expired PWD</td>
+                            <td class="md:py-3" colspan="10">No expired PWD</td>
                         </tr>
                     </tbody>
                 </table>
@@ -86,35 +100,48 @@
                             <th class="text-sm">Full Name</th>
                             <th class="text-sm">EMAIL</th>
                             <th class="text-sm">AGE</th>
-                            <th class="text-sm">gender</th>
+                            <th class="text-sm">GENDER</th>
                             <th class="text-sm">BARANGAY</th>
                             <th class="text-sm">DISABILITY</th>
                             <th class="text-xs">DATE REGISTERED</th>
+                            <th class="text-sm">Application type</th>
                             <th class="text-sm">STATUS</th>
                             <th class="text-sm">Action</th>
                         </tr>
                     </thead>
                     <tbody v-if="!noApplicants" class="bg-white text-center">
-                        <tr v-if="paginatedApplicants.length > 0" v-for="applicant in paginatedApplicants" :key="applicant._id" class="border-b border-gray-500">
-                            <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
+                        <tr v-if="paginatedApplicants.length > 0" v-for="(applicant, index) in paginatedApplicants" :key="index" class="border-b border-gray-500">
+                            <td class="md:py-5 text-sm">{{ applicant.controlNumber }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
-                            <td class="text-sm">{{ applicant.user?.email }}</td>
-                            <td class="text-sm">{{ applicant.user?.age }}</td>
+                            <td class="text-sm">{{ applicant.emailAddress }}</td>
+                            <td class="text-sm">{{ calculateAge(applicant.dateOfBirth) }}</td>
                             <td class="text-sm">{{ applicant.gender }}</td>
                             <td class="text-sm">{{ applicant.barangay }}</td>
                             <td class="text-sm">{{ applicant.typeOfDisability }}</td>
                             <td class="text-sm">{{ applicant.dateApplied?.split('T')[0] }}</td>
+                            <td class="text-sm">
+                                <div class="bg-yellow-200 py-1 text-yellow-700 text-sm px-3 rounded-md w-fit mx-auto">
+                                    {{ applicant.typeOfApplication }}
+                                </div>
+                            </td>
                             <td class="text-sm">
                                 <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto">
                                     {{ applicant.status }}
                                 </div>
                             </td>
                             <td class="text-sm">
-                                <button class="bg-green-200 py-1 text-green-700 text-sm px-3 rounded-md w-fit mx-auto" @click="showReleaseModal(applicant._id)">Release ID</button>
+                                <div class="space-x-1">
+                                    <button class="bg-green-200 py-1 text-green-700 text-lg px-3 rounded-md w-fit mx-auto" @click="showReleaseModal(applicant._id)">
+                                        <Icon icon="hugeicons:id" />
+                                    </button>
+                                    <button class="bg-gray-200 py-1 text-gray-700 text-lg px-3 rounded-md w-fit mx-auto" @click="generateForm(index)">
+                                        <Icon icon="fluent:form-24-regular" />
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         <tr v-else class="border-b border-gray-500 text-center">
-                            <td colspan="10" class="text-sm py-2">Can't find applicant</td>
+                            <td colspan="11" class="text-sm py-2">Can't find applicant</td>
                         </tr>
                     </tbody>
                     <tbody v-else class="bg-white text-center">
@@ -148,19 +175,43 @@
                 </button>
             </div>
         </div>
+
+        <!-- add new applicant modal -->
+        <AddNewApplicant v-if="addApplicantModal"  @closeModal="addApplicantModal = false" @addedNewApplicant="getApprovedApplications()"/>
     </section>
 </template>
 
 <script setup>
+import AddNewApplicant from '../components/AddNewApplicant.vue'
 import { computed, onMounted, ref } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
+import PizZip from 'pizzip'
+import Docxtemplater from 'docxtemplater'
+import { saveAs } from 'file-saver'
+import ImageModule from 'docxtemplater-image-module-free'
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
 const router = useRouter()
 const route = useRoute()
+
+const calculateAge = (birthday) => {
+  const birthDate = new Date(birthday);
+  const today = new Date();
+  
+  let age = today.getFullYear() - birthDate.getFullYear();
+  
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  const dayDifference = today.getDate() - birthDate.getDate();
+
+  if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+    age--;
+  }
+
+  return age;
+}
 
 const applicants = ref(null)
 const noApplicants = ref(false)
@@ -283,15 +334,6 @@ const toggleExpired = (page) => {
     }
 }
 
-const convertApplicationNum = (num) => {
-    const convertedToString = num?.toString()
-    if(convertedToString?.length === 1) return `0000${num}`
-    if(convertedToString?.length === 2) return `000${num}`
-    if(convertedToString?.length === 3) return `00${num}`
-    if(convertedToString?.length === 4) return `0${num}`
-    if(convertedToString?.length === 5) return num
-}
-
 const idToReleased = ref('')
 const releaseModal = ref(false)
 
@@ -373,6 +415,9 @@ const downloadPDF = () => {
     if(route.query.page === 'expired'){
         const pdf = new jsPDF();
         const table = document.getElementById("expired");
+        const headerImage = "../../public/header.png"; 
+
+        pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 
         html2canvas(table).then((canvas) => {
             const imgData = canvas.toDataURL("image/png");
@@ -381,16 +426,17 @@ const downloadPDF = () => {
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
             let heightLeft = imgHeight;
-            let position = 10;
+            let position = 50; 
 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            heightLeft -= pageHeight - 40; 
 
             while (heightLeft >= 0) {
-                position = heightLeft - imgHeight + 10;
-                pdf.addPage();
-                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                pdf.addPage(); 
+                pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+                position = heightLeft - imgHeight + 40; 
+                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+                heightLeft -= pageHeight - 40;
             }
 
             pdf.save("table.pdf");
@@ -398,6 +444,9 @@ const downloadPDF = () => {
     }else{
         const pdf = new jsPDF();
         const table = document.getElementById("active");
+        const headerImage = "../../public/header.png"; 
+
+        pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 
         html2canvas(table).then((canvas) => {
             const imgData = canvas.toDataURL("image/png");
@@ -406,16 +455,17 @@ const downloadPDF = () => {
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
             let heightLeft = imgHeight;
-            let position = 10;
+            let position = 50; 
 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            heightLeft -= pageHeight - 40; 
 
             while (heightLeft >= 0) {
-                position = heightLeft - imgHeight + 10;
-                pdf.addPage();
-                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                pdf.addPage(); 
+                pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+                position = heightLeft - imgHeight + 40; 
+                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+                heightLeft -= pageHeight - 40;
             }
 
             pdf.save("table.pdf");
@@ -423,6 +473,196 @@ const downloadPDF = () => {
     }
 
     typeOfExport.value = ''
+}
+
+// download form
+const loadImageAsArrayBuffer = async (imageUrl) => {
+  const response = await fetch(imageUrl)
+  if (!response.ok) throw new Error('Network response was not ok')
+  return await response.arrayBuffer()
+}
+
+const generateForm = async (index) => {
+
+    const applicantData = applicants.value[index]
+
+    try {
+        const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
+
+        if (!response.ok) throw new Error('Failed to fetch DOCX template')
+
+        const docxArrayBuffer = await response.arrayBuffer()
+
+        const imageArrayBuffer = await loadImageAsArrayBuffer(applicantData.photo1x1)
+
+        const zip = new PizZip(docxArrayBuffer)
+
+        const imageModule = new ImageModule({
+            centered: false,
+            getImage: function () {
+                return imageArrayBuffer
+            },
+            getSize: function () {
+                return [200, 200]
+            },
+        })
+
+        const doc = new Docxtemplater(zip, {
+            modules: [imageModule],
+        })
+
+        doc.setData({
+            // image: infoToShow.value.photo1x1,
+            newApplicant: applicantData.typeOfApplicant === 'new' ? '◾' : '◽',
+            renewal: applicantData.typeOfApplicant === 'renewal' ? '◾' : '◽',
+            dateApplied: applicantData.dateApplied,
+            dateOfBirth: applicantData.dateOfBirth,
+            middle: applicantData.middleName,
+            last: applicantData.lastName,
+            suffix: applicantData.suffix,
+            houseNo: applicantData.houseNoAndStreet,
+            barangay: applicantData.barangay,
+            municipality: applicantData.municipalityCity,
+            province: applicantData.province,
+            region: applicantData.region,
+            landlineNo: applicantData.landlineNo,
+            mobileNo: applicantData.mobileNo,
+            email: applicantData.emailAddress,
+            fathersLname: applicantData.fathersLname,
+            fathersFname: applicantData.fathersFname,
+            fathersMname: applicantData.fathersMname,
+            mothersLname: applicantData.mothersLname,
+            mothersFname: applicantData.mothersFname,
+            mothersMname: applicantData.mothersMname,   
+            guardiansLname: applicantData.guardiansLname,
+            guardiansFname: applicantData.guardiansFname,
+            guardiansMname: applicantData.guardiansMname,
+            Lname: applicantData.accomplishedByLname,
+            Fname: applicantData.accomplishedByFname,
+            Mname: applicantData.accomplishedByMname,
+            controlNum: applicantData.controlNumber,
+            sexcb: applicantData.gender === 'Female' ? '◾' : '◽',
+            sexcb2: applicantData.gender === 'Male' ? '◾' : '◽',
+            organizationAffiliated: applicantData.organizationAffiliated,
+            contactPerson: applicantData.contactInformation,
+            officeAddress: applicantData.officeAddress,
+            telNo: applicantData.telNo,
+            sssNo: applicantData.sssNo,
+            gsisNo: applicantData.gsisNo,
+            pagibigNo: applicantData.pagibigNo,
+            psnNo: applicantData.psnNo,
+            philHNo: applicantData.philhealthNo,
+            physicianName: `${applicantData.physicianByFname} ${applicantData.physicianByMname} ${applicantData.physicianByLname}`,
+            single: applicantData.civilStatus === 'Single' ? '◾' : '◽',
+            seperated: applicantData.civilStatus === 'Seperated' ? '◾' : '◽',
+            livein: applicantData.civilStatus === 'Cohabitation' ? '◾' : '◽',
+            married: applicantData.civilStatus === 'Married' ? '◾' : '◽',
+            widow: applicantData.civilStatus === 'Widow/er' ? '◾' : '◽',
+        })
+
+        doc.render()
+
+        const output = doc.getZip().generate({
+            type: 'blob',
+            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        })
+
+        saveAs(output, 'parents-consent.docx')
+    } catch (error) {
+        console.error('Error generating document:', error)
+    }
+}
+
+// const generateFormExpired = async (index) => {
+
+//     const applicantData = expiredApplicants.value[index]
+//     try {
+//         const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
+
+//         if (!response.ok) throw new Error('Failed to fetch DOCX template')
+
+//         const docxArrayBuffer = await response.arrayBuffer()
+
+//         const imageArrayBuffer = await loadImageAsArrayBuffer(applicantData.photo1x1)
+
+//         const zip = new PizZip(docxArrayBuffer)
+
+//         const imageModule = new ImageModule({
+//             centered: false,
+//             getImage: function () {
+//                 return imageArrayBuffer
+//             },
+//             getSize: function () {
+//                 return [200, 200]
+//             },
+//         })
+
+//         const doc = new Docxtemplater(zip, {
+//             modules: [imageModule],
+//         })
+
+//         doc.setData({
+//             // image: infoToShow.value.photo1x1,
+//             newApplicant: applicantData.typeOfApplicant === 'new' ? '◾' : '◽',
+//             renewal: applicantData.typeOfApplicant === 'renewal' ? '◾' : '◽',
+//             dateApplied: applicantData.dateApplied,
+//             dateOfBirth: applicantData.dateOfBirth,
+//             middle: applicantData.middleName,
+//             last: applicantData.lastName,
+//             suffix: applicantData.suffix,
+//             houseNo: applicantData.houseNoAndStreet,
+//             barangay: applicantData.barangay,
+//             municipality: applicantData.municipalityCity,
+//             province: applicantData.province,
+//             region: applicantData.region,
+//             landlineNo: applicantData.landlineNo,
+//             mobileNo: applicantData.mobileNo,
+//             email: applicantData.emailAddress,
+//             fathersLname: applicantData.fathersLname,
+//             fathersFname: applicantData.fathersFname,
+//             fathersMname: applicantData.fathersMname,
+//             mothersLname: applicantData.mothersLname,
+//             mothersFname: applicantData.mothersFname,
+//             mothersMname: applicantData.mothersMname,
+//             guardiansLname: applicantData.guardiansLname,
+//             guardiansFname: applicantData.guardiansFname,
+//             guardiansMname: applicantData.guardiansMname,
+//             Lname: applicantData.accomplishedByLname,
+//             Fname: applicantData.accomplishedByFname,
+//             Mname: applicantData.accomplishedByMname,
+//             controlNum: applicantData.controlNumber,
+//             sexcb: applicantData.gender === 'Female' ? '◾' : '◽',
+//             sexcb2: applicantData.gender === 'Male' ? '◾' : '◽',
+//             organizationAffiliated: applicantData.organizationAffiliated,
+//             contactPerson: applicantData.contactInformation,
+//             officeAddress: applicantData.officeAddress,
+//             telNo: applicantData.telNo,
+//             sssNo: applicantData.sssNo,
+//             gsisNo: applicantData.gsisNo,
+//             pagibigNo: applicantData.pagibigNo,
+//             psnNo: applicantData.psnNo,
+//             philHNo: applicantData.philhealthNo,
+//             physicianName: `${applicantData.physicianByFname} ${applicantData.physicianByMname} ${applicantData.physicianByLname}`
+//         })
+
+//         doc.render()
+
+//         const output = doc.getZip().generate({
+//             type: 'blob',
+//             mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+//         })
+
+//         saveAs(output, 'parents-consent.docx')
+//     } catch (error) {
+//         console.error('Error generating document:', error)
+//     }
+// }
+
+// toggle add applicant
+const addApplicantModal = ref(false)
+
+const addApplicant = async () => {
+    addApplicantModal.value = true
 }
 
 onMounted(() => {

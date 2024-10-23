@@ -30,7 +30,7 @@
                                 <div class="flex items-center justify-center gap-x-2">
                                     <Icon icon="ph:eye" class="text-xl cursor-pointer" @click="viewPost(announcement._id)" />
                                     <Icon icon="mage:edit" class="text-xl cursor-pointer text-green-500" @click="updatePost(announcement._id)" />
-                                    <Icon icon="mage:trash" class="text-xl cursor-pointer text-red-500" @click="showDeleteModal(announcement._id)" />
+                                    <Icon icon="fluent:archive-16-filled" class="text-xl cursor-pointer text-red-500" @click="showDeleteModal(announcement._id)" />
                                 </div>
                             </td>
                         </tr>
@@ -101,8 +101,10 @@
 
         <div v-if="deleteConfirmation" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
             <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
-                <Icon icon="uiw:warning" class="text-[6rem] text-gray-500" />
-                <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Do you want to delete this post?</p>
+                <div class="flex flex-col gap-y-3 items-center w-full">
+                    <Icon icon="uiw:warning" class="text-[6rem] text-gray-500" />
+                    <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Do you want to archive this post?</p>
+                </div>
                 <div class="flex items-center w-4/5 gap-x-5">
                     <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="deleteConfirmation = false">Cancel</button>
                     <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="deletePost">Delete</button>
@@ -306,6 +308,14 @@ const addPost = async () => {
 
         if(res.data === 'news added'){
             postConfirmation.value = true
+            postData.value = {
+                postTitle: '',
+                postDescription: '',
+                postUrl: [],
+                image: [],
+            }
+            tempUrl.value = ''
+            tempImage.value = null
             getNews()
         }
 

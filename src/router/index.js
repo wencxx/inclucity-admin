@@ -11,6 +11,8 @@ import PwdPerBarangay from '../views/PwdPerBarangay.vue'
 import TotalNumberPwd from '../views/TotalNumberPwd.vue'
 import TotalEmploymentStatus from '../views/TotalEmploymentStatus.vue'
 import Application from '../views/Application.vue'
+import Disabilities from '../views/Disabilities.vue'
+import Renewal from '../views/Renewal.vue'
 import Announcement from '../views/Announcement.vue'
 import DeletedAnnouncement from '../views/DeletedAnnouncement.vue'
 
@@ -75,9 +77,19 @@ const routes = [
         component: Application
     },
     {
+        path: '/pwd-renewal',
+        name: 'PWD ID renewal',
+        component: Renewal
+    },
+    {
         path: '/announcement',
         name: 'announcement',
         component: Announcement
+    },
+    {
+        path: '/disabilities',
+        name: 'disabilities',
+        component: Disabilities
     },
     {
         path: '/deleted-announcement',

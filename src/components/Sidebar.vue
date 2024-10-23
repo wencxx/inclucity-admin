@@ -32,9 +32,19 @@
                         <span class="mt-1">PWD Employment Status</span>
                     </router-link>
                 </div>
-                <router-link :to="{ name: 'PWD ID application' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
+                <router-link :to="{ name: 'PWD ID application' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink relative">
                     <Icon icon="mage:edit" class="text-3xl" />
                     <span class="mt-1">PWD ID Application</span>
+                    <div v-if="applicantsCount > 0" class="bg-red-500 w-5 aspect-square flex items-center justify-center absolute top-1 left-56 rounded-full">
+                        <p class="text-xs">{{ applicantsCount }}</p>
+                    </div>
+                </router-link>
+                <router-link :to="{ name: 'PWD ID renewal' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink relative">
+                    <Icon icon="mage:edit" class="text-3xl" />
+                    <span class="mt-1">PWD ID Renewal</span>
+                    <div v-if="renewalCount > 0" class="bg-red-500 w-5 aspect-square flex items-center justify-center absolute top-1 left-56 rounded-full">
+                        <p class="text-xs">{{ renewalCount }}</p>
+                    </div>
                 </router-link>
                 <router-link :to="{ name: 'registered PWD' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
                     <Icon icon="mingcute:group-3-line" class="text-3xl" />
@@ -52,19 +62,23 @@
                     <Icon icon="ri:telegram-2-line" class="text-3xl" />
                     <span class="mt-1">Announcement</span>
                 </router-link>
+                <router-link :to="{ name: 'disabilities' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
+                    <Icon icon="hugeicons:disability-01" class="text-3xl" />
+                    <span class="mt-1">Disabilities</span>
+                </router-link>
                 <div class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink cursor-pointer" @click="archivesDropdown = !archivesDropdown, changeIconArchives()">
-                    <Icon icon="gg:notes" class="text-3xl" />
+                    <Icon icon="fluent:archive-16-filled" class="text-3xl" />
                     <span class="mt-1">Archives</span>
                     <Icon :icon="archivesDropdownIcon" class="text-3xl ml-auto" />
                 </div>
                 <div class="bg-gray-600 -mt-1" v-if="archivesDropdown">
                     <router-link :to="{ name: 'deleted announcement' }" class="px-10 flex items-center gap-x-5 py-2 font-medium hover:bg-activeLink">
                         <div class="h-6 w-[2px] bg-white"></div>
-                        <span class="mt-1">Deleted annoucement</span>
+                        <span class="mt-1">Archived annoucement</span>
                     </router-link>
                     <router-link :to="{ name: 'deleted User Accounts' }" class="px-10 flex items-center gap-x-5 py-2 font-medium hover:bg-activeLink">
                         <div class="h-6 w-[2px] bg-white"></div>
-                        <span class="mt-1">Deleted users</span>
+                        <span class="mt-1">Archived users</span>
                     </router-link>
                 </div>
             </div>
@@ -77,9 +91,11 @@
 </template>
 
 <script setup>
-import { defineEmits, ref } from 'vue'
+import { defineEmits, onMounted, ref } from 'vue'
 import { useAuthStore } from '../store'
 import { useRouter } from 'vue-router'
+const serverUrl = import.meta.env.VITE_SERVER_URL
+import axios from 'axios'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -110,6 +126,53 @@ const logout = () => {
     authStore.logout()
     router.push('/')
 }
+
+const applicantsCount = ref(0)
+
+const getPendingApplications = async () => {
+    try {
+        const res = await axios.get(`${serverUrl}/get-all-pending-applications`,{
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        if(res.data === 'no data') return
+
+
+        applicantsCount.value = res.data.length
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const renewalCount = ref(0)
+
+const getPendingRenewal = async () => {
+    try {
+        const res = await axios.get(`${serverUrl}/get-all-pending-renewal`,{
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        if(res.data === 'no data') return
+        
+        renewalCount.value = res.data.length
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+onMounted(() => {
+    getPendingApplications()
+    getPendingRenewal()
+
+    setInterval(() => {
+        getPendingApplications()
+        getPendingRenewal()
+    }, 3000)
+})
 </script>
 
 <style scoped>

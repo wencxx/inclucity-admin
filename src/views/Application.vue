@@ -61,10 +61,16 @@
                             </td>
                             <td>
                                 <div class="flex flex-wrap justify-center gap-1 cursor-pointer">
-                                    <button class="bg-green-200 py-1 text-green-700 text-xs px-2 rounded-md w-fit hover:shadow" @click="showModalRetype(applicant.user?._id, applicant._id)">approve</button>
-                                    <button class="bg-orange-200 py-1 text-orange-700 text-xs px-2 rounded-md w-fit hover:shadow" @click="showModal(applicant.user?._id, applicant._id)">decline</button>
-                                    <!-- <button class="bg-red-200 py-1 text-red-700 text-xs px-2 rounded-md hover:shadow" @click="showAttachment(applicant.photo1x1, applicant.medicalCert, applicant.barangayCert)">attachments</button> -->
-                                    <button class="bg-red-200 py-1 text-red-700 text-xs px-2 rounded-md hover:shadow" @click="viewAppInfo(applicant._id)">View Info</button>
+                                    <button class="bg-green-200 py-1 text-green-700 text-sm px-2 rounded-md w-fit hover:shadow" @click="showModalRetype(applicant.user?._id, applicant._id)">                                            
+                                        <Icon icon="mdi:check" />
+                                    </button>
+                                    <button class="bg-orange-200 py-1 text-orange-700 text-sm px-2 rounded-md w-fit hover:shadow" @click="showModal(applicant.user?._id, applicant._id)">
+                                            <Icon icon="mdi:close" />
+                                    </button>
+                                    <!-- <button class="bg-red-200 py-1 text-red-700 text-sm px-2 rounded-md hover:shadow" @click="showAttachment(applicant.photo1x1, applicant.medicalCert, applicant.barangayCert)">attachments</button> -->
+                                    <button class="bg-red-200 py-1 text-red-700 text-sm px-2 rounded-md hover:shadow" @click="viewAppInfo(applicant._id)">
+                                        <Icon icon="mdi:eye" />
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -96,22 +102,18 @@
         <!-- modal for declining -->
         <div v-if="declineModal" @click.self="declineModal = false" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
             <div class="w-[30dvw] flex flex-col items-center gap-y-5 p-5 xl:w-[20dvw] h-fit bg-white rounded-md shadow">
-                <h1 class="font-medium text-xl">Reasons</h1>
+                <h1 class="font-medium text-xl">Reason</h1>
                 <div class="w-full flex gap-x-2 items-center">
-                    <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Outdated Barangay Indigency" >
-                    <label>Outdated Barangay Indigency</label>
-                </div>
-                <div class="w-full flex gap-x-2 items-center">
-                    <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Legality Issues" >
-                    <label>Legality Issues</label>
-                </div>
-                <div class="w-full flex gap-x-2 items-center">
-                    <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Invalid Forms" >
-                    <label>Invalid Forms</label>
-                </div>
-                <div class="w-full flex gap-x-2 items-center">
-                    <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Others" >
-                    <label>Others</label>
+                    <input type="input" v-model="reasonForDeclining" placeholder="Enter reason of rejection" class="w-full h-8 rounded border pl-2" list="reasons">
+                    <datalist id="reasons">
+                        <option>Outdated Barangay Indigency</option>
+                        <option>Legality Issues</option>
+                        <option>Invalid Forms</option>
+                        <option>Invalid 1x1 Picture</option>
+                        <option>Invalid Barangay Certificate</option>
+                        <option>Invalid Medical Certificate</option>
+                        <option>Others</option>
+                    </datalist>
                 </div>
                 <div v-if="reasonForDeclining === 'Others'" class="w-full flex gap-x-2 items-center">
                     <input type="text" class="border w-full h-10 rounded pl-2 text-sm" v-model="otherReason" placeholder="State reason for rejection">
@@ -128,10 +130,17 @@
                 <h1 class="font-medium text-xl">Retype Password</h1>
                 <div class="w-full flex flex-col gap-x-2 items-center">
                     <p v-if="invalidPassword" class="w-full text-start bg-red-500 mb-1 rounded pl-2 text-white">Invalid Password</p>
-                    <input type="text" name="reasons" v-model="password" class="w-full border rounded h-10 pl-2" placeholder="Enter password">
+                    <div class="w-full my-2">
+                        <label>Control Number</label>
+                        <input type="text" v-model="controlNumber" class="w-full border rounded h-10 pl-2" placeholder="Enter control number">
+                    </div>
+                    <div class="w-full my-2">
+                        <label>Retype Password</label>
+                        <input type="password" v-model="password" class="w-full border rounded h-10 pl-2" placeholder="Enter password">
+                    </div>
                 </div>
                 <div class="w-full flex justify-end items-center gap-x-2">
-                    <button class="bg-green-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" type="button" @click="declineModal = false">Cancel</button>
+                    <button class="bg-green-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" type="button" @click="retypeModal = false">Cancel</button>
                     <button class="bg-red-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" @click="verifyPassword()">Approve</button>
                 </div>
             </div>
@@ -168,6 +177,7 @@
 
                     <button class="bg-gray-200 px-3 py-1 rounded mt-20" @click="currentPageDets = 1">Details</button>
                     <button class=" bg-gray-200 px-3 py-1 rounded" @click="currentPageDets = 2">View Attachments</button>
+                    <button class=" bg-gray-200 px-3 py-1 rounded" @click="generateForm()">Download Form</button>
                 </div>
                 <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 h-full p-20 capitalize">
                     <div class="w-full h-full flex flex-col gap-y-10">
@@ -185,7 +195,7 @@
                         </div>
                         <div class="flex items-center pl-10 gap-x-14">
                             <p class="text-gray-600 font-semibold">Age:</p>
-                            <p>{{ infoToShow.user.age }}</p>
+                            <p>{{ infoToShow.user?.age }}</p>
                         </div>
                         <div class="flex items-center pl-10 gap-x-14">
                             <p class="text-gray-600 font-semibold">Birthday:</p>
@@ -380,10 +390,12 @@ const showModal = async (userId, appId) => {
 
     uid.value = userId.toString()
     aid.value = appId
+
 }
 
 const retypeModal = ref(false)
 const password = ref('')
+const controlNumber = ref('')
 
 const showModalRetype = async (userId, appId) => {
     retypeModal.value = true
@@ -408,13 +420,12 @@ const verifyPassword = async () => {
             updateApplicant('approved', uid.value, aid.value )
             uid.value = ''
             aid.value = ''
+            retypeModal.value = false
         }else{
             invalidPassword.value = true
         }
     } catch (error) {
         console.log(error)
-    }finally{
-        retypeModal.value = false
     }
 }
 
@@ -447,11 +458,13 @@ const updateApplicant = async (status, userId, appId) => {
                 applicants.value = applicants.value.filter(applicant => applicant._id != appId)
                 reasonForDeclining.value = ''
                 otherReason.value = ''
-                fetchDoc()
+                // fetchDoc()
                 declinedSuccessful.value = true
                 setTimeout(() => {
                     declinedSuccessful.value = false
                 }, 3000)
+
+                console.log(res.data)
             }
         } catch (error) {
             console.log(error)
@@ -464,6 +477,7 @@ const updateApplicant = async (status, userId, appId) => {
         data.userId = userId
         data.applicationId = appId
         data.status = status
+        data.controlNumber = controlNumber.value
 
         try {
             const res = await axios.post(`${serverUrl}/update-application`, data ,{
@@ -537,6 +551,9 @@ const downloadCSV = () => {
 const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
+    const headerImage = "../../public/header.png"; 
+
+    pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 
     html2canvas(table).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
@@ -545,20 +562,23 @@ const downloadPDF = () => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         let heightLeft = imgHeight;
-        let position = 10;
+        let position = 50; 
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        heightLeft -= pageHeight - 40; 
 
         while (heightLeft >= 0) {
-            position = heightLeft - imgHeight + 10;
-            pdf.addPage();
-            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            pdf.addPage(); 
+            pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+            position = heightLeft - imgHeight + 40; 
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+            heightLeft -= pageHeight - 40;
         }
 
         pdf.save("table.pdf");
     });
+
+    typeOfExport.value = ''
 }
 
 onMounted(() => {

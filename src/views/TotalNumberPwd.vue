@@ -164,6 +164,9 @@ const downloadCSV = () => {
 const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
+    const headerImage = "../../public/header.png"; 
+
+    pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 
     html2canvas(table).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
@@ -172,20 +175,23 @@ const downloadPDF = () => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         let heightLeft = imgHeight;
-        let position = 10;
+        let position = 50; 
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        heightLeft -= pageHeight - 40; 
 
         while (heightLeft >= 0) {
-            position = heightLeft - imgHeight + 10;
-            pdf.addPage();
-            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            pdf.addPage(); 
+            pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+            position = heightLeft - imgHeight + 40; 
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+            heightLeft -= pageHeight - 40;
         }
 
         pdf.save("table.pdf");
     });
+
+    typeOfExport.value = ''
 }
 
 onMounted(() => {
