@@ -18,38 +18,85 @@
             </div>
         </div>
         <!-- table -->
-        <div class="w-full mt-12 flex flex-col gap-y-5">
+        <div v-if="$route.query.page === 'summary'" class="w-full mt-12 flex flex-col gap-y-5">
             <div class="w-full overflow-x-auto  rounded-md">
                 <table class="w-[150dvw] lg:w-full border-collapse" id="userTable">
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
-                            <th class=" text-xs">Year</th>
-                            <th class=" text-sm">Employed</th>
-                            <th class=" text-sm">Unemployed</th>
-                            <th class=" text-sm">Self-employed</th>
-                            <th class=" text-sm">Total</th>
+                            <th class=" text-xs">Category</th>
+                            <th class=" text-sm">Sub-Category</th>
+                            <th class=" text-sm">Number of PWDs</th>
+                            <th class=" text-sm">Percentage Of Total</th>
                         </tr>
                     </thead>
-                    <tbody v-if="!noBarangay" class="bg-white text-center">
-                        <tr v-if="paginatedApplicants.length > 0" v-for="barangay in paginatedApplicants" :key="barangay._id" class="border-b border-gray-500">
-                            <td class="md:py-3 text-sm">{{ barangay.year }}</td>
-                            <td class="text-sm">{{ barangay.employed }}</td>
-                            <td class="text-sm">{{ barangay.unemployed }}</td>
-                            <td class="text-sm">{{ barangay.selfemployed }}</td>
-                            <td class="text-sm">{{ barangay.employed + barangay.unemployed + barangay.selfemployed }}</td>
-                        </tr>
-                        <tr v-else> 
-                            <td colspan="4">Cant find result</td>
-                        </tr>
-                    </tbody>
-                    <tbody v-else class="bg-white text-center">
+                    <tbody class="bg-white text-center">
                         <tr class="border-b border-gray-500">
-                            <td class="md:py-3" colspan="10">No PWD Applications</td>
+                            <td class="md:py-3 text-sm font-semibold">Total Number of PWDs</td>
+                            <td class="text-sm"></td>
+                            <td class="text-sm">{{ applicants?.length || 0 }}</td>
+                            <td class="text-sm" v-if="applicants?.length > 0">100%</td>
+                            <td class="text-sm" v-else>0%</td>
+                        </tr>
+                        <tr class="border-b border-gray-500">
+                            <td class="md:py-3 text-sm font-semibold">Status Of Employment</td>
+                            <td class="text-sm">Employed</td>
+                            <td class="text-sm">{{ statusCount('employed') }}</td>
+                            <td class="text-sm">{{ (statusCount('employed') / applicants?.length * 100 || 0 ) }}%</td>
+                        </tr>
+                        <tr class="border-b border-gray-500">
+                            <td class="text-sm font-semibold"></td>
+                            <td class="text-sm md:py-3 ">Unemployed</td>
+                            <td class="text-sm">{{ statusCount('unemployed') }}</td>
+                            <td class="text-sm">{{ (statusCount('unemployed') / applicants?.length * 100 || 0 ) }}%</td>
+                        </tr>
+                        <tr class="border-b border-gray-500">
+                            <td class="text-sm font-semibold"></td>
+                            <td class="text-sm md:py-3 ">Self-employed</td>
+                            <td class="text-sm">{{ statusCount('self-employed') }}</td>
+                            <td class="text-sm">{{ (statusCount('self-employed') / applicants?.length * 100 || 0 ) }}%</td>
+                        </tr>
+                        <tr class="border-b border-gray-500">
+                            <td class="md:py-3 text-sm font-semibold">Type Of Employment</td>
+                            <td class="text-sm">Employed</td>
+                            <td class="text-sm">{{ statusCount('employed') }}</td>
+                            <td class="text-sm">{{ (statusCount('employed') / applicants?.length * 100 || 0 ) }}%</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <!-- pagination -->
+        </div>
+        <div v-else class="w-full mt-12 flex flex-col gap-y-5">
+            <div class="w-full overflow-x-auto  rounded-md">
+                <table class="w-[150dvw] lg:w-full border-collapse" id="userTable">
+                    <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
+                        <tr class="w-full">
+                            <th class=" text-xs">Control Number</th>
+                            <th class=" text-sm">Full Name</th>
+                            <th class=" text-sm">Gender</th>
+                            <th class=" text-sm">Barangay</th>
+                            <th class=" text-sm">Disability</th>
+                            <th class=" text-sm">Status Of Employment</th>
+                            <th class=" text-sm">Employment Type</th>
+                        </tr>
+                    </thead>
+                    <tbody v-if="filteredApplicants.length > 0" class="bg-white text-center">
+                        <tr class="border-b border-gray-500" v-for="(applicant, index) in filteredApplicants" :key="index">
+                            <td class="md:py-3 text-sm font-semibold">{{ applicant.controlNumber }}</td>
+                            <td class="text-sm">{{ applicant.firstName + ' ' + applicant.middleName + ' ' + applicant.lastName }}</td>
+                            <td class="text-sm">{{ applicant.gender }}</td>
+                            <td class="text-sm">{{ applicant.barangay }}</td>
+                            <td class="text-sm">{{ applicant.typeOfDisability }}</td>
+                            <td class="text-sm">{{ applicant.statusOfEmployment }}</td>
+                            <td class="text-sm">{{ applicant.typeOfEmployment }}</td>
+                        </tr>
+                    </tbody>
+                    <tbody v-else class="bg-white text-center">
+                        <tr class="border-b border-gray-500">
+                            <td colspan="6" class="text-sm py-3">No applicants to show</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="flex gap-x-2 font-manrope ml-auto">
                 <button class="bg-custom-primary text-white w-6 aspect-square flex justify-center items-center rounded-full" @click="prevPage()" :disabled="currentPage == 1">
                     <Icon icon="fe-arrow-left" />
@@ -60,6 +107,12 @@
                 </button>
             </div>
         </div>
+        <div class="rounded overflow-hidden w-4/12 mt-10">
+            <button :class="{ '!bg-custom-primary text-white': $route.query.page !== 'summary' }" class="bg-white py-2 w-1/2" @click="changeTable('retrieve')">Retrieved Data</button>
+            <button :class="{ '!bg-custom-primary text-white': $route.query.page === 'summary' }" class="bg-white py-2 w-1/2 rounded" @click="changeTable('summary')">Summary</button>
+        </div>
+
+        <!-- bg-custom-primary text-white -->
     </section>
 </template>
 
@@ -75,47 +128,46 @@ const serverUrl = import.meta.env.VITE_SERVER_URL
 const router = useRouter()
 const route = useRoute()
 
-const barangay = ref([])
-const noBarangay = ref(false)
+const applicants = ref(null)
+const noApplicants = ref(false)
 
-const getGroupedBarangay = async () => {
-    try {
-        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/get-total-employment`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
+const tableToShow = ref('')
+
+const changeTable = (type) => {
+    if(type === 'summary'){
+        router.push({
+            query: {
+                page: 'summary'
             }
         })
-
-        if(res.data === 'no data'){
-            noBarangay.value = true
-            return
-        }
-
-        barangay.value = res.data
-        console.log(res.data)
-    } catch (error) {
-        console.log(error.message)
+        tableToShow.value = type
+    }else{
+         router.push({
+            query: {}
+        })
+        tableToShow.value = type
     }
 }
 
 const searchQuery = ref('');
 
-const filteredbarangay = computed(() => {
-    if (!searchQuery.value) return barangay.value || [];
-    return barangay.value.filter(barangay => {
-        const barangaySearch = `${barangay.year}`.toLowerCase();
-        return barangaySearch.includes(searchQuery.value.toLowerCase());
+const filteredApplicants = computed(() => {
+    if (!searchQuery.value) return applicants.value || [];
+    return applicants.value.filter(applicant => {
+        const fullName = `${applicant.firstName} ${applicant.middleName} ${applicant.lastName}`.toLowerCase();
+        const barangay = applicant.barangay.toLowerCase();
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase());
     });
 });
 
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
-const totalPages = computed(() => Math.ceil(barangay.value?.length / itemsPerPage.value))
+const totalPages = computed(() => Math.ceil(applicants.value?.length / itemsPerPage.value))
 
 const paginatedApplicants = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage.value;
     const end = start + itemsPerPage.value;
-    return filteredbarangay.value.slice(start, end);
+    return filteredApplicants.value.slice(start, end);
 });
 
 const prevPage = () => {
@@ -130,6 +182,43 @@ const nextPage = () => {
   }
 }
 
+
+const getApprovedApplications = async () => {
+    try {
+        const res = await axios.get(`${serverUrl}/get-all-approved-applications`,{
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        if(res.data === 'no data') return noApplicants.value = true
+        
+        applicants.value = res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const statusCount = (status) => {
+    if(!applicants.value) return 0
+
+    const female = applicants.value?.filter(applicant => applicant.statusOfEmployment === status)
+
+    const count = female.length
+
+    return count
+}
+
+const typeCount = (status) => {
+    if(!applicants.value) return 0
+
+    const female = applicants.value?.filter(applicant => applicant.statusOfEmployment === status)
+
+    const count = female.length
+
+    return count
+}
+
 const typeOfExport = ref('')
 
 const handleExportChange = () => {
@@ -139,7 +228,6 @@ const handleExportChange = () => {
         downloadPDF()
     }
 }
-
 
 const downloadCSV = () => {
     let table = document.getElementById('userTable');
@@ -196,7 +284,7 @@ const downloadPDF = () => {
 }
 
 onMounted(() => {
-    getGroupedBarangay()
+    getApprovedApplications()
 })
 </script>
 
