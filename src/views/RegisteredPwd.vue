@@ -487,7 +487,8 @@ const generateForm = async (index) => {
     const applicantData = applicants.value[index]
 
     try {
-        const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
+        // const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
+        const response = await fetch('PRPWD-APPLICATION_FORM.docx')
 
         if (!response.ok) throw new Error('Failed to fetch DOCX template')
 
