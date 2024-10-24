@@ -24,8 +24,18 @@
                             <td class="md:py-3">{{ disability.disability }}</td>
                             <td>
                                 <div class="flex items-center justify-center gap-x-2">
-                                    <Icon icon="mage:edit" class="text-xl cursor-pointer text-green-500" @click="updateDisaiblity(disability._id)" />
-                                    <Icon icon="fluent:archive-16-filled" class="text-xl cursor-pointer text-red-500" @click="showDeleteModal(disability._id)" />
+                                    <div class="relative group">
+                                        <Icon icon="mage:edit" class="text-xl cursor-pointer text-green-500" @click="updateDisaiblity(disability._id)" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                            <p class="text-xs">Edit disabilities</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative group">
+                                        <Icon icon="fluent:archive-16-filled" class="text-xl cursor-pointer text-red-500" @click="showDeleteModal(disability._id)" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                            <p class="text-xs">Delete disabilities</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -304,6 +314,8 @@ const update = async () => {
 
 </script>
 
-<style>
-
+<style scoped>
+.overflow-x-auto::-webkit-scrollbar {
+    display: none;
+}
 </style>

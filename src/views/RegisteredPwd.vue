@@ -13,7 +13,7 @@
                 </div>
                 <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="addApplicant">
                     <Icon icon="mingcute:user-add-line" />
-                    add
+                    Add
                 </button>
                 <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
                     <option value="" disabled>Export</option>
@@ -679,6 +679,8 @@ onMounted(() => {
 })
 </script>
 
-<style>
-
+<style scoped>
+.overflow-x-auto::-webkit-scrollbar {
+    display: none;
+}
 </style>

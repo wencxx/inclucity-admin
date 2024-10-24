@@ -34,52 +34,82 @@ const routes = [
     {
         path: '/user-accounts',
         name: 'user Accounts',
-        component: UsersAccount
+        component: UsersAccount,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/deleted-user-accounts',
         name: 'deleted User Accounts',
-        component: DeletedUsersAccount
+        component: DeletedUsersAccount,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/registered-pwd',
         name: 'registered PWD',
-        component: RegisteredPwd
+        component: RegisteredPwd,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/released-id',
         name: 'released ID',
-        component: ReleasedId
+        component: ReleasedId,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/rejected',
         name: 'declined Applications',
-        component: RejectedApplications
+        component: RejectedApplications,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/pwd-per-barangay',
         name: 'PWD Per Barangay',
-        component: PwdPerBarangay
+        component: PwdPerBarangay,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/total-pwd',
         name: 'total number of pwd',
-        component: TotalNumberPwd
+        component: TotalNumberPwd,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/total-employment',
         name: 'total employment status',
-        component: TotalEmploymentStatus
+        component: TotalEmploymentStatus,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/pwd-applications',
         name: 'PWD ID application',
-        component: Application
+        component: Application,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/pwd-renewal',
         name: 'PWD ID renewal',
-        component: Renewal
+        component: Renewal,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/announcement',
@@ -89,12 +119,18 @@ const routes = [
     {
         path: '/disabilities',
         name: 'disabilities',
-        component: Disabilities
+        component: Disabilities,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/deleted-announcement',
         name: 'deleted announcement',
-        component: DeletedAnnouncement
+        component: DeletedAnnouncement,
+        meta: {
+            requiresAuth: true
+        }
     }
 ]
 const router = createRouter({

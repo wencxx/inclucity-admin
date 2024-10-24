@@ -52,8 +52,18 @@
                             <td>{{ user.gender }}</td>
                             <td>
                                 <div class="flex justify-center w-full gap-x-2">
-                                    <Icon icon="iconamoon:edit-fill" class="text-2xl text-gray-900 hover:text-gray-700" @click="updateUser(user._id)" />
-                                    <Icon icon="fluent:archive-16-filled" class="text-2xl text-red-500 hover:text-red-700" @click="deleteConfirmation = true, userTobeDeleted = user._id" />
+                                    <div class="relative group">
+                                        <Icon icon="iconamoon:edit-fill" class="text-2xl text-gray-900 hover:text-gray-700" @click="updateUser(user._id)" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                            <p class="text-xs">Edit user</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative group">
+                                        <Icon icon="fluent:archive-16-filled" class="text-2xl text-red-500 hover:text-red-700" @click="deleteConfirmation = true, userTobeDeleted = user._id" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                            <p class="text-xs">Archive user</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -323,6 +333,8 @@ onMounted(() => {
 })
 </script>
 
-<style>
-
+<style scoped>
+.overflow-x-auto::-webkit-scrollbar {
+    display: none;
+}
 </style>

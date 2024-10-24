@@ -28,9 +28,24 @@
                             <td>{{ announcement.datePosted.split('T')[0] }}</td>
                             <td>
                                 <div class="flex items-center justify-center gap-x-2">
-                                    <Icon icon="ph:eye" class="text-xl cursor-pointer" @click="viewPost(announcement._id)" />
-                                    <Icon icon="mage:edit" class="text-xl cursor-pointer text-green-500" @click="updatePost(announcement._id)" />
-                                    <Icon icon="fluent:archive-16-filled" class="text-xl cursor-pointer text-red-500" @click="showDeleteModal(announcement._id)" />
+                                    <div class="relative group">
+                                        <Icon icon="ph:eye" class="text-xl cursor-pointer" @click="viewPost(announcement._id)" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                            <p class="text-xs">View Announcement</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative group">
+                                        <Icon icon="mage:edit" class="text-xl cursor-pointer text-green-500" @click="updatePost(announcement._id)" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                            <p class="text-xs">Edit Announcement</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative group">
+                                        <Icon icon="fluent:archive-16-filled" class="text-xl cursor-pointer text-red-500" @click="showDeleteModal(announcement._id)" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                            <p class="text-xs">Archive Announcement</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -417,6 +432,8 @@ const viewPost = (postId) => {
 
 </script>
 
-<style>
-
+<style scoped>
+.overflow-x-auto::-webkit-scrollbar {
+    display: none;
+}
 </style>

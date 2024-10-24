@@ -211,6 +211,15 @@ const chartOptionsBar3 = {
             display: false
         }
     },
+    scales: {
+        x: {
+            ticks: {
+                font: {
+                    size: 10,
+                }
+            }
+        },
+    },
     devicePixelRatio: 4
 };
 

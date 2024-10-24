@@ -61,15 +61,24 @@
                             </td>
                             <td>
                                 <div class="flex flex-wrap justify-center gap-1 cursor-pointer">
-                                    <button class="bg-green-200 py-1 text-green-700 text-sm px-2 rounded-md w-fit hover:shadow" @click="showModalRetype(applicant.user?._id, applicant._id)">
+                                    <button class="bg-green-200 py-1 text-green-700 text-sm px-2 rounded-md w-fit hover:shadow relative group" @click="showModalRetype(applicant.user?._id, applicant._id)">
                                         <Icon icon="mdi:check" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                            <p class="text-xs">Accept applicant</p>
+                                        </div>
                                     </button>
-                                    <button class="bg-orange-200 py-1 text-orange-700 text-sm px-2 rounded-md w-fit hover:shadow" @click="showModal(applicant.user?._id, applicant._id)">
+                                    <button class="bg-orange-200 py-1 text-orange-700 text-sm px-2 rounded-md w-fit hover:shadow relative group" @click="showModal(applicant.user?._id, applicant._id)">
                                         <Icon icon="mdi:close" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                            <p class="text-xs">Reject applicant</p>
+                                        </div>
                                     </button>
                                     <!-- <button class="bg-red-200 py-1 text-red-700 text-sm px-2 rounded-md hover:shadow" @click="showAttachment(applicant.photo1x1, applicant.medicalCert, applicant.barangayCert)">attachments</button> -->
-                                    <button class="bg-red-200 py-1 text-red-700 text-sm px-2 rounded-md hover:shadow" @click="viewAppInfo(applicant._id)">
+                                    <button class="bg-red-200 py-1 text-red-700 text-sm px-2 rounded-md hover:shadow relative group" @click="viewAppInfo(applicant._id)">
                                         <Icon icon="mdi:eye" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                            <p class="text-xs">View Information</p>
+                                        </div>
                                     </button>
                                 </div>
                             </td>
@@ -136,7 +145,12 @@
                     </div>
                     <div class="w-full my-2">
                         <label>Retype Password</label>
-                        <input type="password" v-model="password" class="w-full border rounded h-10 pl-2" placeholder="Enter password">
+                        <div class="flex border rounded pr-2">
+                            <input :type="passwordType" v-model="password" class="w-11/12 h-10 pl-2 focus:outline-none" placeholder="Enter password">
+                            <div class="h-10 flex items-center justify-center w-1/12">
+                                <Icon :icon="iconType" class="text-xl" @click="changePasswordType" />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="w-full flex justify-end items-center gap-x-2">
@@ -262,6 +276,19 @@ const serverUrl = import.meta.env.VITE_SERVER_URL
 
 const router = useRouter()
 const route = useRoute()
+
+const passwordType = ref('password')
+const iconType = ref('mdi:eye')
+
+const changePasswordType = () => {
+    if(passwordType.value === 'password'){
+        passwordType.value = 'text'
+        iconType.value = 'mdi:eye-off'
+    }else{
+        passwordType.value = 'password'
+        iconType.value = 'mdi:eye'
+    }
+}
 
 const applicants = ref(null)
 
@@ -653,6 +680,8 @@ onMounted(() => {
 })
 </script>
 
-<style>
-
+<style scoped>
+.overflow-x-auto::-webkit-scrollbar {
+    display: none;
+}
 </style>
