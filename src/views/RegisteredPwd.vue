@@ -131,11 +131,17 @@
                             </td>
                             <td class="text-sm">
                                 <div class="space-x-1">
-                                    <button class="bg-green-200 py-1 text-green-700 text-lg px-3 rounded-md w-fit mx-auto" @click="showReleaseModal(applicant._id)">
+                                    <button class="bg-green-200 py-1 text-green-700 text-lg px-3 rounded-md w-fit mx-auto relative group" @click="showReleaseModal(applicant._id)">
                                         <Icon icon="hugeicons:id" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block">
+                                            <p class="text-xs">Release ID</p>
+                                        </div>
                                     </button>
-                                    <button class="bg-gray-200 py-1 text-gray-700 text-lg px-3 rounded-md w-fit mx-auto" @click="generateForm(index)">
+                                    <button class="bg-gray-200 py-1 text-gray-700 text-lg px-3 rounded-md w-fit mx-auto relative group" @click="generateForm(index)">
                                         <Icon icon="fluent:form-24-regular" />
+                                        <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block">
+                                            <p class="text-xs">download form</p>
+                                        </div>
                                     </button>
                                 </div>
                             </td>
@@ -518,6 +524,7 @@ const generateForm = async (index) => {
             renewal: applicantData.typeOfApplicant === 'renewal' ? '◾' : '◽',
             dateApplied: applicantData.dateApplied,
             dateOfBirth: applicantData.dateOfBirth,
+            first: applicantData.firstName,
             middle: applicantData.middleName,
             last: applicantData.lastName,
             suffix: applicantData.suffix,
