@@ -48,7 +48,7 @@
                         <tr v-if="paginatedApplicants.length > 0" v-for="applicant in paginatedApplicants" :key="applicant.id" class="border-b border-gray-500">
                             <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
-                            <td class="text-sm">{{ applicant.user?.email }}</td>
+                            <td class="text-sm">{{ applicant.emailAddress }}</td>
                             <td class="text-sm">{{ applicant.user?.age }}</td>
                             <td class="text-sm">{{ applicant.user?.contactNumber }}</td>
                             <td class="text-sm">{{ applicant.gender }}</td>
@@ -61,13 +61,13 @@
                             </td>
                             <td>
                                 <div class="flex flex-wrap justify-center gap-1 cursor-pointer">
-                                    <button class="bg-green-200 py-1 text-green-700 text-sm px-2 rounded-md w-fit hover:shadow relative group" @click="showModalRetype(applicant.user?._id, applicant._id)">                                            
+                                    <button class="bg-green-200 py-1 text-green-700 text-sm px-2 rounded-md w-fit hover:shadow relative group" @click="showModalRetype(applicant.user?._id, applicant._id, applicant.emailAddress, applicant.user?.receiveEmail)">                                            
                                         <Icon icon="mdi:check" />
                                         <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
                                             <p class="text-xs">Accept applicant</p>
                                         </div>
                                     </button>
-                                    <button class="bg-orange-200 py-1 text-orange-700 text-sm px-2 rounded-md w-fit hover:shadow relative group" @click="showModal(applicant.user?._id, applicant._id)">
+                                    <button class="bg-orange-200 py-1 text-orange-700 text-sm px-2 rounded-md w-fit hover:shadow relative group" @click="showModal(applicant.user?._id, applicant._id, applicant.emailAddress, applicant.user?.receiveEmail)">
                                             <Icon icon="mdi:close" />
                                             <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
                                                 <p class="text-xs">Reject applicant</p>
@@ -261,11 +261,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, useId } from "vue";
+import { computed, onMounted, ref, useId, defineEmits } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
+import emailjs from 'emailjs-com';
 // import * as mammoth from 'mammoth'
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
@@ -410,24 +411,29 @@ const otherReason = ref('')
 
 const uid = ref('')
 const aid = ref('')
+const emailAddress = ref('')
+const willReceive = ref(true)
 
-const showModal = async (userId, appId) => {
+const showModal = async (userId, appId, emailAdd, receiveEmail) => {
     declineModal.value = true
 
     uid.value = userId.toString()
     aid.value = appId
-
+    emailAddress.value = emailAdd.toString()
+    willReceive.value = receiveEmail
 }
 
 const retypeModal = ref(false)
 const password = ref('')
 const controlNumber = ref('')
 
-const showModalRetype = async (userId, appId) => {
+const showModalRetype = async (userId, appId, emailAdd, receiveEmail) => {
     retypeModal.value = true
 
     uid.value = userId.toString()
     aid.value = appId
+    emailAddress.value = emailAdd.toString()
+    willReceive.value = receiveEmail
 }
 
 const invalidPassword = ref(false)
@@ -443,7 +449,7 @@ const verifyPassword = async () => {
         })
 
         if(res.data === 'password match'){
-            updateApplicant('approved', uid.value, aid.value )
+            updateApplicant('approved', uid.value, aid.value, emailAddress.value )
             uid.value = ''
             aid.value = ''
             retypeModal.value = false
@@ -458,7 +464,7 @@ const verifyPassword = async () => {
 const declinedSuccessful = ref(false)
 const approvedSuccessful = ref(false)
 
-const updateApplicant = async (status, userId, appId) => {
+const updateApplicant = async (status, userId, appId, emailAdd) => {
     if(status === 'decline'){
         let data = {}
 
@@ -482,10 +488,30 @@ const updateApplicant = async (status, userId, appId) => {
 
             if(res.data === 'application rejected succesfully'){
                 applicants.value = applicants.value.filter(applicant => applicant._id != appId)
-                reasonForDeclining.value = ''
-                otherReason.value = ''
                 // fetchDoc()
                 declinedSuccessful.value = true
+
+                const templateParams = {
+                    email: emailAdd,
+                    header: 'Application Rejected',
+                    message: `Unfortunately, your application has been rejected due to ${reasonForDeclining.value || otherReason.value}. Please review the issue and make the necessary corrections. If you need further assistance, feel free to contact our support team.`
+                };
+
+                if(willReceive.value === true){
+                    // Sending email
+                    const response = await emailjs.send(
+                        'service_jp4qqoo',
+                        'template_xxm5vdr',
+                        templateParams,
+                        'gbTwv7MP-o1veLyLY'
+                    );
+
+                    console.log('Email sent successfully!', response.status, response.text);
+                }
+                declinedSuccessful.value = true;
+
+                reasonForDeclining.value = ''
+                otherReason.value = ''
                 setTimeout(() => {
                     declinedSuccessful.value = false
                 }, 3000)
@@ -515,10 +541,28 @@ const updateApplicant = async (status, userId, appId) => {
             if(res.data === 'application approved succesfully'){
                 applicants.value = applicants.value.filter(applicant => applicant._id != appId)
                 approvedSuccessful.value = true
+
+                const templateParams = {
+                    email: emailAdd,
+                    header: 'Application Approved',
+                    message:  `Congratulations! Your application has been approved. Please proceed with the next steps to finalize the process. If you have any questions or need further assistance, feel free to contact our support team.`
+                }
+
+                if(willReceive.value === true){
+                    // Sending email
+                    const response = await emailjs.send(
+                        'service_jp4qqoo',
+                        'template_xxm5vdr',
+                        templateParams,
+                        'gbTwv7MP-o1veLyLY'
+                    );
+
+                    console.log('Email sent successfully!', response.status, response.text);
+                }
                 setTimeout(() => {
                     approvedSuccessful.value = false
                 }, 3000)
-
+                
                 console.log(res.data)
             }
         } catch (error) {
