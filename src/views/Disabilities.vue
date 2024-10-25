@@ -70,7 +70,7 @@
                 <form @submit.prevent="addDisability" class="p-5 flex flex-col gap-y-5">
                     <div class="flex flex-col gap-y-2">
                         <label class="text-lg">Disability</label>
-                        <input type="text" v-model="disability" class="bg-gray-200 pl-2 focus:outline-none rounded h-10">
+                        <input type="text" v-model="disability" class="bg-gray-200 pl-2 focus:outline-none rounded h-10 capitalize">
                     </div>
                     <div class="flex items-center justify-between">
                         <button class="bg-red-500 py-1 w-1/3 rounded text-white shadow hover:bg-red-600" type="button" @click="postModal = false">Cancel</button>
