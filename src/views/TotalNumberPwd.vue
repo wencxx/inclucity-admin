@@ -12,8 +12,8 @@
                 </button> -->
                 <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
                     <option value="" disabled>Export</option>
-                    <option>pdf</option>
-                    <option>csv</option>
+                    <option>PDF</option>
+                    <option>CSV</option>
                 </select>
             </div>
         </div>
@@ -361,7 +361,7 @@ const downloadCSV = () => {
 const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
-    const headerImage = "../../public/header.png"; 
+    const headerImage = "../../header.png"; 
 
     pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 

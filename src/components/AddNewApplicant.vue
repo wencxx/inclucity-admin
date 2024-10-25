@@ -1,383 +1,385 @@
 <template>
-    <section class="h-screen w-screen overflow-auto font-manrope p-10 md:px-16 lg:px-32 absolute top-0 left-0 bg-white z-10 flex flex-col justify-center">
-        <div class="absolute top-5 right-5 bg-black/10 p-2 rounded-full cursor-pointer" @click="closeModal">
-            <Icon icon="mdi:close" class="text-2xl" />
-        </div>
-        <div v-if="hasEmptyFields" class="w-full lg:w-1/2 lg:mx-auto flex flex-col gap-y-5 font-manrope">
-            <p class="bg-red-500 text-white pl-2 rounded py-1">Fill out all required fields</p>
-        </div>
-        <!-- second step -->
-        <div v-if="currentPage == 1" class="w-full lg:w-1/2 lg:mx-auto flex flex-col gap-y-5 font-manrope">
-            <h1 class="text-black font-semibold text-xl uppercase">Personal Information</h1>
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-3">
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Last Name *</label>
-                    <input type="text" placeholder="Enter last name" class="h-10 border pl-2 rounded" v-model="lastName">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">First Name *</label>
-                    <input type="text" placeholder="Enter first name" class="h-10 border pl-2 rounded" v-model="firstName">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Middle Name *</label>
-                    <input type="text" placeholder="Enter middle name" class="h-10 border pl-2 rounded" v-model="middleName">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Suffix</label>
-                    <input type="text" placeholder="Enter suffix" class="h-10 border pl-2 rounded" v-model="suffix">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Date of Birth *</label>
-                    <input type="date" class="h-10 border pl-2 rounded" v-model="dateOfBirth">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Gender *</label>
-                    <select class="h-10 border pl-2 rounded" v-model="gender">
-                        <option disabled>Select Gender</option>
-                        <option>Male</option>
-                        <option>Female</option>
-                        <option>Others</option>
-                    </select>
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Civil Status *</label>
-                    <select class="h-10 border pl-2 rounded" v-model="civilStatus">
-                        <option disabled>Select Civil Status</option>
-                        <option>Single</option>
-                        <option>Married</option>
-                        <option>Seperated</option>
-                        <option>Cohabitation (Live-in)</option>
-                        <option>Widow/er</option>
-                    </select>
-                </div>
+    <section class="h-screen w-screen overflow-auto font-manrope p-10 md:px-16 lg:px-32 absolute top-0 left-0 bg-black/10 z-10 flex flex-col items-center justify-center">
+        <div class="bg-white w-full md:w-3/5 xl:w-1/2 p-20 rounded shadow">
+            <div class="absolute top-5 right-5 bg-black/10 p-2 rounded-full cursor-pointer" @click="closeModal">
+                <Icon icon="mdi:close" class="text-2xl text-white" />
             </div>
-        </div>
-        <!-- third step -->
-        <div v-if="currentPage == 2" class="w-full lg:w-1/2 lg:mx-auto flex flex-col gap-y-5 font-manrope">
-            <h1 class="text-black font-semibold text-xl uppercase">Type and Cause of Disability</h1>
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <div class="flex flex-col gap-y-2 py-2">
-                    <label class="font-semibold">Select type of disability*</label>
-                    <select class="h-10 border pl-2 rounded" v-model="typeOfDisability" required>
-                        <!-- <option :value="typeOfDisability" disabled>Select type of disability</option> -->
-                        <option>Deaf/Hard of hearing</option>
-                        <option>Intellectual Disability</option>
-                        <option>Learning Disability</option>
-                        <option>Mental Disability</option>
-                        <option>Physical Disability(Orthopedic)</option>
-                        <option>Psychosocial Disability</option>
-                        <option>Speach and Language Impairment</option>
-                        <option>Visual Disability</option>
-                        <option>Cancer (RA11215)</option>
-                        <option>Rare Disease (RA107747)</option>
-                    </select>
-                </div>
-                <div></div>
-                <div class="flex flex-col gap-y-2 w-full py-2">
-                    <label class="font-semibold">Select Cause of Disability *</label>
-                    <select class="h-10 border pl-2 rounded" v-model="causeOfDisability" @change="otherCauseOfDisability = ''" required>
-                        <!-- <option value="" disabled>Select cause of disability</option> -->
-                        <option class="font-semibold" disabled>*Congential/Inborn</option>
-                        <option>Autism</option>
-                        <option>ADHD</option>
-                        <option>Cerebral Palsy</option>
-                        <option>Down Syndrome</option>
-                        <option class="font-semibold" disabled>*Acquired</option>
-                        <option>Chroniz Illness</option>
-                        <option>Infecations</option>
-                        <option>Injury</option>
-                    </select>
-                </div>
-                <div class="flex flex-col gap-y-2 py-2">
-                    <label class="font-semibold">Other cause of disability</label>
-                    <input type="text" class="h-10 border pl-2 rounded" @input="causeOfDisability = ''" v-model="otherCauseOfDisability">
-                </div>
+            <div v-if="hasEmptyFields" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <p class="bg-red-500 text-white pl-2 rounded py-1">Fill out all required fields</p>
             </div>
-            <h1 class="text-black font-semibold text-xl uppercase">Residence Address</h1>
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">House no.(optional) and Street *</label>
-                    <input type="text" placeholder="Enter house no. and street" class="h-10 border pl-2 rounded" v-model="houseNoAndStreet">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Select Barangay *</label>
-                    <select class="h-10 border pl-2 rounded" v-model="barangay">
-                        <option :value="barangay" disabled>Select Barangay</option>
-                        <option value="Anilao">Anilao</option>
-                        <option value="Atlag">Atlag</option>
-                        <option value="Babatnin">Babatnin</option>
-                        <option value="Bagna">Bagna</option>
-                        <option value="Bangkong Malapad">Bangkong Malapad</option>
-                        <option value="Bulihan">Bulihan</option>
-                        <option value="Bungahan">Bungahan</option>
-                        <option value="Caingin">Caingin</option>
-                        <option value="Caliligawan">Caliligawan</option>
-                        <option value="Canalate">Canalate</option>
-                        <option value="Caniogan">Caniogan</option>
-                        <option value="Crispiniano C. Valenzuela">Crispiniano C. Valenzuela</option>
-                        <option value="Dakila">Dakila</option>
-                        <option value="Guinhawa">Guinhawa</option>
-                        <option value="Liyang">Liyang</option>
-                        <option value="Lugam">Lugam</option>
-                        <option value="Look 1st">Look 1st</option>
-                        <option value="Look 2nd">Look 2nd</option>
-                        <option value="Longos">Longos</option>
-                        <option value="Mabolo">Mabolo</option>
-                        <option value="Mambog">Mambog</option>
-                        <option value="Masile">Masile</option>
-                        <option value="Matimbo">Matimbo</option>
-                        <option value="Mojon">Mojon</option>
-                        <option value="Namayan">Namayan</option>
-                        <option value="Niugan">Niugan</option>
-                        <option value="Pamarawan">Pamarawan</option>
-                        <option value="Panasahan">Panasahan</option>
-                        <option value="Pinagbakahan">Pinagbakahan</option>
-                        <option value="San Agustin">San Agustin</option>
-                        <option value="San Gabriel">San Gabriel</option>
-                        <option value="San Juan">San Juan</option>
-                        <option value="San Pablo">San Pablo</option>
-                        <option value="Santiago">Santiago</option>
-                        <option value="Santor">Santor</option>
-                        <option value="Santisima Trinidad">Santisima Trinidad</option>
-                        <option value="Sumapang Bata">Sumapang Bata</option>
-                        <option value="Sumapang Matanda">Sumapang Matanda</option>
-                        <option value="Tikay">Tikay</option>
+            <!-- second step -->
+            <div v-if="currentPage == 1" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <h1 class="text-black font-semibold text-xl uppercase">Personal Information</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-3">
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Last Name *</label>
+                        <input type="text" placeholder="Enter last name" class="h-10 border pl-2 rounded" v-model="lastName">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">First Name *</label>
+                        <input type="text" placeholder="Enter first name" class="h-10 border pl-2 rounded" v-model="firstName">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Middle Name *</label>
+                        <input type="text" placeholder="Enter middle name" class="h-10 border pl-2 rounded" v-model="middleName">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Suffix</label>
+                        <input type="text" placeholder="Enter suffix" class="h-10 border pl-2 rounded" v-model="suffix">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Date of Birth *</label>
+                        <input type="date" class="h-10 border pl-2 rounded" v-model="dateOfBirth">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Gender *</label>
+                        <select class="h-10 border pl-2 rounded" v-model="gender">
+                            <option disabled>Select Gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Others</option>
                         </select>
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Civil Status *</label>
+                        <select class="h-10 border pl-2 rounded" v-model="civilStatus">
+                            <option disabled>Select Civil Status</option>
+                            <option>Single</option>
+                            <option>Married</option>
+                            <option>Seperated</option>
+                            <option>Cohabitation (Live-in)</option>
+                            <option>Widow/er</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- fourth step -->
-        <div v-if="currentPage == 3" class="w-full lg:w-1/2 lg:mx-auto flex flex-col gap-y-5 font-manrope">
-            <h1 class="text-black font-semibold text-xl uppercase">Contact Details</h1>
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Landline No.</label>
-                    <input type="number" placeholder="044-XXXXXX" class="h-10 border pl-2 rounded" v-model="landlineNo">
+            <!-- third step -->
+            <div v-if="currentPage == 2" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <h1 class="text-black font-semibold text-xl uppercase">Type and Cause of Disability</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <div class="flex flex-col gap-y-2 py-2">
+                        <label class="font-semibold">Select type of disability*</label>
+                        <select class="h-10 border pl-2 rounded" v-model="typeOfDisability" required>
+                            <!-- <option :value="typeOfDisability" disabled>Select type of disability</option> -->
+                            <option>Deaf/Hard of hearing</option>
+                            <option>Intellectual Disability</option>
+                            <option>Learning Disability</option>
+                            <option>Mental Disability</option>
+                            <option>Physical Disability(Orthopedic)</option>
+                            <option>Psychosocial Disability</option>
+                            <option>Speach and Language Impairment</option>
+                            <option>Visual Disability</option>
+                            <option>Cancer (RA11215)</option>
+                            <option>Rare Disease (RA107747)</option>
+                        </select>
+                    </div>
+                    <div></div>
+                    <div class="flex flex-col gap-y-2 w-full py-2">
+                        <label class="font-semibold">Select Cause of Disability *</label>
+                        <select class="h-10 border pl-2 rounded" v-model="causeOfDisability" @change="otherCauseOfDisability = ''" required>
+                            <!-- <option value="" disabled>Select cause of disability</option> -->
+                            <option class="font-semibold" disabled>*Congential/Inborn</option>
+                            <option>Autism</option>
+                            <option>ADHD</option>
+                            <option>Cerebral Palsy</option>
+                            <option>Down Syndrome</option>
+                            <option class="font-semibold" disabled>*Acquired</option>
+                            <option>Chroniz Illness</option>
+                            <option>Infecations</option>
+                            <option>Injury</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-y-2 py-2">
+                        <label class="font-semibold">Other cause of disability</label>
+                        <input type="text" class="h-10 border pl-2 rounded" @input="causeOfDisability = ''" v-model="otherCauseOfDisability">
+                    </div>
                 </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Mobile No.</label>
-                    <input type="number" placeholder="639-XXX-XXX" class="h-10 border pl-2 rounded" v-model="mobileNo">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Email Address</label>
-                    <input type="email" placeholder="xxxxxxxx@gmail.com" class="h-10 border pl-2 rounded" v-model="emailAddress">
-                </div>
-            </div>
-            <h1 class="text-black font-semibold text-xl uppercase">Educational Attainment</h1>
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <div class="flex flex-col gap-y-2 w-full py-2">
-                    <label class="font-semibold">Select Educational Attainment *</label>
-                    <select class="h-10 border pl-2 rounded" v-model="educationalAttainment" required>
-                        <option :value="educationalAttainment" disabled>Select educational attainment</option>
-                        <option>None</option>
-                        <option>Kindergarten</option>
-                        <option>Elementary</option>
-                        <option>Junior High School</option>
-                        <option>Senior High School</option>
-                        <option>College</option>
-                        <option>Vocational</option>
-                        <option>Post Graduate</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <!-- fifth step -->
-        <div v-if="currentPage == 4" class="w-full lg:w-1/2 lg:mx-auto flex flex-col gap-y-5 font-manrope">
-            <h1 class="text-black font-semibold text-xl uppercase">Status of Employment</h1>
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <div class="flex flex-col gap-y-2 w-full py-2">
-                    <label class="font-semibold">Select Status of Employment *</label>
-                    <select class="h-10 border pl-2 rounded" v-model="statusOfEmployment" required>
-                        <option value="" disabled>Select status of employment</option>
-                        <option value="employed">Employed</option>
-                        <option value="unemployed">Unemployed</option>
-                        <option value="self-employed">Self-employed</option>
-                    </select>
-                </div>
-                <div class="flex flex-col gap-y-2 w-full py-2" v-if="statusOfEmployment == 'employed' || statusOfEmployment == 'self-employed'">
-                    <label class="font-semibold">a. Category of Employment *</label>
-                    <select class="h-10 border pl-2 rounded" v-model="categoryOfEmployment" required>
-                        <option value="" disabled>Select category of employment</option>
-                        <option value="government">Government</option>
-                        <option value="private">Private</option>
-                    </select>
-                </div>
-                <div class="flex flex-col gap-y-2 w-full py-2" v-if="statusOfEmployment == 'employed' || statusOfEmployment == 'self-employed'">
-                    <label class="font-semibold">b. Type of Employment *</label>
-                    <select class="h-10 border pl-2 rounded" v-model="typeOfEmployment" required>
-                        <option value="" disabled>Select type of employment</option>
-                        <option value="permanent/regular">Permanent/Regular</option>
-                        <option value="seasonal">Seasonal</option>
-                        <option value="casual">Casual</option>
-                        <option value="emergency">Emergency</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <!-- ninth step -->
-        <div v-if="currentPage == 5" class="w-full lg:w-1/2 lg:mx-auto flex flex-col gap-y-5 font-manrope">
-            <h1 v-if="statusOfEmployment == 'employed' || statusOfEmployment == 'self-employed'" class="text-black font-semibold text-xl uppercase">Occupation</h1>
-            <div v-if="statusOfEmployment == 'employed' || statusOfEmployment == 'self-employed'" class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <div class="flex flex-col gap-y-2 w-full py-2">
-                    <label class="font-semibold">Select Occupation *</label>
-                    <select class="h-10 border pl-2 rounded" v-model="occupation" @change="changeOccupation('select')" required>
-                        <option value="" disabled>Select occupation</option>
-                        <option>Managers</option>
-                        <option>Professionals</option>
-                        <option>Technicians and Associate Professionals</option>
-                        <option>Clerical Support Worker</option>
-                        <option>Service and Sales Worker</option>
-                        <option>Skilled Agricultural, Forestry and Fishery Workers</option>
-                        <option>Craft and Related Trade Workers</option>
-                        <option>Plant and Machine Operators and Assemblers</option>
-                        <option>Elementary Occupation</option>
-                        <option>Armed Forces Occupation</option>
-                    </select>
-                </div>
-                <div class="flex flex-col gap-y-2 w-4/5 py-2 px-5">
-                    <label class="font-semibold">Others</label>
-                    <input type="text" placeholder="Please specify" v-model="otherOccupation" class="h-10 border pl-2 rounded" @input="changeOccupation('input')">
-                </div>
-            </div>
-            <h1 class="text-black font-semibold text-xl uppercase">Organization Information</h1>
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Organization Affiliated</label>
-                    <input type="number" placeholder="044-XXXXXX" class="h-10 border pl-2 rounded" v-model="organizationAffiliated">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Contact Information</label>
-                    <input type="number" placeholder="639-XXX-XXX-XXX" class="h-10 border pl-2 rounded" v-model="contactInformation">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Office Address</label>
-                    <input type="text" placeholder="Enter address" class="h-10 border pl-2 rounded" v-model="officeAddress">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Tel. No.</label>
-                    <input type="number" placeholder="XXXX-XXXX" class="h-10 border pl-2 rounded" v-model="telNo">
+                <h1 class="text-black font-semibold text-xl uppercase">Residence Address</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">House no.(optional) and Street *</label>
+                        <input type="text" placeholder="Enter house no. and street" class="h-10 border pl-2 rounded" v-model="houseNoAndStreet">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Select Barangay *</label>
+                        <select class="h-10 border pl-2 rounded" v-model="barangay">
+                            <option :value="barangay" disabled>Select Barangay</option>
+                            <option value="Anilao">Anilao</option>
+                            <option value="Atlag">Atlag</option>
+                            <option value="Babatnin">Babatnin</option>
+                            <option value="Bagna">Bagna</option>
+                            <option value="Bangkong Malapad">Bangkong Malapad</option>
+                            <option value="Bulihan">Bulihan</option>
+                            <option value="Bungahan">Bungahan</option>
+                            <option value="Caingin">Caingin</option>
+                            <option value="Caliligawan">Caliligawan</option>
+                            <option value="Canalate">Canalate</option>
+                            <option value="Caniogan">Caniogan</option>
+                            <option value="Crispiniano C. Valenzuela">Crispiniano C. Valenzuela</option>
+                            <option value="Dakila">Dakila</option>
+                            <option value="Guinhawa">Guinhawa</option>
+                            <option value="Liyang">Liyang</option>
+                            <option value="Lugam">Lugam</option>
+                            <option value="Look 1st">Look 1st</option>
+                            <option value="Look 2nd">Look 2nd</option>
+                            <option value="Longos">Longos</option>
+                            <option value="Mabolo">Mabolo</option>
+                            <option value="Mambog">Mambog</option>
+                            <option value="Masile">Masile</option>
+                            <option value="Matimbo">Matimbo</option>
+                            <option value="Mojon">Mojon</option>
+                            <option value="Namayan">Namayan</option>
+                            <option value="Niugan">Niugan</option>
+                            <option value="Pamarawan">Pamarawan</option>
+                            <option value="Panasahan">Panasahan</option>
+                            <option value="Pinagbakahan">Pinagbakahan</option>
+                            <option value="San Agustin">San Agustin</option>
+                            <option value="San Gabriel">San Gabriel</option>
+                            <option value="San Juan">San Juan</option>
+                            <option value="San Pablo">San Pablo</option>
+                            <option value="Santiago">Santiago</option>
+                            <option value="Santor">Santor</option>
+                            <option value="Santisima Trinidad">Santisima Trinidad</option>
+                            <option value="Sumapang Bata">Sumapang Bata</option>
+                            <option value="Sumapang Matanda">Sumapang Matanda</option>
+                            <option value="Tikay">Tikay</option>
+                            </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- eleventh step -->
-        <div v-if="currentPage == 6" class="w-full lg:w-1/2 lg:mx-auto flex flex-col gap-y-5 font-manrope">
-            <h1 class="text-black font-semibold text-xl uppercase">ID Reference no.</h1>
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">SSS No.</label>
-                    <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="sssNo">
+            <!-- fourth step -->
+            <div v-if="currentPage == 3" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <h1 class="text-black font-semibold text-xl uppercase">Contact Details</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Landline No.</label>
+                        <input type="number" placeholder="044-XXXXXX" class="h-10 border pl-2 rounded" v-model="landlineNo">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Mobile No.</label>
+                        <input type="number" placeholder="639-XXX-XXX" class="h-10 border pl-2 rounded" v-model="mobileNo">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Email Address</label>
+                        <input type="email" placeholder="xxxxxxxx@gmail.com" class="h-10 border pl-2 rounded" v-model="emailAddress">
+                    </div>
                 </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">GSIS No.</label>
-                    <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="gsisNo">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">PAG-IBIG No.</label>
-                    <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="pagibigNo">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">PSN No.</label>
-                    <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="psnNo">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">PhilHealth No.</label>
-                    <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="philhealthNo">
-                </div>
-            </div>
-        </div>
-        <!-- twelve step -->
-        <div v-if="currentPage == 7" class="w-full lg:w-1/2 lg:mx-auto flex flex-col gap-y-5 font-manrope">
-            <h1 class="text-black font-semibold text-xl uppercase">Family Background</h1>
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Father's Name</label>
-                    <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="fathersLname">
-                    <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="fathersFname">
-                    <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="fathersMname">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Mother's Name</label>
-                    <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="mothersLname">
-                    <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="mothersFname">
-                    <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="mothersMname">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Guardian's Name</label>
-                    <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="guardiansLname">
-                    <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="guardiansFname">
-                    <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="guardiansMname">
+                <h1 class="text-black font-semibold text-xl uppercase">Educational Attainment</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <div class="flex flex-col gap-y-2 w-full py-2">
+                        <label class="font-semibold">Select Educational Attainment *</label>
+                        <select class="h-10 border pl-2 rounded" v-model="educationalAttainment" required>
+                            <option :value="educationalAttainment" disabled>Select educational attainment</option>
+                            <option>None</option>
+                            <option>Kindergarten</option>
+                            <option>Elementary</option>
+                            <option>Junior High School</option>
+                            <option>Senior High School</option>
+                            <option>College</option>
+                            <option>Vocational</option>
+                            <option>Post Graduate</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- thirteenth step -->
-        <div v-if="currentPage == 8 " class="w-full lg:w-1/2 lg:mx-auto flex flex-col gap-y-5 font-manrope">
-            <h1 class="text-black font-semibold text-xl uppercase">Accomplished By</h1>
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <div class="flex flex-col gap-y-1">
-                    <select class="h-10 border pl-2 rounded" v-model="accomplishedBy" @change="changeAccomplisedBy()">
-                        <option disabled selected value="">Accomplished By</option>
-                        <option>Applicant</option>
-                        <option>Guardian</option>
-                        <option>Representative</option>
-                    </select>
-                    <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="accomplishedByLname">
-                    <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="accomplishedByFname">
-                    <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="accomplishedByMname">
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Certifying Physician *</label>
-                    <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="physicianByLname">
-                    <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="physicianByFname">
-                    <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="physicianByMname">
-                </div>
-            </div>
-        </div>
-        <!-- fourteenth step -->
-        <div v-if="currentPage == 9" class="w-full lg:w-1/2 lg:mx-auto flex flex-col gap-y-5 font-manrope">
-            <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
-                <h1 v-if="alreadySubmitted" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Application already submitted</h1>
-                <h1 v-if="imageMissing" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Please upload required images</h1>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Upload 1x1 photo *</label>
-                    <input type="file" class="h-10 rounded" accept=".jpg, .jpeg, .png" @change="handleImageUpload('1x1photo', $event)" required>
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Upload Medical Certificate *</label>
-                    <input type="file" class="h-10 rounded" accept=".jpg, .jpeg, .png" @change="handleImageUpload('medicalCert', $event)" required>
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Upload Barangay Certificate *</label>
-                    <input type="file" class="h-10 rounded" accept=".jpg, .jpeg, .png" @change="handleImageUpload('barangayCert', $event)" required>
-                </div>
-                <div class="flex flex-col gap-y-1">
-                    <label class="font-semibold">Control Number</label>
-                    <input type="text" class="h-10 rounded" v-model="controlNumber" required>
+            <!-- fifth step -->
+            <div v-if="currentPage == 4" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <h1 class="text-black font-semibold text-xl uppercase">Status of Employment</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <div class="flex flex-col gap-y-2 w-full py-2">
+                        <label class="font-semibold">Select Status of Employment *</label>
+                        <select class="h-10 border pl-2 rounded" v-model="statusOfEmployment" required>
+                            <option value="" disabled>Select status of employment</option>
+                            <option value="employed">Employed</option>
+                            <option value="unemployed">Unemployed</option>
+                            <option value="self-employed">Self-employed</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-y-2 w-full py-2" v-if="statusOfEmployment == 'employed' || statusOfEmployment == 'self-employed'">
+                        <label class="font-semibold">a. Category of Employment *</label>
+                        <select class="h-10 border pl-2 rounded" v-model="categoryOfEmployment" required>
+                            <option value="" disabled>Select category of employment</option>
+                            <option value="government">Government</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-y-2 w-full py-2" v-if="statusOfEmployment == 'employed' || statusOfEmployment == 'self-employed'">
+                        <label class="font-semibold">b. Type of Employment *</label>
+                        <select class="h-10 border pl-2 rounded" v-model="typeOfEmployment" required>
+                            <option value="" disabled>Select type of employment</option>
+                            <option value="permanent/regular">Permanent/Regular</option>
+                            <option value="seasonal">Seasonal</option>
+                            <option value="casual">Casual</option>
+                            <option value="emergency">Emergency</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- control buttons -->
-        <div v-if="currentPage < 10" class="flex gap-x-10 mt-8 justify-center lg:w-1/2 lg:mx-auto lg:px-0">
-            <button @click="prev()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
-                <Icon icon="ri:arrow-left-s-line" class="text-2xl" />
-                <span>Back</span>
-            </button>
-            <button v-if="currentPage == '9' && !loadingSubmitting" @click="sendApplication()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
-                <span>Submit</span>
-                <Icon icon="bi:send-arrow-up" class="text-xl" />
-            </button>
-            <button v-if="loadingSubmitting" @click="sendApplication()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md animate-pulse" disabled>
-                <span>Loading...</span>
-            </button>
-            <button  v-if="currentPage != '9'" @click="next()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
-                <span>Next</span>
-                <Icon icon="ri:arrow-right-s-line" class="text-2xl" />
-            </button>
-        </div>
-        <div v-if="currentPage > 9" class="flex flex-col gap-y-10 mt-8 items-center lg:w-1/2 lg:mx-auto lg:px-0">
-            <h1 class="text-3xl font-poppins">Opss nothings here</h1>
-            <button @click="prev()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
-                <span>Go Back</span>
-            </button>
+            <!-- ninth step -->
+            <div v-if="currentPage == 5" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <h1 v-if="statusOfEmployment == 'employed' || statusOfEmployment == 'self-employed'" class="text-black font-semibold text-xl uppercase">Occupation</h1>
+                <div v-if="statusOfEmployment == 'employed' || statusOfEmployment == 'self-employed'" class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <div class="flex flex-col gap-y-2 w-full py-2">
+                        <label class="font-semibold">Select Occupation *</label>
+                        <select class="h-10 border pl-2 rounded" v-model="occupation" @change="changeOccupation('select')" required>
+                            <option value="" disabled>Select occupation</option>
+                            <option>Managers</option>
+                            <option>Professionals</option>
+                            <option>Technicians and Associate Professionals</option>
+                            <option>Clerical Support Worker</option>
+                            <option>Service and Sales Worker</option>
+                            <option>Skilled Agricultural, Forestry and Fishery Workers</option>
+                            <option>Craft and Related Trade Workers</option>
+                            <option>Plant and Machine Operators and Assemblers</option>
+                            <option>Elementary Occupation</option>
+                            <option>Armed Forces Occupation</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-y-2 w-4/5 py-2 px-5">
+                        <label class="font-semibold">Others</label>
+                        <input type="text" placeholder="Please specify" v-model="otherOccupation" class="h-10 border pl-2 rounded" @input="changeOccupation('input')">
+                    </div>
+                </div>
+                <h1 class="text-black font-semibold text-xl uppercase">Organization Information</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Organization Affiliated</label>
+                        <input type="number" placeholder="044-XXXXXX" class="h-10 border pl-2 rounded" v-model="organizationAffiliated">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Contact Information</label>
+                        <input type="number" placeholder="639-XXX-XXX-XXX" class="h-10 border pl-2 rounded" v-model="contactInformation">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Office Address</label>
+                        <input type="text" placeholder="Enter address" class="h-10 border pl-2 rounded" v-model="officeAddress">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Tel. No.</label>
+                        <input type="number" placeholder="XXXX-XXXX" class="h-10 border pl-2 rounded" v-model="telNo">
+                    </div>
+                </div>
+            </div>
+            <!-- eleventh step -->
+            <div v-if="currentPage == 6" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <h1 class="text-black font-semibold text-xl uppercase">ID Reference no.</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">SSS No.</label>
+                        <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="sssNo">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">GSIS No.</label>
+                        <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="gsisNo">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">PAG-IBIG No.</label>
+                        <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="pagibigNo">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">PSN No.</label>
+                        <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="psnNo">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">PhilHealth No.</label>
+                        <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="philhealthNo">
+                    </div>
+                </div>
+            </div>
+            <!-- twelve step -->
+            <div v-if="currentPage == 7" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <h1 class="text-black font-semibold text-xl uppercase">Family Background</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Father's Name</label>
+                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="fathersLname">
+                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="fathersFname">
+                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="fathersMname">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Mother's Name</label>
+                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="mothersLname">
+                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="mothersFname">
+                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="mothersMname">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Guardian's Name</label>
+                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="guardiansLname">
+                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="guardiansFname">
+                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="guardiansMname">
+                    </div>
+                </div>
+            </div>
+            <!-- thirteenth step -->
+            <div v-if="currentPage == 8 " class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <h1 class="text-black font-semibold text-xl uppercase">Accomplished By</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <div class="flex flex-col gap-y-1">
+                        <select class="h-10 border pl-2 rounded" v-model="accomplishedBy" @change="changeAccomplisedBy()">
+                            <option disabled selected value="">Accomplished By</option>
+                            <option>Applicant</option>
+                            <option>Guardian</option>
+                            <option>Representative</option>
+                        </select>
+                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="accomplishedByLname">
+                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="accomplishedByFname">
+                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="accomplishedByMname">
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Certifying Physician *</label>
+                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="physicianByLname">
+                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="physicianByFname">
+                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="physicianByMname">
+                    </div>
+                </div>
+            </div>
+            <!-- fourteenth step -->
+            <div v-if="currentPage == 9" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
+                    <h1 v-if="alreadySubmitted" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Application already submitted</h1>
+                    <h1 v-if="imageMissing" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Please upload required images</h1>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Upload 1x1 photo *</label>
+                        <input type="file" class="h-10 rounded" accept=".jpg, .jpeg, .png" @change="handleImageUpload('1x1photo', $event)" required>
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Upload Medical Certificate *</label>
+                        <input type="file" class="h-10 rounded" accept=".jpg, .jpeg, .png" @change="handleImageUpload('medicalCert', $event)" required>
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Upload Barangay Certificate *</label>
+                        <input type="file" class="h-10 rounded" accept=".jpg, .jpeg, .png" @change="handleImageUpload('barangayCert', $event)" required>
+                    </div>
+                    <div class="flex flex-col gap-y-1">
+                        <label class="font-semibold">Control Number</label>
+                        <input type="text" class="h-10 rounded" v-model="controlNumber" required>
+                    </div>
+                </div>
+            </div>
+            <!-- control buttons -->
+            <div v-if="currentPage < 10" class="flex gap-x-10 mt-8 justify-center lg:mx-auto lg:px-0">
+                <button v-if="currentPage !== 1" @click="prev()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
+                    <Icon icon="ri:arrow-left-s-line" class="text-2xl" />
+                    <span>Back</span>
+                </button>
+                <button v-if="currentPage == '9' && !loadingSubmitting" @click="sendApplication()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
+                    <span>Submit</span>
+                    <Icon icon="bi:send-arrow-up" class="text-xl" />
+                </button>
+                <button v-if="loadingSubmitting" @click="sendApplication()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md animate-pulse" disabled>
+                    <span>Loading...</span>
+                </button>
+                <button :class="{ 'ml-auto': currentPage == 1 }"  v-if="currentPage != '9'" @click="next()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
+                    <span>Next</span>
+                    <Icon icon="ri:arrow-right-s-line" class="text-2xl" />
+                </button>
+            </div>
+            <div v-if="currentPage > 9" class="flex flex-col gap-y-10 mt-8 items-center lg:mx-auto lg:px-0">
+                <h1 class="text-3xl font-poppins">Opss nothings here</h1>
+                <button @click="prev()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
+                    <span>Go Back</span>
+                </button>
+            </div>
         </div>
     </section>
 </template>

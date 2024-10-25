@@ -495,7 +495,7 @@ const saveDashboard = () => {
     if(captureDiv.value){
         const pdf = new jsPDF();
         const table = document.getElementById("dashboard");
-        const headerImage = "../../public/header.png"; 
+        const headerImage = "../../header.png"; 
 
         pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 

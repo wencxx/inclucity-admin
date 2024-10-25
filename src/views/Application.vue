@@ -13,8 +13,8 @@
 
                 <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
                     <option value="" disabled>Export</option>
-                    <option>pdf</option>
-                    <option>csv</option>
+                    <option>PDF</option>
+                    <option>CSV</option>
                 </select>
             </div>
         </div>
@@ -55,7 +55,7 @@
                             <td class="text-sm">{{ applicant.barangay }}</td>
                             <td class="text-sm">{{ applicant.dateApplied?.split('T')[0] }}</td>
                             <td class="text-sm">
-                                <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto">
+                                <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 capitalize rounded-md w-fit mx-auto">
                                     {{ applicant.status }}
                                 </div>
                             </td>
@@ -248,14 +248,20 @@
                             <p class="text-gray-600 font-semibold">Type of employment:</p>
                             <p>{{ infoToShow.typeOfEmployment }}</p>
                         </div>
-                    </div>
+                    </div>public/header.png
                 </div>
                 <div v-else class="w-4/5 h-full p-20 grid grid-cols-2 grid-rows-2 gap-10 overflow-auto">
-                    <img :src="infoToShow.photo1x1" alt="1x1 photo" class="w-full h-full">
-                    <img :src="infoToShow.barangayCert" alt="barangay certitificate" class="max-w-full max-h-full">
-                    <img :src="infoToShow.medicalCert" alt="medical certitificate" class="max-w-full max-h-full">
+                    <img :src="infoToShow.photo1x1" @click="zoomImage(infoToShow.photo1x1)" alt="1x1 photo" class="w-full h-full">
+                    <img :src="infoToShow.barangayCert" @click="zoomImage(infoToShow.barangayCert)" alt="barangay certitificate" class="max-w-full max-h-full">
+                    <img :src="infoToShow.medicalCert" @click="zoomImage(infoToShow.medicalCert)" alt="medical certitificate" class="max-w-full max-h-full">
                 </div>
             </div>
+
+            <div @click.self="zoomImg = false" v-if="zoomImg" class="z-50 absolute top-0 left-0 bg-black/25 h-screen w-screen flex items-center justify-center">
+                <div @click="zoomImg = false" class="cursor-pointer bg-black/55 absolute top-4 right-4 p-1 rounded-full"><Icon icon="mdi:close" class="text-white text-xl" /></div>
+                <img :src="imageToZoom" class="max-h-[80%] max-w-[80%]">
+            </div>
+            
         </div>
         </section>
 </template>
@@ -269,6 +275,15 @@ import html2canvas from "html2canvas"
 import emailjs from 'emailjs-com';
 // import * as mammoth from 'mammoth'
 const serverUrl = import.meta.env.VITE_SERVER_URL
+
+
+const imageToZoom = ref('')
+const zoomImg = ref(false)
+
+const zoomImage = (image) => {
+    imageToZoom.value = image
+    zoomImg.value = true
+}
 
 const router = useRouter()
 const route = useRoute()
@@ -621,7 +636,7 @@ const downloadCSV = () => {
 const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
-    const headerImage = "../../public/header.png"; 
+    const headerImage = "../../header.png"; 
 
     pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 

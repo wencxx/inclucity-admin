@@ -1,6 +1,6 @@
 <template>
   <section :class="{ 'lg:flex': isAuth }">
-    <Sidebar v-if="isAuth" :class="sidebarDisplay" @toggleSidebar="toggleSidebar" class="w-3/5 md:w-2/5 lg:w-1/6" />
+    <Sidebar v-if="isAuth" :class="sidebarDisplay" @toggleSidebar="toggleSidebar" class="w-3/5 md:w-2/5 lg:w-1/6 overflow-auto sidebar" />
     <div class="h-screen" :class="{'lg:w-5/6': isAuth}">
       <Header v-if="isAuth" :pageName="$route.name" @toggleSidebar="toggleSidebar" />
       <router-view />
@@ -29,6 +29,8 @@ const authStore = useAuthStore()
 const isAuth = computed(() => authStore.isAuthenticated)
 </script>
 
-<style>
-
+<style scoped>
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
 </style>

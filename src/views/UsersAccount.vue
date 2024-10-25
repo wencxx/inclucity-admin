@@ -22,8 +22,8 @@
                 </button> -->
                 <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-8">
                     <option value="" disabled>Export</option>
-                    <option>pdf</option>
-                    <option>csv</option>
+                    <option>PDf</option>
+                    <option>CSV</option>
                 </select>
             </div>
         </div>
@@ -43,8 +43,8 @@
                         </tr>
                     </thead>
                     <tbody  v-if="!noUsers" class="bg-white text-center">
-                        <tr v-if="paginatedUsers.length > 0" v-for="user in paginatedUsers" :key="user.id" class="border-b border-gray-500">
-                            <td class="md:p-3">{{ user._id }}</td>
+                        <tr v-if="paginatedUsers.length > 0" v-for="(user, index) in paginatedUsers" :key="index" class="border-b border-gray-500">
+                            <td class="md:p-3">{{ index }}</td>
                             <td>{{ user.name }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.contactNumber }}</td>
@@ -101,8 +101,8 @@
                     <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Do you want to archive this user?</p>
                 </div>
                 <div class="flex items-center w-4/5 gap-x-5">
-                    <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="deleteConfirmation = false">Cancel</button>
-                    <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="deleteUser">Delete</button>
+                    <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="deleteConfirmation = false">No</button>
+                    <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="deleteUser">Yes</button>
                     <button v-else class="bg-blue-500 text-white w-1/2 py-1 rounded animate-pulse" disabled>Deleting</button>
                 </div>
             </div>
@@ -298,7 +298,7 @@ const downloadCSV = () => {
 const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
-    const headerImage = "../../public/header.png"; 
+    const headerImage = "../../header.png"; 
 
     pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 

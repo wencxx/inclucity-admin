@@ -12,8 +12,8 @@
                 </button> -->
                 <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
                     <option value="" disabled>Export</option>
-                    <option>pdf</option>
-                    <option>csv</option>
+                    <option>PDF</option>
+                    <option>CSV</option>
                 </select>
             </div>
         </div>
@@ -25,29 +25,29 @@
                 <table class="w-[150dvw] lg:w-full border-collapse" id="userTable">
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
-                            <th class=" text-xs">Control Number</th>
-                            <th class=" text-sm">Full Name</th>
-                            <th class=" text-sm">Email</th>
-                            <th class=" text-sm">Age</th>
+                            <th class="text-xs">Control Number</th>
+                            <th class="text-sm">Full Name</th>
+                            <th class="text-sm">Email</th>
+                            <th class="text-sm">Age</th>
                             <th class="text-sm">Phone Number</th>
-                            <th class=" text-sm">Gender</th>
-                            <th class=" text-sm">Barangay</th>
-                            <th class=" text-xs">Application Date</th> 
-                            <th class=" text-sm">Status</th>
+                            <th class="text-sm">Gender</th>
+                            <th class="text-sm">Barangay</th>
+                            <th class="text-xs">Application Date</th> 
+                            <th class="text-sm">Status</th>
                         </tr>
                     </thead>
                     <tbody v-if="!noApplicants" class="bg-white text-center">
                         <tr v-if="paginatedApplicants.length > 0" v-for="applicant in paginatedApplicants" :key="applicant.id" class="border-b border-gray-500">
                             <td class="md:py-3 text-sm">{{ applicant.controlNumber }}</td>
-                            <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
+                            <td class="md:py-3 text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
                             <td class="text-sm">{{ applicant.user?.email }}</td>
                             <td class="text-sm">{{ applicant.user?.age }}</td>
                             <td class="text-sm">{{ applicant.user?.contactNumber }}</td>
                             <td class="text-sm">{{ applicant.gender }}</td>
-                            <td class="text-sm">{{ applicant.barangay }}</td>
+                            <td class="md:py-3 text-sm">{{ applicant.barangay }}</td>
                             <td class="text-sm">{{ applicant.dateApplied?.split('T')[0] }}</td>
                             <td class="text-sm">
-                                <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto">
+                                <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto capitalize">
                                     {{ applicant.status }}
                                 </div>
                             </td>
@@ -360,7 +360,7 @@ const downloadCSV = () => {
 const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
-    const headerImage = "../../public/header.png"; 
+    const headerImage = "../../header.png"; 
 
     pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 

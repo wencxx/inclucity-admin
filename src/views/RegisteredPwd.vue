@@ -17,8 +17,8 @@
                 </button>
                 <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
                     <option value="" disabled>Export</option>
-                    <option>pdf</option>
-                    <option>csv</option>
+                    <option>PDF</option>
+                    <option>CSV</option>
                 </select>
             </div>
         </div>
@@ -57,7 +57,7 @@
                                 </div>
                             </td>
                             <td class="text-sm">
-                                <div class="bg-red-200 py-1 text-red-700 text-sm px-3 rounded-md w-fit mx-auto">
+                                <div class="bg-red-200 py-1 text-red-700 text-sm px-3 rounded-md w-fit mx-auto capitalize">
                                     {{ applicant.status }}
                                 </div>
                             </td>
@@ -70,12 +70,12 @@
                             </td>
                         </tr>
                         <tr v-else class="border-b border-gray-500 text-center">
-                            <td colspan="10" class="text-sm py-2">Can't find applicant</td>
+                            <td colspan="11" class="text-sm py-2">Can't find applicant</td>
                         </tr>
                     </tbody>
                     <tbody v-else class="bg-white text-center">
                         <tr class="border-b border-gray-500">
-                            <td class="md:py-3" colspan="10">No expired PWD</td>
+                            <td class="md:py-3" colspan="11">No expired PWD</td>
                         </tr>
                     </tbody>
                 </table>
@@ -125,7 +125,7 @@
                                 </div>
                             </td>
                             <td class="text-sm">
-                                <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto">
+                                <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto capitalize">
                                     {{ applicant.status }}
                                 </div>
                             </td>
@@ -183,7 +183,7 @@
         </div>
 
         <!-- add new applicant modal -->
-        <AddNewApplicant v-if="addApplicantModal"  @closeModal="addApplicantModal = false" @addedNewApplicant="getApprovedApplications()"/>
+        <AddNewApplicant v-if="addApplicantModal" @click.self="addApplicantModal = false"  @closeModal="addApplicantModal = false" @addedNewApplicant="getApprovedApplications()"/>
     </section>
 </template>
 
@@ -421,7 +421,7 @@ const downloadPDF = () => {
     if(route.query.page === 'expired'){
         const pdf = new jsPDF();
         const table = document.getElementById("expired");
-        const headerImage = "../../public/header.png"; 
+        const headerImage = "../../header.png"; 
 
         pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 
@@ -450,7 +450,7 @@ const downloadPDF = () => {
     }else{
         const pdf = new jsPDF();
         const table = document.getElementById("active");
-        const headerImage = "../../public/header.png"; 
+        const headerImage = "../../header.png"; 
 
         pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
 
@@ -575,7 +575,7 @@ const generateForm = async (index) => {
             mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         })
 
-        saveAs(output, 'parents-consent.docx')
+        saveAs(output, 'application-form.docx')
     } catch (error) {
         console.error('Error generating document:', error)
     }
