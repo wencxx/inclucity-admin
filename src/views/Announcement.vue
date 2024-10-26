@@ -84,8 +84,7 @@
                     <div class="flex flex-col gap-y-2">
                         <label class="text-lg">Thumbnails</label>
                         <div class="h-44 bg-gray-200 rounded flex items-center justify-center">
-                            <img v-if="tempImage" :src="tempImage" alt="" class="h-full">
-                            <Icon v-else icon="ri:add-box-fill" class="text-5xl" @click="choosePostImage" />
+                            <Icon icon="ri:add-box-fill" class="text-5xl" @click="choosePostImage" />
                             <input type="file" class="hidden" id="file" @change="handleImageChange">
                         </div>
                     </div>

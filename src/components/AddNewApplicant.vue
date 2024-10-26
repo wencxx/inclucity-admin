@@ -523,11 +523,8 @@ const next = () => {
         }
         hasEmptyFields.value = false
         router.push({ query : { page: currentPage.value + 1 }})
-    }else if(currentPage.value === 5){
+    }else if(currentPage.value === 3){
         const pageData = [
-            landlineNo.value,
-            mobileNo.value,
-            emailAddress.value,
             educationalAttainment.value
         ]
 
@@ -543,6 +540,12 @@ const next = () => {
             typeOfEmployment.value,
         ]
 
+        if(statusOfEmployment.value === 'unemployed'){
+            hasEmptyFields.value = false
+            router.push({ query : { page: currentPage.value + 2 }})
+            return
+        }
+
         if (!statusOfEmployment.value || statusOfEmployment.value !== 'unemployed' && pageData.some(field => !field)) {
             hasEmptyFields.value = true
             return;
@@ -551,19 +554,13 @@ const next = () => {
         hasEmptyFields.value = false
         router.push({ query : { page: currentPage.value + 1 }})
     }else if(currentPage.value === 5){
-        if(statusOfEmployment.value !== 'unemployed'){
-            if (!occupation.value) {
-                hasEmptyFields.value = true
-                
-                return;
-            }else{
-                hasEmptyFields.value = false
-                router.push({ query : { page: currentPage.value + 1 }})
-            }
-        }else{
-            hasEmptyFields.value = false
-            router.push({ query : { page: currentPage.value + 1 }})
+        if (!occupation.value && !otherOccupation.value) {
+            hasEmptyFields.value = true
+            return;
         }
+
+        hasEmptyFields.value = false
+        router.push({ query : { page: currentPage.value + 1 }})
     }else if(currentPage.value === 8){
         const pageData = [
             physicianByLname.value,

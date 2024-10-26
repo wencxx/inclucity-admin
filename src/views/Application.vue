@@ -194,61 +194,61 @@
                 </div>
                 <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 h-full p-20 capitalize">
                     <div class="w-full h-full flex flex-col gap-y-10">
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Gender:</p>
-                            <p>{{ infoToShow.gender }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Gender:</p>
+                            <p class="w-2/3">{{ infoToShow.gender }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Contact Details:</p>
-                            <p>{{ infoToShow.mobileNo }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Contact Details:</p>
+                            <p class="w-2/3">{{ infoToShow.mobileNo }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Email Address:</p>
-                            <p>{{ infoToShow.emailAddress }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Email Address:</p>
+                            <p class="w-2/3">{{ infoToShow.emailAddress }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Age:</p>
-                            <p>{{ infoToShow.user?.age }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Age:</p>
+                            <p class="w-2/3">{{ infoToShow.user?.age }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Birthday:</p>
-                            <p>{{ infoToShow.dateOfBirth }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Birthday:</p>
+                            <p class="w-2/3">{{ infoToShow.dateOfBirth }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Civil Status:</p>
-                            <p>{{ infoToShow.civilStatus }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Civil Status:</p>
+                            <p class="w-2/3">{{ infoToShow.civilStatus }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Educational Attainment:</p>
-                            <p>{{ infoToShow.educationalAttainment }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Educational Attainment:</p>
+                            <p class="w-2/3">{{ infoToShow.educationalAttainment }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Status of employment:</p>
-                            <p>{{ infoToShow.statusOfEmployment }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Status of employment:</p>
+                            <p class="w-2/3">{{ infoToShow.statusOfEmployment }}</p>
                         </div>
                     </div>
                     <div class="w-full h-full flex flex-col gap-y-10">
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Type of Disability:</p>
-                            <p>{{ infoToShow.typeOfDisability }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Type of Disability:</p>
+                            <p class="w-2/3">{{ infoToShow.typeOfDisability }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Cause of Disability:</p>
-                            <p>{{ infoToShow.causeOfDisability }} {{ infoToShow.otherCauseOfDisability }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Cause of Disability:</p>
+                            <p class="w-2/3">{{ infoToShow.causeOfDisability }} {{ infoToShow.otherCauseOfDisability }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Occupation:</p>
-                            <p>{{ infoToShow.occupation }} {{ infoToShow.otherOccupation }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Occupation:</p>
+                            <p class="w-2/3">{{ infoToShow.occupation }} {{ infoToShow.otherOccupation }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Accomplished by:</p>
-                            <p>{{ infoToShow.accomplishedBy }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Accomplished by:</p>
+                            <p class="w-2/3">{{ infoToShow.accomplishedBy }}</p>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Type of employment:</p>
-                            <p>{{ infoToShow.typeOfEmployment }}</p>
+                        <div class="flex items-center justif pl-10 gap-x-14">
+                            <p class="text-gray-600 w-1/3 font-semibold">Type of employment:</p>
+                            <p class="w-2/3">{{ infoToShow.typeOfEmployment }}</p>
                         </div>
-                    </div>public/header.png
+                    </div>
                 </div>
                 <div v-else class="w-4/5 h-full p-20 grid grid-cols-2 grid-rows-2 gap-10 overflow-auto">
                     <img :src="infoToShow.photo1x1" @click="zoomImage(infoToShow.photo1x1)" alt="1x1 photo" class="w-full h-full">
