@@ -20,29 +20,29 @@
             </div>
         </div>
        <div class="grid lg:grid-cols-7 place-items-center lg:place-items-start gap-5 mt-5" ref="captureDiv" id="dashboard">
-            <div class="bg-white shadow font-poppins p-3 md:p-5 lg:p-5 w-full lg:w-full lg:h-[20dvh] lg:col-span-7 rounded-md cursor-pointer grid grid-cols-4 gap-x-10" @click="redirect()">
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white">
+            <div class="bg-white shadow font-poppins p-3 md:p-5 lg:p-5 w-full lg:w-full lg:h-[20dvh] lg:col-span-7 rounded-md cursor-pointer grid grid-cols-4 gap-x-10">
+                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectUsers()">
                     <Icon class="text-5xl" icon="heroicons:user-group" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ userTotal }}</p>
                         <p>Registered User</p>
                     </div>
                 </div>
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white">
+                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectExpired()">
                     <Icon class="text-5xl" icon="hugeicons:passport-expired" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ expiredApplicantsCount }}</p>
                         <p>Expired Applicants</p>
                     </div>
                 </div>
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white">
+                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectRejected()">
                     <Icon class="text-5xl" icon="ei:close-o"  />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ rejectedApplicantsCount }}</p>
                         <p>Rejected Applicants</p>
                     </div>
                 </div>
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white">
+                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectApproved()">
                     <Icon class="text-5xl" icon="duo-icons:approved" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ approvedApplicantsCount }}</p>
@@ -522,6 +522,27 @@ const saveDashboard = () => {
             pdf.save("dashboard.pdf");
         });
     }
+}
+
+const redirectUsers = () => {
+    router.push('/user-accounts')
+}
+
+const redirectApproved = () => {
+    router.push('/registered-pwd')
+}
+
+const redirectExpired = () => {
+    router.push({
+        path: '/registered-pwd',
+        query: {
+            page: 'expired'
+        }
+    })
+}
+
+const redirectRejected = () => {
+    router.push('/rejected')
 }
 
 const redirect = () => {

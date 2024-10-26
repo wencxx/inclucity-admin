@@ -44,7 +44,7 @@
                     </thead>
                     <tbody  v-if="!noUsers" class="bg-white text-center">
                         <tr v-if="paginatedUsers.length > 0" v-for="(user, index) in paginatedUsers" :key="index" class="border-b border-gray-500">
-                            <td class="md:p-3">{{ index }}</td>
+                            <td class="md:p-3">{{ users.indexOf(user) }}</td>
                             <td>{{ user.name }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.contactNumber }}</td>

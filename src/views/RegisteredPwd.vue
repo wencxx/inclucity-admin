@@ -131,7 +131,7 @@
                             </td>
                             <td class="text-sm">
                                 <div class="space-x-1">
-                                    <button class="bg-green-200 py-1 text-green-700 text-lg px-3 rounded-md w-fit mx-auto relative group" @click="showReleaseModal(applicant._id)">
+                                    <button class="bg-green-200 cursor-pointer py-1 text-green-700 text-lg px-3 rounded-md w-fit mx-auto relative group" @click="showReleaseModal(applicant._id, applicant.isIdReleased)">
                                         <Icon icon="hugeicons:id" />
                                         <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
                                             <p class="text-xs">Release ID</p>
@@ -166,6 +166,16 @@
                     <div class="flex items-center w-4/5 gap-x-5">
                         <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="releaseModal = false">Cancel</button>
                         <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="releasedId">Release</button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="alreadyReleasedModal" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
+                <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
+                    <Icon icon="uiw:warning" class="text-[6rem] text-gray-500" />
+                    <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">ID already released</p>
+                    <div class="flex justify-center w-4/5">
+                        <button class="bg-green-500 text-white w-1/2 py-1 rounded" @click="alreadyReleasedModal = false">Ok</button>
                     </div>
                 </div>
             </div>
@@ -342,10 +352,15 @@ const toggleExpired = (page) => {
 
 const idToReleased = ref('')
 const releaseModal = ref(false)
+const alreadyReleasedModal = ref(false)
 
-const showReleaseModal = (id) => {
-    idToReleased.value = id
-    releaseModal.value = true
+const showReleaseModal = (id, isReleased) => {
+    if(isReleased){
+        alreadyReleasedModal.value = true
+    }else{
+        idToReleased.value = id
+        releaseModal.value = true
+    }
 }
 
 const releasedId = async () => {
