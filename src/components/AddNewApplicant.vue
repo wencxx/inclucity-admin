@@ -13,19 +13,19 @@
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-3">
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Last Name *</label>
-                        <input type="text" placeholder="Enter last name" class="h-10 border pl-2 rounded" v-model="lastName">
+                        <input type="text" placeholder="Enter last name" class="h-10 border pl-2 rounded capitalize" v-model="lastName">
                     </div>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">First Name *</label>
-                        <input type="text" placeholder="Enter first name" class="h-10 border pl-2 rounded" v-model="firstName">
+                        <input type="text" placeholder="Enter first name" class="h-10 border pl-2 rounded capitalize" v-model="firstName">
                     </div>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Middle Name *</label>
-                        <input type="text" placeholder="Enter middle name" class="h-10 border pl-2 rounded" v-model="middleName">
+                        <input type="text" placeholder="Enter middle name" class="h-10 border pl-2 rounded capitalize" v-model="middleName">
                     </div>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Suffix</label>
-                        <input type="text" placeholder="Enter suffix" class="h-10 border pl-2 rounded" v-model="suffix">
+                        <input type="text" placeholder="Enter suffix" class="h-10 border pl-2 rounded capitalize" v-model="suffix">
                     </div>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Date of Birth *</label>
@@ -71,6 +71,7 @@
                             <option>Visual Disability</option>
                             <option>Cancer (RA11215)</option>
                             <option>Rare Disease (RA107747)</option>
+                            <option v-for="disability in disabilities" :key="disability">{{disability.disability}}</option>
                         </select>
                     </div>
                     <div></div>
@@ -91,7 +92,7 @@
                     </div>
                     <div class="flex flex-col gap-y-2 py-2">
                         <label class="font-semibold">Other cause of disability</label>
-                        <input type="text" class="h-10 border pl-2 rounded" @input="causeOfDisability = ''" v-model="otherCauseOfDisability">
+                        <input type="text" class="h-10 border pl-2 rounded capitalize" @input="causeOfDisability = ''" v-model="otherCauseOfDisability">
                     </div>
                 </div>
                 <h1 class="text-black font-semibold text-xl uppercase">Residence Address</h1>
@@ -237,7 +238,7 @@
                     </div>
                     <div class="flex flex-col gap-y-2 w-4/5 py-2 px-5">
                         <label class="font-semibold">Others</label>
-                        <input type="text" placeholder="Please specify" v-model="otherOccupation" class="h-10 border pl-2 rounded" @input="changeOccupation('input')">
+                        <input type="text" placeholder="Please specify" v-model="otherOccupation" class="h-10 border pl-2 rounded capitalize" @input="changeOccupation('input')">
                     </div>
                 </div>
                 <h1 class="text-black font-semibold text-xl uppercase">Organization Information</h1>
@@ -252,7 +253,7 @@
                     </div>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Office Address</label>
-                        <input type="text" placeholder="Enter address" class="h-10 border pl-2 rounded" v-model="officeAddress">
+                        <input type="text" placeholder="Enter address" class="h-10 border pl-2 rounded capitalize" v-model="officeAddress">
                     </div>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Tel. No.</label>
@@ -292,21 +293,21 @@
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Father's Name</label>
-                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="fathersLname">
-                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="fathersFname">
-                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="fathersMname">
+                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded capitalize" v-model="fathersLname">
+                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded capitalize" v-model="fathersFname">
+                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded capitalize" v-model="fathersMname">
                     </div>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Mother's Name</label>
-                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="mothersLname">
-                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="mothersFname">
-                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="mothersMname">
+                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded capitalize" v-model="mothersLname">
+                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded capitalize" v-model="mothersFname">
+                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded capitalize" v-model="mothersMname">
                     </div>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Guardian's Name</label>
-                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="guardiansLname">
-                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="guardiansFname">
-                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="guardiansMname">
+                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded capitalize" v-model="guardiansLname">
+                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded capitalize" v-model="guardiansFname">
+                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded capitalize" v-model="guardiansMname">
                     </div>
                 </div>
             </div>
@@ -321,15 +322,15 @@
                             <option>Guardian</option>
                             <option>Representative</option>
                         </select>
-                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="accomplishedByLname">
-                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="accomplishedByFname">
-                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="accomplishedByMname">
+                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded capitalize" v-model="accomplishedByLname">
+                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded capitalize" v-model="accomplishedByFname">
+                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded capitalize" v-model="accomplishedByMname">
                     </div>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Certifying Physician *</label>
-                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded" v-model="physicianByLname">
-                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded" v-model="physicianByFname">
-                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded" v-model="physicianByMname">
+                        <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded capitalize" v-model="physicianByLname">
+                        <input type="text" placeholder="First name" class="h-10 border pl-2 rounded capitalize" v-model="physicianByFname">
+                        <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded capitalize" v-model="physicianByMname">
                     </div>
                 </div>
             </div>
@@ -389,6 +390,25 @@ import axios from "axios";
 import { onMounted, onUnmounted, ref, watch, defineEmits } from "vue";
 import { useRoute, useRouter } from 'vue-router'
 const serverUrl = import.meta.env.VITE_SERVER_URL
+
+const disabilities = ref([])
+
+const getDisabilities = async () => {
+    try {
+        const res = await axios.get(`${serverUrl}/get-disabilities`)
+
+        if(res.data === 'No disabilities available') return
+
+        disabilities.value = res.data
+    } catch (error) {
+        console.log(error)   
+    }
+}
+
+
+onMounted(() => {
+    getDisabilities()
+})
 
 const emit = defineEmits(['closeModal', 'addedNewApplicant'])
 
@@ -517,7 +537,7 @@ const next = () => {
             barangay.value
         ]
 
-        if (pageData.some(field => !field)) {
+        if (!causeOfDisability.value  && !otherCauseOfDisability.value || !typeOfDisability.value) {
             hasEmptyFields.value = true
             return;
         }
