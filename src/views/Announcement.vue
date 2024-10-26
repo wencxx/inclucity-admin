@@ -84,8 +84,30 @@
                     <div class="flex flex-col gap-y-2">
                         <label class="text-lg">Thumbnails</label>
                         <div class="h-44 bg-gray-200 rounded flex items-center justify-center">
-                            <Icon icon="ri:add-box-fill" class="text-5xl" @click="choosePostImage" />
-                            <input type="file" class="hidden" id="file" @change="handleImageChange">
+                            <div v-if="tempImage" class="relative group h-full">
+                                <img :src="tempImage" alt="" class="h-full">
+                                <div class="absolute top-2 right-2 bg-gray-500/50 cursor-pointer rounded-full p-[3px] hidden group-hover:block" @click="removeThumbnail">
+                                    <Icon icon="mdi:close" />
+                                </div>
+                            </div>
+                            <Icon v-else icon="ri:add-box-fill" class="text-5xl" @click="choosePostImage" />
+                            <input type="file" class="hidden" accept=".jpg, .jpeg, .png" id="file" @change="handleImageChange">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-y-2">
+                        <label class="text-lg">Media</label>
+                        <div class="h-10 bg-gray-200 rounded flex items-center justify-center gap-x-2" @click.self="choosePostMedia">
+                            <Icon icon="ri:add-box-fill" class="text-3xl" @click="choosePostMedia" />
+                            <p>Add images</p>
+                            <input type="file" class="hidden" accept=".jpg, .jpeg, .png" id="media" multiple @change="handleMediaChange">
+                        </div>
+                        <div class="flex gap-x-2 items-center">
+                            <div v-for="(img, index) in tempMedia" :key="index" class="relative group">
+                                <img :src="img" class="w-16 object-cover rounded aspect-square">
+                                <div class="absolute top-1 bg-gray-500/50 p-[1px] hidden group-hover:block rounded-full cursor-pointer right-1" @click="removeMedia(index)">
+                                    <Icon icon="mdi:close" class="text-sm text-white" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="flex flex-col gap-y-2">
@@ -286,6 +308,7 @@ const postData = ref({
     postDescription: '',
     postUrl: [],
     image: [],
+    media: []
 })
 
 
@@ -299,48 +322,85 @@ const handleImageChange = () => {
     tempImage.value = URL.createObjectURL(uploadedImage)
 }
 
+const removeThumbnail = () => {
+    tempImage.value = null
+    postData.value.image = []
+}
+
+const choosePostMedia = () => {
+    const imageInput = document.getElementById('media')
+
+    imageInput.click()
+}
+
+const tempMedia = ref([])
+
+const handleMediaChange = () => {
+    const files = event.target.files
+
+    for(const file of files){
+        postData.value.media.push(file)
+        const url = URL.createObjectURL(file)
+        tempMedia.value.push(url)
+    }
+}
+
+const removeMedia = (index) => {
+    tempMedia.value.splice(index, 1)
+    postData.value.media.splice(index, 1)
+}
+
 const posting = ref(false)
 const postConfirmation = ref(false)
 
 const addPost = async () => {
-    postData.value.postUrl = tempUrl.value.split(',')
+    postData.value.postUrl = tempUrl.value.split(',');
 
-    const formData = new FormData()
+    const formData = new FormData();
+    formData.append('postTitle', postData.value.postTitle);
+    formData.append('postDescription', postData.value.postDescription);
+    formData.append('postUrl', JSON.stringify(postData.value.postUrl));
 
-    formData.append('postTitle', postData.value.postTitle)
-    formData.append('postDescription', postData.value.postDescription)
-    formData.append('postUrl', JSON.stringify(postData.value.postUrl))
-    formData.append('news', postData.value.image)
+    if (postData.value.image) {
+        formData.append('image', postData.value.image);
+    }
+
+    postData.value.media.forEach(file => {
+        formData.append('media', file); 
+    });
 
     try {
-        posting.value = true
+        posting.value = true;
         const res = await axios.post(`${import.meta.env.VITE_SERVER_URL}/add-announcement`, formData, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
-        })
+        });
 
-        if(res.data === 'news added'){
-            postConfirmation.value = true
+        if (res.data === 'news added') {
+            postConfirmation.value = true;
             postData.value = {
                 postTitle: '',
                 postDescription: '',
                 postUrl: [],
-                image: [],
-            }
-            tempUrl.value = ''
-            tempImage.value = null
-            getNews()
+                image: null, 
+                media: [],   
+            };
+            tempUrl.value = '';
+            tempImage.value = null;
+            tempMedia.value = [];
+            getNews();
         }
 
-        console.log(res.data)
+        console.log(res.data);
     } catch (error) {
-        console.log(error.message)
-    }finally{
-        postModal.value = false
-        posting.value = false
+        console.log(error.message);
+    } finally {
+        postModal.value = false;
+        posting.value = false;
     }
-}
+};
+
 
 const deleteConfirmation = ref(false)
 const deletedSuccessfully = ref(false)
