@@ -222,7 +222,7 @@ const typeCount = (status) => {
 const typeOfExport = ref('')
 
 const handleExportChange = () => {
-    if(typeOfExport.value === 'csv'){
+    if(typeOfExport.value === 'CSV'){
         downloadCSV()
     }else{
         downloadPDF()
