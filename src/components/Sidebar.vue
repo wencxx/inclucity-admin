@@ -11,7 +11,7 @@
                 </router-link>
                 <router-link :to="{ name: 'user Accounts' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
                     <Icon icon="ion:person-outline" class="text-3xl" />
-                    <span class="mt-1">Users</span>
+                    <span class="mt-1">Registered Users</span>
                 </router-link>
                 <div class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink cursor-pointer" @click="recordsDropdown = !recordsDropdown, changeIcon()">
                     <Icon icon="gg:notes" class="text-3xl" />
@@ -32,32 +32,39 @@
                         <span class="mt-1">PWD Employment Status</span>
                     </router-link>
                 </div>
-                <router-link :to="{ name: 'PWD ID application' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink relative">
+                <div class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink cursor-pointer" @click="applicationsDropdown = !applicationsDropdown, changeIconApplications()">
+                    <Icon icon="gg:notes" class="text-3xl" />
+                    <span class="mt-1">Applications</span>
+                    <Icon :icon="applicationsDropdownIcon" class="text-3xl ml-auto" />
+                </div>
+                <div class="bg-gray-600 -mt-1" v-if="applicationsDropdown">
+                    <router-link :to="{ name: 'PWD ID application' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink relative">
                     <Icon icon="mage:edit" class="text-3xl" />
                     <span class="mt-1">PWD ID Application</span>
                     <div v-if="applicantsCount > 0" class="bg-red-500 w-5 aspect-square flex items-center justify-center absolute top-1 left-56 rounded-full">
                         <p class="text-xs">{{ applicantsCount }}</p>
                     </div>
-                </router-link>
-                <router-link :to="{ name: 'PWD ID renewal' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink relative">
-                    <Icon icon="mage:edit" class="text-3xl" />
-                    <span class="mt-1">PWD ID Renewal</span>
-                    <div v-if="renewalCount > 0" class="bg-red-500 w-5 aspect-square flex items-center justify-center absolute top-1 left-56 rounded-full">
-                        <p class="text-xs">{{ renewalCount }}</p>
-                    </div>
-                </router-link>
-                <router-link :to="{ name: 'registered PWD' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
-                    <Icon icon="mingcute:group-3-line" class="text-3xl" />
-                    <span class="mt-1">Registered PWD</span>
-                </router-link>
-                <router-link :to="{ name: 'released ID' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
-                    <Icon icon="hugeicons:id-verified" class="text-3xl" />
-                    <span class="mt-1">Released ID</span>
-                </router-link>
-                <router-link :to="{ name: 'declined Applications' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
-                    <Icon icon="mdi:person-remove-outline" class="text-3xl" />
-                    <span class="mt-1">Declined</span>
-                </router-link>
+                    </router-link>
+                    <router-link :to="{ name: 'PWD ID renewal' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink relative">
+                        <Icon icon="mage:edit" class="text-3xl" />
+                        <span class="mt-1">PWD ID Renewal</span>
+                        <div v-if="renewalCount > 0" class="bg-red-500 w-5 aspect-square flex items-center justify-center absolute top-1 left-56 rounded-full">
+                            <p class="text-xs">{{ renewalCount }}</p>
+                        </div>
+                    </router-link>
+                    <router-link :to="{ name: 'registered PWD' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
+                        <Icon icon="mingcute:group-3-line" class="text-3xl" />
+                        <span class="mt-1">Registered PWD</span>
+                    </router-link>
+                    <!-- <router-link :to="{ name: 'released ID' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
+                        <Icon icon="hugeicons:id-verified" class="text-3xl" />
+                        <span class="mt-1">Released ID</span>
+                    </router-link> -->
+                    <router-link :to="{ name: 'declined Applications' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
+                        <Icon icon="mdi:person-remove-outline" class="text-3xl" />
+                        <span class="mt-1">Rejected</span>
+                    </router-link>
+                </div>
                 <router-link :to="{ name: 'announcement' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
                     <Icon icon="ri:telegram-2-line" class="text-3xl" />
                     <span class="mt-1">Announcement</span>
@@ -82,10 +89,24 @@
                     </router-link>
                 </div>
             </div>
-            <button class="mt-auto flex items-center justify-center gap-x-2" @click="logout">
+            <button class="mt-auto flex items-center justify-center gap-x-2" @click="willLogout = true">
                 <Icon icon="mdi-light:logout" class="text-4xl" />
                 Logout
             </button>
+
+            <!-- log out confirmation -->
+            <div v-if="willLogout" class="fixed top-0 left-0 h-screen w-screen bg-black/10 flex items-center justify-center">
+                <div class="bg-white rounded shadow w-80 h-56 flex flex-col gap-y-10 items-center justify-center">
+                    <div class="flex flex-col items-center gap-y-2">
+                        <Icon icon="material-symbols-light:warning" class="text-5xl text-orange-500" />
+                        <h1 class="font-semibold text-black">Are you sure you want to logout?</h1>
+                    </div>
+                    <div class="flex gap-x-5">
+                        <button @click="willLogout = false" class="w-20 border border-custom-primary text-custom-primary rounded">No</button>
+                        <button @click="logout" class="w-20 border border-transparent bg-custom-primary text-white rounded">Yes</button>
+                    </div>
+                </div>
+            </div>
         </nav>
     </aside>
 </template>
@@ -97,6 +118,8 @@ import { useRouter } from 'vue-router'
 const serverUrl = import.meta.env.VITE_SERVER_URL
 import axios from 'axios'
 
+const willLogout = ref(false)
+
 const authStore = useAuthStore()
 const router = useRouter()
 
@@ -104,18 +127,25 @@ const emit = defineEmits(['toggleSidebar'])
 
 const recordsDropdown = ref(false)
 const archivesDropdown = ref(false)
-const archivesDropdownIcon = ref('iconamoon:arrow-up-2-duotone')
-const recordsDropdownIcon = ref('iconamoon:arrow-up-2-duotone')
+const applicationsDropdown = ref(false)
+const archivesDropdownIcon = ref('iconamoon:arrow-down-2-duotone')
+const recordsDropdownIcon = ref('iconamoon:arrow-down-2-duotone')
+const applicationsDropdownIcon = ref('iconamoon:arrow-down-2-duotone')
 
 
 const changeIcon = () => {
-    if(recordsDropdown.value) return recordsDropdownIcon.value = 'iconamoon:arrow-down-2-duotone'
+    if(recordsDropdown.value) return recordsDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
     recordsDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
 }
 
 const changeIconArchives = () => {
-    if(archivesDropdown.value) return archivesDropdownIcon.value = 'iconamoon:arrow-down-2-duotone'
+    if(archivesDropdown.value) return archivesDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
     archivesDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
+}
+
+const changeIconApplications = () => {
+    if(applicationsDropdown.value) return applicationsDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
+    applicationsDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
 }
 
 const toggleSidebar = () => {

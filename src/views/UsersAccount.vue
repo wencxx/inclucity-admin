@@ -12,10 +12,10 @@
                     <option>10-23-2025</option>
                     <option>10-23-2026</option>
                 </select> -->
-                <!-- <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center">
+                <button @click="addNewUser = true" class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center">
                     <Icon icon="typcn:user-add-outline" />
                     Add
-                </button> -->
+                </button>
                 <!-- <button class="bg-custom-primary text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center h-8 gap-x-1 w-24 justify-center" @click="downloadCSV">
                     <Icon icon="ph:export" />
                     Export
@@ -39,17 +39,19 @@
                             <th class="md:w-2/12">Phone Number</th>
                             <th class="md:w-2/12">Address</th>
                             <th class="md:w-1/12">Gender</th>
+                            <th class="md:w-1/12">Birthdate</th>
                             <th class="md:w-1/12">Action</th>
                         </tr>
                     </thead>
                     <tbody  v-if="!noUsers" class="bg-white text-center">
                         <tr v-if="paginatedUsers.length > 0" v-for="(user, index) in paginatedUsers" :key="index" class="border-b border-gray-500">
-                            <td class="md:p-3">{{ users.indexOf(user) }}</td>
+                            <td class="md:p-3">{{ formatNumber(users.indexOf(user) + 1) }}</td>
                             <td>{{ user.name }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.contactNumber }}</td>
                             <td>{{ user.address }}</td>
                             <td>{{ user.gender }}</td>
+                            <td>{{ formatBday(user.age) }}</td>
                             <td>
                                 <div class="flex justify-center w-full gap-x-2">
                                     <div class="relative group">
@@ -138,17 +140,28 @@
                 </div>
             </div>
         </div>
+        <!-- add new user -->
+        <addNewUserCom @addedNewUser="addedNewUser" @closeModal="addNewUser = false" v-if="addNewUser" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center"  />
     </section>
 </template>
 
 <script setup>
+import addNewUserCom from '../components/AddNewUser.vue'
 import { computed, onMounted, ref } from "vue";
 import axios from 'axios'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
+import moment from 'moment'
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
-const users = ref(null)
+const addNewUser = ref(false)
+
+const addedNewUser = (data) => {
+    addNewUser.value = false
+    users.value.push(data)
+}
+
+const users = ref([])
 const noUsers = ref(false)
 
 const getAllUsers = async () => {
@@ -162,9 +175,18 @@ const getAllUsers = async () => {
         if(res.data === 'no users found') return noUsers.value = true
         
         users.value = res.data
+        // console.log(res.data)
     } catch (error) {
         console.log(error)
     }
+}
+
+const formatBday = (date) => {
+    return moment(date).format('ll')
+}
+
+const formatNumber = (number) => {
+    return number.toString().padStart(4, '0');
 }
 
 const searchQuery = ref('');
@@ -291,7 +313,7 @@ const downloadCSV = () => {
     let blob = new Blob([csvContent], { type: 'text/csv' });
     let link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'table.csv';
+    link.download = 'Table.csv';
     link.click();
 }
 
@@ -322,7 +344,7 @@ const downloadPDF = () => {
             heightLeft -= pageHeight - 40;
         }
 
-        pdf.save("table.pdf");
+        pdf.save("Table.pdf");
     });
 
     typeOfExport.value = ''

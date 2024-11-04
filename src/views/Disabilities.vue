@@ -15,11 +15,40 @@
                 <table class="w-[150dvw] lg:w-full border-collapse">
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
+                            <th class="md:w-2/12">DEFAULT DISABILITIES</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white text-center">
+                        <tr v-if="paginatedDisabilities.length > 0" v-for="(disability, index) in paginatedDisabilities" :key="index" class="border-b border-gray-500">
+                            <td v-if="index < 10" class="md:py-3">{{ disability.disability }}</td>
+                        </tr>
+                        <tr v-else class="border-b border-gray-500">
+                            <td colspan="4" class="py-3">Can't find disabilities</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- pagination -->
+            <div class="flex gap-x-2 font-manrope ml-auto">
+                <button class="bg-custom-primary text-white w-6 aspect-square flex justify-center items-center rounded-full" @click="prevPage()" :disabled="currentPage == 1">
+                    <Icon icon="fe-arrow-left" />
+                </button>
+                <p>Page {{ currentPage }} of {{ totalPages }}</p>
+                <button class="bg-custom-primary text-white w-6 aspect-square flex justify-center items-center rounded-full" @click="nextPage()" :disabled="currentPage == totalPages">
+                    <Icon icon="fe-arrow-right" />
+                </button>
+            </div>
+        </div>
+        <div class="w-full mt-12 flex flex-col gap-y-5">
+            <div class="w-full overflow-x-auto  rounded-md">
+                <table class="w-[150dvw] lg:w-full border-collapse">
+                    <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
+                        <tr class="w-full">
                             <th class="md:w-2/12">DISABILITY</th>
                             <th class="md:w-2/12">ACTIONS</th>
                         </tr>
                     </thead>
-                    <tbody v-if="disabilities.length > 0" class="bg-white text-center">
+                    <tbody class="bg-white text-center">
                         <tr v-if="paginatedDisabilities.length > 0" v-for="disability in paginatedDisabilities" :key="disability._id" class="border-b border-gray-500">
                             <td class="md:py-3">{{ disability.disability }}</td>
                             <td>
@@ -40,12 +69,7 @@
                             </td>
                         </tr>
                         <tr v-else class="border-b border-gray-500">
-                            <td colspan="4" class="py-3">Can't find post</td>
-                        </tr>
-                    </tbody>
-                    <tbody v-else>
-                        <tr>
-                            <td colspan="5" class=" text-center py-1 border-b border-gray-500">No disabilities to show</td>
+                            <td colspan="4" class="py-3">Can't find disabilities</td>
                         </tr>
                     </tbody>
                 </table>
@@ -160,7 +184,7 @@ const getDisabilities = async () => {
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/get-disability`)
 
         if(res.data === 'No disabilities available') return
-        
+
         disabilities.value = res.data
     } catch (error) {
         console.log(error)

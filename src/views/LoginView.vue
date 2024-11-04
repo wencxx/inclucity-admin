@@ -1,5 +1,6 @@
 <template>
   <section id="section" class="h-screen bg-center bg-no-repeat bg-cover flex items-center justify-center font-poppins">
+    <div class="h-screen w-screen absolute bg-white/20 top-0 left-0"></div>
     <form @submit.prevent="login" class="glass-morphism w-3/4 h-fit py-5 lg:py-10 md:w-2/4 lg:w-1/4 flex flex-col items-center px-10">
         <!-- logo -->
         <div class="w-3/4 lg:w-3/4 flex justify-center">
@@ -98,6 +99,6 @@ const login = async () => {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 #section {
-    background-image: url('../assets/background.jpg');
+    background-image: url('../assets/bg3.jpg');
 }
 </style>

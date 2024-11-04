@@ -629,7 +629,7 @@ const downloadCSV = () => {
     let blob = new Blob([csvContent], { type: 'text/csv' });
     let link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'table.csv';
+    link.download = 'Table.csv';
     link.click();
 }
 
@@ -660,7 +660,7 @@ const downloadPDF = () => {
             heightLeft -= pageHeight - 40;
         }
 
-        pdf.save("table.pdf");
+        pdf.save("Table.pdf");
     });
 
     typeOfExport.value = ''

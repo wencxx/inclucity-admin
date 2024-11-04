@@ -24,7 +24,7 @@
                 <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectUsers()">
                     <Icon class="text-5xl" icon="heroicons:user-group" />
                     <div class="flex flex-col gap-2 items-end">
-                        <p class="text-2xl font-bold">{{ userTotal }}</p>
+                        <p class="text-2xl font-bold">{{ userTotal - 1 }}</p>
                         <p>Registered User</p>
                     </div>
                 </div>
@@ -519,7 +519,7 @@ const saveDashboard = () => {
                 heightLeft -= pageHeight - 40;
             }
 
-            pdf.save("dashboard.pdf");
+            pdf.save("Dashboard.pdf");
         });
     }
 }

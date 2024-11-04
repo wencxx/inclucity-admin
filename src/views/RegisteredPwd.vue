@@ -29,14 +29,14 @@
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
                             <th class="text-xs">CONTROL NUMBER</th>
-                            <th class="text-sm">Full Name</th>
+                            <th class="text-sm">FULL NAME</th>
                             <th class="text-sm">EMAIL</th>
                             <th class="text-sm">AGE</th>
                             <th class="text-sm">GENDER</th>
                             <th class="text-sm">BARANGAY</th>
                             <th class="text-sm">DISABILITY</th>
                             <th class="text-xs">DATE REGISTERED</th>
-                            <th class="text-sm">Application type</th>
+                            <th class="text-sm">APPLICATION TYPE</th>
                             <th class="text-sm">STATUS</th>
                             <th class="text-sm">ACTION</th>
                         </tr>
@@ -97,16 +97,16 @@
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
                             <th class="text-xs">CONTROL NUMBER</th>
-                            <th class="text-sm">Full Name</th>
+                            <th class="text-sm">FULL NAME</th>
                             <th class="text-sm">EMAIL</th>
                             <th class="text-sm">AGE</th>
                             <th class="text-sm">GENDER</th>
                             <th class="text-sm">BARANGAY</th>
                             <th class="text-sm">DISABILITY</th>
                             <th class="text-xs">DATE REGISTERED</th>
-                            <th class="text-sm">Application type</th>
+                            <th class="text-sm">APPLICATION TYPE</th>
                             <th class="text-sm">STATUS</th>
-                            <th class="text-sm">Action</th>
+                            <th class="text-sm">ACTION</th>
                         </tr>
                     </thead>
                     <tbody v-if="!noApplicants" class="bg-white text-center">
@@ -126,17 +126,20 @@
                             </td>
                             <td class="text-sm">
                                 <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto capitalize">
-                                    {{ applicant.status }}
+                                    <select class="bg-transparent" @change="showReleaseModal(applicant._id, applicant.isIdReleased, $event.target.value)">
+                                        <option value="false">Unreleased</option>
+                                        <option value="true" :selected="applicant.isIdReleased">Released</option>
+                                    </select>
                                 </div>
                             </td>
                             <td class="text-sm">
                                 <div class="space-x-1">
-                                    <button class="bg-green-200 cursor-pointer py-1 text-green-700 text-lg px-3 rounded-md w-fit mx-auto relative group" @click="showReleaseModal(applicant._id, applicant.isIdReleased)">
+                                    <!-- <button class="bg-green-200 cursor-pointer py-1 text-green-700 text-lg px-3 rounded-md w-fit mx-auto relative group" @click="showReleaseModal(applicant._id, applicant.isIdReleased)">
                                         <Icon icon="hugeicons:id" />
                                         <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
                                             <p class="text-xs">Release ID</p>
                                         </div>
-                                    </button>
+                                    </button> -->
                                     <button class="bg-gray-200 py-1 text-gray-700 text-lg px-3 rounded-md w-fit mx-auto relative group" @click="generateForm(index)">
                                         <Icon icon="fluent:form-24-regular" />
                                         <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
@@ -152,7 +155,7 @@
                     </tbody>
                     <tbody v-else class="bg-white text-center">
                         <tr class="border-b border-gray-500">
-                            <td class="md:py-3" colspan="10">No registered PWD</td>
+                            <td class="md:py-3" colspan="11">No registered PWD</td>
                         </tr>
                     </tbody>
                 </table>
@@ -166,6 +169,17 @@
                     <div class="flex items-center w-4/5 gap-x-5">
                         <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="releaseModal = false">Cancel</button>
                         <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="releasedId">Release</button>
+                    </div>
+                </div>
+            </div>
+            <!-- unreleaseModal -->
+            <div v-if="unreleaseModal" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
+                <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
+                    <Icon icon="uiw:warning" class="text-[6rem] text-gray-500" />
+                    <p class="text-gray-500 font-manrope text-lg w-4/5 text-center">Unrelease ID?</p>
+                    <div class="flex items-center w-4/5 gap-x-5">
+                        <button class="bg-red-500 text-white w-1/2 py-1 rounded" @click="unreleaseModal = false">Cancel</button>
+                        <button v-if="!deleting" class="bg-blue-500 text-white w-1/2 py-1 rounded" @click="releasedId">Unrelease</button>
                     </div>
                 </div>
             </div>
@@ -255,6 +269,7 @@ const getApprovedApplications = async () => {
 
         if(res.data === 'no data') return noApplicants.value = true
         
+        addApplicantModal.value = false
         applicants.value = res.data
     } catch (error) {
         console.log(error)
@@ -352,26 +367,36 @@ const toggleExpired = (page) => {
 
 const idToReleased = ref('')
 const releaseModal = ref(false)
+const unreleaseModal = ref(false)
 const alreadyReleasedModal = ref(false)
+const releaseStatus = ref(true)
 
-const showReleaseModal = (id, isReleased) => {
-    if(isReleased){
+const showReleaseModal = (id, isReleased, value) => {
+    if(isReleased == value){
         alreadyReleasedModal.value = true
     }else{
         idToReleased.value = id
-        releaseModal.value = true
+        releaseStatus.value = value
+        if(value == 'true'){
+            releaseModal.value = true
+        }else{
+            unreleaseModal.value = true
+        }
     }
 }
 
 const releasedId = async () => {
     try {
-        const res = await axios.patch(`${serverUrl}/release-id/${idToReleased.value}`, {}, {
+        const res = await axios.patch(`${serverUrl}/release-id/${idToReleased.value}`, {
+            status: releaseStatus.value
+        }, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
 
         releaseModal.value = false
+        unreleaseModal.value = false
         console.log(res.data)
     } catch (error) {
         console.log(error)
@@ -425,7 +450,7 @@ const downloadCSV = () => {
         let blob = new Blob([csvContent], { type: 'text/csv' });
         let link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'table.csv';
+        link.download = 'Table.csv';
         link.click();
     }
 
@@ -460,7 +485,7 @@ const downloadPDF = () => {
                 heightLeft -= pageHeight - 40;
             }
 
-            pdf.save("table.pdf");
+            pdf.save("Table.pdf");
         });
     }else{
         const pdf = new jsPDF();
@@ -489,7 +514,7 @@ const downloadPDF = () => {
                 heightLeft -= pageHeight - 40;
             }
 
-            pdf.save("table.pdf");
+            pdf.save("Table.pdf");
         });
     }
 
@@ -581,6 +606,16 @@ const generateForm = async (index) => {
             livein: applicantData.civilStatus === 'Cohabitation' ? '◾' : '◽',
             married: applicantData.civilStatus === 'Married' ? '◾' : '◽',
             widow: applicantData.civilStatus === 'Widow/er' ? '◾' : '◽',
+            d: applicantData.typeOfDisability === 'Deaf/Hard of hearing' ? '◾' : '◽',
+            id: applicantData.typeOfDisability === 'Intellectual Disability' ? '◾' : '◽',
+            ld: applicantData.typeOfDisability === 'Learning Disability' ? '◾' : '◽',
+            md: applicantData.typeOfDisability === 'Mental Disability' ? '◾' : '◽',
+            pd: applicantData.typeOfDisability === 'Physical Disability (Orthopedic)' ? '◾' : '◽',
+            psd: applicantData.typeOfDisability === 'Psychosocial Disability' ? '◾' : '◽',
+            sli: applicantData.typeOfDisability === 'Speech and Language Impairment' ? '◾' : '◽',
+            vd: applicantData.typeOfDisability === 'Visual Disability' ? '◾' : '◽',
+            c: applicantData.typeOfDisability === 'Cancer (RA11215)' ? '◾' : '◽',
+            rd: applicantData.typeOfDisability === 'Rare Disease (RA107747)' ? '◾' : '◽',
         })
 
         doc.render()
@@ -590,7 +625,7 @@ const generateForm = async (index) => {
             mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         })
 
-        saveAs(output, 'application-form.docx')
+        saveAs(output, 'Application-form.docx')
     } catch (error) {
         console.error('Error generating document:', error)
     }

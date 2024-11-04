@@ -16,7 +16,6 @@
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
                             <th class="md:w-1/12">TITLE</th>
-                            <th class="md:w-2/12">FILE ATTACH</th>
                             <th class="md:w-2/12">DATE POSTED</th>
                             <th class="md:w-2/12">ACTIONS</th>
                         </tr>
@@ -24,7 +23,6 @@
                     <tbody v-if="announcements.length > 0" class="bg-white text-center">
                         <tr v-if="paginatedAnnouncements.length > 0" v-for="announcement in paginatedAnnouncements" :key="announcement._id" class="border-b border-gray-500">
                             <td class="md:py-3">{{ announcement.postTitle }}</td>
-                            <td>{{ announcement.imageName.split('/').pop()    }}</td>
                             <td>{{ announcement.datePosted.split('T')[0] }}</td>
                             <td>
                                 <div class="flex items-center justify-center gap-x-2">
@@ -81,7 +79,7 @@
                         <label class="text-lg">Title</label>
                         <input type="text" v-model="postData.postTitle" class="bg-gray-200 pl-2 focus:outline-none rounded h-10">
                     </div>
-                    <div class="flex flex-col gap-y-2">
+                    <!-- <div class="flex flex-col gap-y-2">
                         <label class="text-lg">Thumbnails</label>
                         <div class="h-44 bg-gray-200 rounded flex items-center justify-center">
                             <div v-if="tempImage" class="relative group h-full">
@@ -93,7 +91,7 @@
                             <Icon v-else icon="ri:add-box-fill" class="text-5xl" @click="choosePostImage" />
                             <input type="file" class="hidden" accept=".jpg, .jpeg, .png" id="file" @change="handleImageChange">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="flex flex-col gap-y-2">
                         <label class="text-lg">Media</label>
                         <div class="h-10 bg-gray-200 rounded flex items-center justify-center gap-x-2" @click.self="choosePostMedia">
@@ -152,7 +150,7 @@
         <div v-if="deletedSuccessfully" class="absolute top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
             <div class="w-[20dvw] h-1/3 bg-white rounded-md flex flex-col items-center justify-between py-10">
                 <Icon icon="lets-icons:check-fill" class="text-[6rem] text-red-500" />
-                <p class="text-gray-500 font-manrope text-lg">The post has been successfully deleted.</p>
+                <p class="text-gray-500 font-manrope text-lg text-center">The post has been successfully deleted.</p>
                 <button class="border border-green-500 text-green-500 w-1/4 py-1 rounded" @click="deletedSuccessfully = false">Ok</button>
             </div>
         </div>
@@ -377,7 +375,7 @@ const addPost = async () => {
             }
         });
 
-        if (res.data === 'news added') {
+        if (res.data == 'News added') {
             postConfirmation.value = true;
             postData.value = {
                 postTitle: '',

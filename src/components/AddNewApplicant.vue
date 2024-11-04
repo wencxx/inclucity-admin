@@ -24,7 +24,7 @@
                         <input type="text" placeholder="Enter middle name" class="h-10 border pl-2 rounded capitalize" v-model="middleName">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Suffix</label>
+                        <label class="font-semibold">Suffix (optional)</label>
                         <input type="text" placeholder="Enter suffix" class="h-10 border pl-2 rounded capitalize" v-model="suffix">
                     </div>
                     <div class="flex flex-col gap-y-1">
@@ -61,16 +61,6 @@
                         <label class="font-semibold">Select type of disability*</label>
                         <select class="h-10 border pl-2 rounded" v-model="typeOfDisability" required>
                             <!-- <option :value="typeOfDisability" disabled>Select type of disability</option> -->
-                            <option>Deaf/Hard of hearing</option>
-                            <option>Intellectual Disability</option>
-                            <option>Learning Disability</option>
-                            <option>Mental Disability</option>
-                            <option>Physical Disability(Orthopedic)</option>
-                            <option>Psychosocial Disability</option>
-                            <option>Speach and Language Impairment</option>
-                            <option>Visual Disability</option>
-                            <option>Cancer (RA11215)</option>
-                            <option>Rare Disease (RA107747)</option>
                             <option v-for="disability in disabilities" :key="disability">{{disability.disability}}</option>
                         </select>
                     </div>
@@ -109,21 +99,28 @@
                             <option value="Atlag">Atlag</option>
                             <option value="Babatnin">Babatnin</option>
                             <option value="Bagna">Bagna</option>
-                            <option value="Bangkong Malapad">Bangkong Malapad</option>
+                            <option value="Bagong Bayan">Bagong Bayan</option>
+                            <option value="Balayong">Balayong</option>
+                            <option value="Balite">Balite</option>
+                            <option value="Bangkal">Bangkal</option>
+                            <option value="Barihan">Barihan</option>
                             <option value="Bulihan">Bulihan</option>
                             <option value="Bungahan">Bungahan</option>
                             <option value="Caingin">Caingin</option>
+                            <option value="Calero">Calero</option>
                             <option value="Caliligawan">Caliligawan</option>
                             <option value="Canalate">Canalate</option>
                             <option value="Caniogan">Caniogan</option>
-                            <option value="Crispiniano C. Valenzuela">Crispiniano C. Valenzuela</option>
+                            <option value="Cofradia">Cofradia</option>
+                            <option value="Catmon">Catmon</option>
                             <option value="Dakila">Dakila</option>
                             <option value="Guinhawa">Guinhawa</option>
                             <option value="Liyang">Liyang</option>
+                            <option value="Ligas">Ligas</option>
+                            <option value="Longos">Longos</option>
                             <option value="Lugam">Lugam</option>
                             <option value="Look 1st">Look 1st</option>
                             <option value="Look 2nd">Look 2nd</option>
-                            <option value="Longos">Longos</option>
                             <option value="Mabolo">Mabolo</option>
                             <option value="Mambog">Mambog</option>
                             <option value="Masile">Masile</option>
@@ -140,9 +137,14 @@
                             <option value="San Pablo">San Pablo</option>
                             <option value="Santiago">Santiago</option>
                             <option value="Santor">Santor</option>
+                            <option value="San Vicente">San Vicente</option>
                             <option value="Santisima Trinidad">Santisima Trinidad</option>
+                            <option value="Santo Cristo">Santo Cristo</option>
+                            <option value="Santo Rosario">Santo Rosario</option>
+                            <option value="Santo Nino">Santo Nino</option>
                             <option value="Sumapang Bata">Sumapang Bata</option>
                             <option value="Sumapang Matanda">Sumapang Matanda</option>
+                            <option value="Taal">Taal</option>
                             <option value="Tikay">Tikay</option>
                             </select>
                     </div>
@@ -153,15 +155,15 @@
                 <h1 class="text-black font-semibold text-xl uppercase">Contact Details</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Landline No.</label>
+                        <label class="font-semibold">Landline No. (optional)</label>
                         <input type="number" placeholder="044-XXXXXX" class="h-10 border pl-2 rounded" v-model="landlineNo">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Mobile No.</label>
+                        <label class="font-semibold">Mobile No. *</label>
                         <input type="number" placeholder="639-XXX-XXX" class="h-10 border pl-2 rounded" v-model="mobileNo">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Email Address</label>
+                        <label class="font-semibold">Email Address (optional)</label>
                         <input type="email" placeholder="xxxxxxxx@gmail.com" class="h-10 border pl-2 rounded" v-model="emailAddress">
                     </div>
                 </div>
@@ -244,19 +246,19 @@
                 <h1 class="text-black font-semibold text-xl uppercase">Organization Information</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Organization Affiliated</label>
+                        <label class="font-semibold">Organization Affiliated (optional)</label>
                         <input type="number" placeholder="044-XXXXXX" class="h-10 border pl-2 rounded" v-model="organizationAffiliated">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Contact Information</label>
+                        <label class="font-semibold">Contact Information (optional)</label>
                         <input type="number" placeholder="639-XXX-XXX-XXX" class="h-10 border pl-2 rounded" v-model="contactInformation">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Office Address</label>
+                        <label class="font-semibold">Office Address (optional)</label>
                         <input type="text" placeholder="Enter address" class="h-10 border pl-2 rounded capitalize" v-model="officeAddress">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Tel. No.</label>
+                        <label class="font-semibold">Tel. No. (optional)</label>
                         <input type="number" placeholder="XXXX-XXXX" class="h-10 border pl-2 rounded" v-model="telNo">
                     </div>
                 </div>
@@ -266,23 +268,23 @@
                 <h1 class="text-black font-semibold text-xl uppercase">ID Reference no.</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">SSS No.</label>
+                        <label class="font-semibold">SSS No. (optional)</label>
                         <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="sssNo">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">GSIS No.</label>
+                        <label class="font-semibold">GSIS No. (optional)</label>
                         <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="gsisNo">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">PAG-IBIG No.</label>
+                        <label class="font-semibold">PAG-IBIG No. (optional)</label>
                         <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="pagibigNo">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">PSN No.</label>
+                        <label class="font-semibold">PSN No. (optional)</label>
                         <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="psnNo">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">PhilHealth No.</label>
+                        <label class="font-semibold">PhilHealth No. (optional)</label>
                         <input type="number" placeholder="XXXXXXXX" class="h-10 border pl-2 rounded" v-model="philhealthNo">
                     </div>
                 </div>
@@ -292,19 +294,19 @@
                 <h1 class="text-black font-semibold text-xl uppercase">Family Background</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Father's Name</label>
+                        <label class="font-semibold">Father's Name (optional)</label>
                         <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded capitalize" v-model="fathersLname">
                         <input type="text" placeholder="First name" class="h-10 border pl-2 rounded capitalize" v-model="fathersFname">
                         <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded capitalize" v-model="fathersMname">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Mother's Name</label>
+                        <label class="font-semibold">Mother's Name (optional)</label>
                         <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded capitalize" v-model="mothersLname">
                         <input type="text" placeholder="First name" class="h-10 border pl-2 rounded capitalize" v-model="mothersFname">
                         <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded capitalize" v-model="mothersMname">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Guardian's Name</label>
+                        <label class="font-semibold">Guardian's Name (optional)</label>
                         <input type="text" placeholder="Last name" class="h-10 border pl-2 rounded capitalize" v-model="guardiansLname">
                         <input type="text" placeholder="First name" class="h-10 border pl-2 rounded capitalize" v-model="guardiansFname">
                         <input type="text" placeholder="Middle name" class="h-10 border pl-2 rounded capitalize" v-model="guardiansMname">
@@ -313,7 +315,7 @@
             </div>
             <!-- thirteenth step -->
             <div v-if="currentPage == 8 " class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
-                <h1 class="text-black font-semibold text-xl uppercase">Accomplished By</h1>
+                <h1 class="text-black font-semibold text-xl uppercase">Accomplished By (optional)</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
                         <select class="h-10 border pl-2 rounded" v-model="accomplishedBy" @change="changeAccomplisedBy()">
@@ -352,8 +354,8 @@
                         <input type="file" class="h-10 rounded" accept=".jpg, .jpeg, .png" @change="handleImageUpload('barangayCert', $event)" required>
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Control Number</label>
-                        <input type="text" class="h-10 rounded" v-model="controlNumber" required>
+                        <label class="font-semibold">Control Number*</label>
+                        <input type="text" class="h-10 rounded border pl-2" placeholder="Control Number" v-model="controlNumber" required>
                     </div>
                 </div>
             </div>
@@ -706,6 +708,7 @@ const sendApplication = async () => {
         if(res.data === 'already submitted') return alreadySubmitted.value = true
 
         emit('addedNewApplicant')
+        router.push({ query : { }})
     } catch (error) {
         if (error.response) {
             console.error('Response data:', error.response.data);
