@@ -38,8 +38,8 @@
                             <th class="md:w-2/12">ACTIONS</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white text-center">
-                        <tr v-if="paginatedDisabilities.length > 0" v-for="disability in paginatedDisabilities" :key="disability._id" class="border-b border-gray-500">
+                    <tbody v-if="paginatedDisabilities.length > 0" class="bg-white text-center">
+                        <tr v-for="(disability, index) in paginatedDisabilities" :key="index" class="border-b border-gray-500">
                             <td class="md:py-3">{{ disability.disability }}</td>
                             <td>
                                 <div class="flex items-center justify-center gap-x-2">
@@ -58,7 +58,9 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr v-else class="border-b border-gray-500">
+                    </tbody>
+                    <tbody v-else class="bg-white text-center">
+                        <tr class="border-b border-gray-500">
                             <td colspan="4" class="py-3">Can't find disabilities</td>
                         </tr>
                     </tbody>
@@ -198,8 +200,9 @@ const filtereddisabilities = computed(() => {
 const paginatedDisabilities = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage.value
     const end = start + itemsPerPage.value
-    return filtereddisabilities.value.slice(start, end)
+    return filtereddisabilities.value.slice(10).slice(start, end)
 })
+
 
 const prevPage = () => {
   if (currentPage.value > 1) {
