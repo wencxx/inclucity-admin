@@ -19,7 +19,7 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white text-center">
-                        <tr v-if="paginatedDisabilities.length > 0" v-for="(disability, index) in paginatedDisabilities" :key="index" class="border-b border-gray-500">
+                        <tr v-if="disabilities.length > 0" v-for="(disability, index) in disabilities" :key="index" class="border-b border-gray-500">
                             <td v-if="index < 10" class="md:py-3">{{ disability.disability }}</td>
                         </tr>
                         <tr v-else class="border-b border-gray-500">
@@ -27,16 +27,6 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-            <!-- pagination -->
-            <div class="flex gap-x-2 font-manrope ml-auto">
-                <button class="bg-custom-primary text-white w-6 aspect-square flex justify-center items-center rounded-full" @click="prevPage()" :disabled="currentPage == 1">
-                    <Icon icon="fe-arrow-left" />
-                </button>
-                <p>Page {{ currentPage }} of {{ totalPages }}</p>
-                <button class="bg-custom-primary text-white w-6 aspect-square flex justify-center items-center rounded-full" @click="nextPage()" :disabled="currentPage == totalPages">
-                    <Icon icon="fe-arrow-right" />
-                </button>
             </div>
         </div>
         <div class="w-full mt-12 flex flex-col gap-y-5">
@@ -200,8 +190,8 @@ const filtereddisabilities = computed(() => {
     if (!searchQuery.value) {
         return disabilities.value;
     }
-    return disabilities.value.filter(announcement =>
-        announcement.postTitle.toLowerCase().includes(searchQuery.value.toLowerCase())
+    return disabilities.value.filter(disability =>
+        disability.disability.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
 
