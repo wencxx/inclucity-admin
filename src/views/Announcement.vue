@@ -211,14 +211,6 @@
                         <input type="text" v-model="postDetails.postTitle" class="bg-gray-200 pl-2 focus:outline-none rounded h-10" disabled>
                     </div>
                     <div class="flex flex-col gap-y-2">
-                        <label class="text-lg">Thumbnails</label>
-                        <div class="h-44 bg-gray-200 rounded flex items-center justify-center">
-                            <img v-if="postDetails.imageName" :src="postDetails.imageName" alt="" class="h-full">
-                            <Icon v-else icon="ri:add-box-fill" class="text-5xl" @click="choosePostImage" />
-                            <input type="file" class="hidden" id="file" @change="handleImageChange" disabled>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-y-2">
                         <label class="text-lg">Post Content</label>
                         <textarea class="h-24 bg-gray-200 rounded focus:outline-none p-2" v-model="postDetails.postDescription" disabled></textarea>
                     </div>

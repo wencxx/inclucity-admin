@@ -16,7 +16,6 @@
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
                             <th class="md:w-1/12">TITLE</th>
-                            <th class="md:w-2/12">FILE ATTACH</th>
                             <th class="md:w-2/12">DATE POSTED</th>
                             <th class="md:w-2/12">ACTIONS</th>
                         </tr>
@@ -24,7 +23,6 @@
                     <tbody v-if="announcements.length > 0" class="bg-white text-center">
                         <tr v-if="paginatedAnnouncements.length > 0" v-for="announcement in paginatedAnnouncements" :key="announcement.id" class="border-b border-gray-500">
                             <td class="md:py-3">{{ announcement.postTitle }}</td>
-                            <td>{{ announcement.imageName.split('/').pop()    }}</td>
                             <td>{{ announcement.datePosted.split('T')[0] }}</td>
                             <td>
                                 <div class="flex items-center justify-center gap-x-2">
@@ -74,14 +72,6 @@
                     <div class="flex flex-col gap-y-2">
                         <label class="text-lg">Title</label>
                         <input type="text" v-model="postData.postTitle" class="bg-gray-200 pl-2 focus:outline-none rounded h-10">
-                    </div>
-                    <div class="flex flex-col gap-y-2">
-                        <label class="text-lg">Thumbnails</label>
-                        <div class="h-44 bg-gray-200 rounded flex items-center justify-center">
-                            <img v-if="tempImage" :src="tempImage" alt="" class="h-full">
-                            <Icon v-else icon="ri:add-box-fill" class="text-5xl" @click="choosePostImage" />
-                            <input type="file" class="hidden" id="file" @change="handleImageChange">
-                        </div>
                     </div>
                     <div class="flex flex-col gap-y-2">
                         <label class="text-lg">Post Content</label>
