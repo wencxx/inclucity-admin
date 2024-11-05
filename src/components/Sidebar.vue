@@ -62,7 +62,7 @@
                     </router-link> -->
                     <router-link :to="{ name: 'declined Applications' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
                         <Icon icon="mdi:person-remove-outline" class="text-3xl" />
-                        <span class="mt-1">Rejected</span>
+                        <span class="mt-1">Rejected Applications</span>
                     </router-link>
                 </div>
                 <router-link :to="{ name: 'announcement' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
