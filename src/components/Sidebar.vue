@@ -135,17 +135,17 @@ const applicationsDropdownIcon = ref('iconamoon:arrow-down-2-duotone')
 
 const changeIcon = () => {
     if(recordsDropdown.value) return recordsDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
-    recordsDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
+    recordsDropdownIcon.value = 'iconamoon:arrow-down-2-duotone'
 }
 
 const changeIconArchives = () => {
     if(archivesDropdown.value) return archivesDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
-    archivesDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
+    archivesDropdownIcon.value = 'iconamoon:arrow-down-2-duotone'
 }
 
 const changeIconApplications = () => {
     if(applicationsDropdown.value) return applicationsDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
-    applicationsDropdownIcon.value = 'iconamoon:arrow-up-2-duotone'
+    applicationsDropdownIcon.value = 'iconamoon:arrow-down-2-duotone'
 }
 
 const toggleSidebar = () => {
