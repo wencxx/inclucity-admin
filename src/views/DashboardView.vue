@@ -61,7 +61,7 @@
             <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()">
                     <h1 class="font-bold text-gray-600 text-sm xl:text-lg">Total number of PWDs in Malolos</h1>
                     <Doughnut
-                        class="!w-2/4 !h-2/4  xl:!w-4/5 xl:!h-full"
+                        class="!w-2/4 !h-2/4  xl:!w-3/5 xl:!h-full"
                         :options="chartOptionsDougnut"
                         :data="chartDataDoughnut"
                     />
@@ -108,7 +108,7 @@
             <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()">
                     <h1 class="font-bold text-gray-600 text-sm xl:text-lg">Total number of Applicants in Malolos</h1>
                     <Doughnut
-                        class="!w-2/4 !h-2/4  xl:!w-4/5 xl:!h-full"
+                        class="!w-2/4 !h-2/4  xl:!w-3/5 xl:!h-full"
                         :options="chartOptionsDougnut"
                         :data="chartDataDoughnut2"
                     />
