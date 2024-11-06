@@ -203,15 +203,15 @@
                     <div class="w-full h-full flex flex-col gap-y-10">
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Gender:</p>
-                            <p class="w-2/3">{{ infoToShow.gender }}</p>
+                            <p class="w-2/3">{{ infoToShow.gender || '---' }}</p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Contact Details:</p>
-                            <p class="w-2/3">{{ infoToShow.mobileNo }}</p>
+                            <p class="w-2/3">{{ infoToShow.mobileNo || '---' }}</p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Email Address:</p>
-                            <p class="w-2/3">{{ infoToShow.emailAddress }}</p>
+                            <p class="w-2/3">{{ infoToShow.emailAddress || '---' }}</p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Age:</p>
@@ -223,41 +223,41 @@
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Birthday:</p>
-                            <p class="w-2/3">{{ infoToShow.dateOfBirth }}</p>
+                            <p class="w-2/3">{{ infoToShow.dateOfBirth || '---' }}</p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Civil Status:</p>
-                            <p class="w-2/3">{{ infoToShow.civilStatus }}</p>
+                            <p class="w-2/3">{{ infoToShow.civilStatus || '---' }}</p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Educational Attainment:</p>
-                            <p class="w-2/3">{{ infoToShow.educationalAttainment }}</p>
+                            <p class="w-2/3">{{ infoToShow.educationalAttainment || '---' }}</p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Status of employment:</p>
-                            <p class="w-2/3">{{ infoToShow.statusOfEmployment }}</p>
+                            <p class="w-2/3">{{ infoToShow.statusOfEmployment || '---' }}</p>
                         </div>
                     </div>
                     <div class="w-full h-full flex flex-col gap-y-10">
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Type of Disability:</p>
-                            <p class="w-2/3">{{ infoToShow.typeOfDisability }}</p>
+                            <p class="w-2/3">{{ infoToShow.typeOfDisability || '---' }}</p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Cause of Disability:</p>
-                            <p class="w-2/3">{{ infoToShow.causeOfDisability }} {{ infoToShow.otherCauseOfDisability }}</p>
+                            <p class="w-2/3">{{ infoToShow.causeOfDisability || infoToShow.otherCauseOfDisability || '---' }}</p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Occupation:</p>
-                            <p class="w-2/3">{{ infoToShow.occupation }} {{ infoToShow.otherOccupation }}</p>
+                            <p class="w-2/3">{{ infoToShow.occupation || infoToShow.otherOccupation || '---' }}</p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Accomplished by:</p>
-                            <p class="w-2/3">{{ infoToShow.accomplishedBy }}</p>
+                            <p class="w-2/3">{{ infoToShow.accomplishedBy || '---' }}</p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Type of employment:</p>
-                            <p class="w-2/3">{{ infoToShow.typeOfEmployment }}</p>
+                            <p class="w-2/3">{{ infoToShow.typeOfEmployment || '---' }}</p>
                         </div>
                     </div>
                 </div>
