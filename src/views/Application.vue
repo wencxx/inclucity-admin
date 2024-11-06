@@ -190,7 +190,7 @@
                     <Icon icon="mdi:close" class="absolute right-10 text-2xl cursor-pointer text-white hover:bg-gray-400 rounded" @click="showAppDetails = false" />
             </div>
             <div class="h-[90%] w-full flex items-center justify-center bg-white">
-                <div class="h-[90%] w-3/4 bg-gray-300 rounded-xl flex relative">
+                <div class="h-[90%] w-3/4 bg-gray-300 rounded-xl flex relative pr-10">
                     <div class="w-1/5 h-full flex flex-col items-center py-10 gap-y-3">
                         <div class="rounded-full bg-gray-200 w-[150px] aspect-square border flex items-center justify-center">
                             <img v-if="infoToShow.photo1x1" :src="infoToShow.photo1x1" alt="1x1 photo" class="w-[130px] aspect-square rounded-full">
@@ -203,7 +203,7 @@
                         <button class=" bg-custom-primary text-white px-3 py-1 rounded  mt-20" @click="currentPageDets = 2">See Attachments</button>
                         <button class="bg-custom-primary text-white px-3 py-1 rounded mt-5" @click="currentPageDets = 1">Application form</button>
                     </div>
-                    <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-3/5 mx-auto h-[90%] my-auto p-20 capitalize bg-white rounded">
+                    <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 mx-auto h-[90%] my-auto p-20 capitalize bg-white rounded">
                         <div class="w-full h-full flex flex-col gap-y-10">
                             <div class="flex items-center justif pl-10 gap-x-14">
                                 <p class="text-gray-600 w-1/3 font-semibold">Gender:</p>
