@@ -315,12 +315,11 @@
             </div>
             <!-- thirteenth step -->
             <div v-if="currentPage == 8 " class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
-                <h1 class="text-black font-semibold text-xl uppercase">Accomplished By (optional)</h1>
+                <h1 class="text-black font-semibold text-xl uppercase">Accomplished By *</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
                         <select class="h-10 border pl-2 rounded" v-model="accomplishedBy" @change="changeAccomplisedBy()">
                             <option disabled selected value="">Accomplished By</option>
-                            <option>Admin</option>
                             <option>Applicant</option>
                             <option>Guardian</option>
                             <option>Representative</option>
@@ -548,7 +547,8 @@ const next = () => {
         router.push({ query : { page: currentPage.value + 1 }})
     }else if(currentPage.value === 3){
         const pageData = [
-            educationalAttainment.value
+            educationalAttainment.value,
+            mobileNo.value
         ]
 
         if (pageData.some(field => !field)) {
@@ -586,6 +586,9 @@ const next = () => {
         router.push({ query : { page: currentPage.value + 1 }})
     }else if(currentPage.value === 8){
         const pageData = [
+            accomplishedByLname.value,
+            accomplishedByFname.value,
+            accomplishedByMname.value,
             physicianByLname.value,
             physicianByFname.value, 
             physicianByMname.value
