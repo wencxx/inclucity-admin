@@ -69,7 +69,7 @@
                 </button>
             </div>
         </div>
-        <div @click.self="postModal = false" v-if="postModal" class="absolute top-0 left-0 h-screen w-screen bg-black/20 flex items-center justify-center">
+        <div @click.self="postModal = false" v-if="postModal" class="absolute top-0 left-0 h-screen w-screen bg-black/20 flex items-center justify-center overflow-auto">
             <div class="bg-white h-fit w-2/4 xl:w-1/4 rounded overflow-hidden">
                 <div class="bg-custom-primary h-[10%]  py-1 flex items-center justify-center">
                     <h1 class="text-xl text-white font-medium tracking-wide">Create Post</h1>
@@ -165,14 +165,6 @@
                     <div class="flex flex-col gap-y-2">
                         <label class="text-lg">Title</label>
                         <input type="text" v-model="postToUpdateDetails.postTitle" class="bg-gray-200 pl-2 focus:outline-none rounded h-10">
-                    </div>
-                    <div class="flex flex-col gap-y-2">
-                        <label class="text-lg">Thumbnails</label>
-                        <div class="h-44 bg-gray-200 rounded flex items-center justify-center">
-                            <img v-if="postToUpdateDetails.imageName" :src="postToUpdateDetails.imageName" alt="" class="h-full">
-                            <Icon v-else icon="ri:add-box-fill" class="text-5xl" @click="choosePostImage" />
-                            <input type="file" class="hidden" id="file" @change="handleImageChange">
-                        </div>
                     </div>
                     <div class="flex flex-col gap-y-2">
                         <label class="text-lg">Post Content</label>

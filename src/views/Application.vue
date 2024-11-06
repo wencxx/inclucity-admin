@@ -457,10 +457,15 @@ const controlNumber = ref('')
 const showModalRetype = async (userId, appId, emailAdd, receiveEmail) => {
     retypeModal.value = true
 
-    uid.value = userId.toString()
+    uid.value = userId
     aid.value = appId
     emailAddress.value = emailAdd.toString()
     willReceive.value = receiveEmail
+
+    console.log(userId)
+    console.log(appId)
+    console.log(emailAdd.toString())
+    console.log(receiveEmail)
 }
 
 const invalidPassword = ref(false)
@@ -501,7 +506,9 @@ const updateApplicant = async (status, userId, appId, emailAdd) => {
             data.reason = reasonForDeclining.value
         }
 
-        data.userId = uid.value
+        if(uid.value){
+            data.userId = uid.value
+        }
         data.applicationId = aid.value
         data.status = 'rejected'
 
@@ -524,17 +531,15 @@ const updateApplicant = async (status, userId, appId, emailAdd) => {
                     message: `Unfortunately, your application has been rejected due to ${reasonForDeclining.value || otherReason.value}. Please review the issue and make the necessary corrections. If you need further assistance, feel free to contact our support team.`
                 };
 
-                if(willReceive.value === true){
-                    // Sending email
-                    const response = await emailjs.send(
-                        'service_jp4qqoo',
-                        'template_xxm5vdr',
-                        templateParams,
-                        'gbTwv7MP-o1veLyLY'
-                    );
+                // Sending email
+                const response = await emailjs.send(
+                    'service_jp4qqoo',
+                    'template_xxm5vdr',
+                    templateParams,
+                    'gbTwv7MP-o1veLyLY'
+                );
 
-                    console.log('Email sent successfully!', response.status, response.text);
-                }
+                console.log('Email sent successfully!', response.status, response.text);
                 declinedSuccessful.value = true;
 
                 reasonForDeclining.value = ''
@@ -547,8 +552,6 @@ const updateApplicant = async (status, userId, appId, emailAdd) => {
             }
         } catch (error) {
             console.log(error)
-        }finally{
-            declineModal.value = false
         }
     }else{
         let data = {}
@@ -575,17 +578,15 @@ const updateApplicant = async (status, userId, appId, emailAdd) => {
                     message:  `Congratulations! Your application has been approved. Please proceed with the next steps to finalize the process. If you have any questions or need further assistance, feel free to contact our support team.`
                 }
 
-                if(willReceive.value === true){
-                    // Sending email
-                    const response = await emailjs.send(
-                        'service_jp4qqoo',
-                        'template_xxm5vdr',
-                        templateParams,
-                        'gbTwv7MP-o1veLyLY'
-                    );
+                // Sending email
+                const response = await emailjs.send(
+                    'service_jp4qqoo',
+                    'template_xxm5vdr',
+                    templateParams,
+                    'gbTwv7MP-o1veLyLY'
+                );
 
-                    console.log('Email sent successfully!', response.status, response.text);
-                }
+                console.log('Email sent successfully!', response.status, response.text);
                 setTimeout(() => {
                     approvedSuccessful.value = false
                 }, 3000)

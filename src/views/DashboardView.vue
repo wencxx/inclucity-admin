@@ -21,7 +21,7 @@
         </div>
        <div class="grid lg:grid-cols-7 place-items-center lg:place-items-start gap-5 mt-5" ref="captureDiv" id="dashboard">
             <div class="bg-white shadow font-poppins p-3 md:p-5 lg:p-5 w-full lg:w-full lg:h-[20dvh] lg:col-span-7 rounded-md cursor-pointer grid grid-cols-4 gap-x-10">
-                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectUsers()">
+                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectUsers()">
                     <Icon class="text-5xl" icon="heroicons:user-group" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ activeUsers.length }}</p>
@@ -35,7 +35,7 @@
                         <p>Archive Users</p>
                     </div>
                 </div>
-                <div class="bg-custom-tertiary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectRejected()">
+                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectRejected()">
                     <Icon class="text-5xl" icon="ei:close-o"  />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ rejectedApplicantsCount }}</p>
@@ -66,7 +66,7 @@
                         :data="chartDataDoughnut"
                     />
             </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-5 rounded cursor-pointer" @click="redirectEmploy()">
+            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" @click="redirectEmploy()">
                     <h1 class="font-bold text-gray-600 text-sm lg:text-lg">Employment Rate Status</h1>
                     <Bar
                         class="!w-full block"
@@ -74,7 +74,7 @@
                         :data="chartDataBar2"
                     />
             </div>
-            <div class="bg-white shadow font-poppins p-4 w-full lg:w-full lg:h-[35dvh] lg:col-span-2 rounded cursor-pointer grid grid-rows-3 gap-y-2" @click="redirectEmploy()">
+            <div class="bg-white shadow font-poppins p-4 w-full lg:w-full lg:h-[35dvh] lg:col-span-3 rounded cursor-pointer grid grid-rows-3 gap-y-2" @click="redirectEmploy()">
                 <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white">
                     <Icon class="text-5xl" icon="uit:bag" />
                     <div class="flex flex-col gap-2 items-end">
@@ -167,7 +167,7 @@ const chartDataBar = ref({
     labels: barangay.value,
     datasets: [{ 
         data: barangayData.value,
-        backgroundColor: ['#7B080E', '#0641d8']
+        backgroundColor: ['#7B080E', '#0641d8', '#ffac39']
     }],
 
     
@@ -194,7 +194,7 @@ const chartDataBar3 = computed(() => ({
     labels: disability.value,
     datasets: [{ 
         data: disabilityData.value,
-        backgroundColor: ['#7B080E', '#0641d8']
+        backgroundColor: ['#7B080E', '#0641d8', '#ffac39']
     }],
 }));
 
