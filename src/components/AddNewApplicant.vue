@@ -320,6 +320,7 @@
                     <div class="flex flex-col gap-y-1">
                         <select class="h-10 border pl-2 rounded" v-model="accomplishedBy" @change="changeAccomplisedBy()">
                             <option disabled selected value="">Accomplished By</option>
+                            <option>Admin</option>
                             <option>Applicant</option>
                             <option>Guardian</option>
                             <option>Representative</option>

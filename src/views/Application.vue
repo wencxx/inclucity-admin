@@ -461,11 +461,6 @@ const showModalRetype = async (userId, appId, emailAdd, receiveEmail) => {
     aid.value = appId
     emailAddress.value = emailAdd.toString()
     willReceive.value = receiveEmail
-
-    console.log(userId)
-    console.log(appId)
-    console.log(emailAdd.toString())
-    console.log(receiveEmail)
 }
 
 const invalidPassword = ref(false)
