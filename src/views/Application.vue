@@ -184,87 +184,92 @@
 
 
         <!-- application information -->
-        <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex items-center justify-center">
-            <div class="h-[90%] w-3/4 bg-gray-300 rounded-xl flex relative">
-                <Icon icon="mdi:close" class="absolute right-5 top-4 text-2xl cursor-pointer text-custom-primary hover:bg-gray-400 rounded" @click="showAppDetails = false" />
-                <div class="w-1/5 h-full flex flex-col items-center py-10 gap-y-3">
-                    <div class="rounded-full bg-gray-200 w-[150px] aspect-square border flex items-center justify-center">
-                        <img v-if="infoToShow.photo1x1" :src="infoToShow.photo1x1" alt="1x1 photo" class="w-[130px] aspect-square rounded-full">
-                        <Icon v-else icon="mdi:user-circle" class="w-full h-full text-custom-primary"/>
+        <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex flex-col items-center justify-center">
+            <div class="h-[10%] w-full bg-custom-primary flex items-center justify-center text-white">
+                    <h1 class="text-2xl">General Information</h1>
+                    <Icon icon="mdi:close" class="absolute right-10 text-2xl cursor-pointer text-white hover:bg-gray-400 rounded" @click="showAppDetails = false" />
+            </div>
+            <div class="h-[90%] w-full flex items-center justify-center bg-white">
+                <div class="h-[90%] w-3/4 bg-gray-300 rounded-xl flex relative">
+                    <div class="w-1/5 h-full flex flex-col items-center py-10 gap-y-3">
+                        <div class="rounded-full bg-gray-200 w-[150px] aspect-square border flex items-center justify-center">
+                            <img v-if="infoToShow.photo1x1" :src="infoToShow.photo1x1" alt="1x1 photo" class="w-[130px] aspect-square rounded-full">
+                            <Icon v-else icon="mdi:user-circle" class="w-full h-full text-custom-primary"/>
+                        </div>
+                        <h2 class="text-sm">{{ infoToShow.status }}</h2>
+                        <h1 class="-my-2 capitalize">{{ infoToShow.firstName }} {{ infoToShow.middleName }} {{ infoToShow.lastName }}</h1>
+                        <h1 class="text-sm text-green-900">{{ convertApplicationNum(infoToShow.applicationNumber) }}</h1>
+    
+                        <button class=" bg-custom-primary text-white px-3 py-1 rounded  mt-20" @click="currentPageDets = 2">See Attachments</button>
+                        <button class="bg-custom-primary text-white px-3 py-1 rounded mt-5" @click="currentPageDets = 1">Application form</button>
                     </div>
-                    <h2 class="text-sm">{{ infoToShow.status }}</h2>
-                    <h1 class="-my-2 capitalize">{{ infoToShow.firstName }} {{ infoToShow.middleName }} {{ infoToShow.lastName }}</h1>
-                    <h1 class="text-sm text-green-900">{{ convertApplicationNum(infoToShow.applicationNumber) }}</h1>
-
-                    <button class="bg-gray-200 px-3 py-1 rounded mt-20" @click="currentPageDets = 1">Details</button>
-                    <button class=" bg-gray-200 px-3 py-1 rounded" @click="currentPageDets = 2">View Attachments</button>
-                </div>
-                <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 h-full p-20 capitalize">
-                    <div class="w-full h-full flex flex-col gap-y-10">
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Gender:</p>
-                            <p class="w-2/3">{{ infoToShow.gender || '---' }}</p>
+                    <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-3/5 mx-auto h-[90%] my-auto p-20 capitalize bg-white rounded">
+                        <div class="w-full h-full flex flex-col gap-y-10">
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Gender:</p>
+                                <p class="w-2/3">{{ infoToShow.gender || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Contact Details:</p>
+                                <p class="w-2/3">{{ infoToShow.mobileNo || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Email Address:</p>
+                                <p class="w-2/3">{{ infoToShow.emailAddress || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Age:</p>
+                                <p class="w-2/3">
+                                    {{
+                                        infoToShow.dateOfBirth ? dobToAge(infoToShow.dateOfBirth).count : ''
+                                    }}
+                                </p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Birthday:</p>
+                                <p class="w-2/3">{{ infoToShow.dateOfBirth || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Civil Status:</p>
+                                <p class="w-2/3">{{ infoToShow.civilStatus || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Educational Attainment:</p>
+                                <p class="w-2/3">{{ infoToShow.educationalAttainment || '---' }}</p>
+                            </div>
                         </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Contact Details:</p>
-                            <p class="w-2/3">{{ infoToShow.mobileNo || '---' }}</p>
-                        </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Email Address:</p>
-                            <p class="w-2/3">{{ infoToShow.emailAddress || '---' }}</p>
-                        </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Age:</p>
-                            <p class="w-2/3">
-                                {{
-                                    infoToShow.dateOfBirth ? dobToAge(infoToShow.dateOfBirth).count : ''
-                                }}
-                            </p>
-                        </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Birthday:</p>
-                            <p class="w-2/3">{{ infoToShow.dateOfBirth || '---' }}</p>
-                        </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Civil Status:</p>
-                            <p class="w-2/3">{{ infoToShow.civilStatus || '---' }}</p>
-                        </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Educational Attainment:</p>
-                            <p class="w-2/3">{{ infoToShow.educationalAttainment || '---' }}</p>
-                        </div>
-                    </div>
-                    <div class="w-full h-full flex flex-col gap-y-10">
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Type of Disability:</p>
-                            <p class="w-2/3">{{ infoToShow.typeOfDisability || '---' }}</p>
-                        </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Cause of Disability:</p>
-                            <p class="w-2/3">{{ infoToShow.causeOfDisability || infoToShow.otherCauseOfDisability || '---' }}</p>
-                        </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Occupation:</p>
-                            <p class="w-2/3">{{ infoToShow.occupation || infoToShow.otherOccupation || '---' }}</p>
-                        </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Accomplished by:</p>
-                            <p class="w-2/3">{{ infoToShow.accomplishedBy || '---' }}</p>
-                        </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Status of employment:</p>
-                            <p class="w-2/3">{{ infoToShow.statusOfEmployment || '---' }}</p>
-                        </div>
-                        <div class="flex items-center justif pl-10 gap-x-14">
-                            <p class="text-gray-600 w-1/3 font-semibold">Type of employment:</p>
-                            <p class="w-2/3">{{ infoToShow.typeOfEmployment || '---' }}</p>
+                        <div class="w-full h-full flex flex-col gap-y-10">
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Type of Disability:</p>
+                                <p class="w-2/3">{{ infoToShow.typeOfDisability || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Cause of Disability:</p>
+                                <p class="w-2/3">{{ infoToShow.causeOfDisability || infoToShow.otherCauseOfDisability || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Occupation:</p>
+                                <p class="w-2/3">{{ infoToShow.occupation || infoToShow.otherOccupation || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Accomplished by:</p>
+                                <p class="w-2/3">{{ infoToShow.accomplishedBy || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Status of employment:</p>
+                                <p class="w-2/3">{{ infoToShow.statusOfEmployment || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Type of employment:</p>
+                                <p class="w-2/3">{{ infoToShow.typeOfEmployment || '---' }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div v-else class="w-4/5 h-full p-20 grid grid-cols-2 grid-rows-2 gap-10 overflow-auto">
-                    <img :src="infoToShow.photo1x1" @click="zoomImage(infoToShow.photo1x1)" alt="1x1 photo" class="w-full h-full">
-                    <img :src="infoToShow.barangayCert" @click="zoomImage(infoToShow.barangayCert)" alt="barangay certitificate" class="max-w-full max-h-full">
-                    <img :src="infoToShow.medicalCert" @click="zoomImage(infoToShow.medicalCert)" alt="medical certitificate" class="max-w-full max-h-full">
+                    <div v-else class="w-4/5 h-full p-20 grid grid-cols-2 grid-rows-2 gap-10 overflow-auto">
+                        <img :src="infoToShow.photo1x1" @click="zoomImage(infoToShow.photo1x1)" alt="1x1 photo" class="w-full h-full">
+                        <img :src="infoToShow.barangayCert" @click="zoomImage(infoToShow.barangayCert)" alt="barangay certitificate" class="max-w-full max-h-full">
+                        <img :src="infoToShow.medicalCert" @click="zoomImage(infoToShow.medicalCert)" alt="medical certitificate" class="max-w-full max-h-full">
+                    </div>
                 </div>
             </div>
 
