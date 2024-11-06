@@ -21,21 +21,21 @@
         </div>
        <div class="grid lg:grid-cols-7 place-items-center lg:place-items-start gap-5 mt-5" ref="captureDiv" id="dashboard">
             <div class="bg-white shadow font-poppins p-3 md:p-5 lg:p-5 w-full lg:w-full lg:h-[20dvh] lg:col-span-7 rounded-md cursor-pointer grid grid-cols-4 gap-x-10">
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectUsers()">
+                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectUsers()">
                     <Icon class="text-5xl" icon="heroicons:user-group" />
                     <div class="flex flex-col gap-2 items-end">
-                        <p class="text-2xl font-bold">{{ userTotal - 1 }}</p>
+                        <p class="text-2xl font-bold">{{ activeUsers.length }}</p>
                         <p>Registered User</p>
                     </div>
                 </div>
                 <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectExpired()">
                     <Icon class="text-5xl" icon="hugeicons:passport-expired" />
                     <div class="flex flex-col gap-2 items-end">
-                        <p class="text-2xl font-bold">{{ expiredApplicantsCount }}</p>
-                        <p>Expired Applicants</p>
+                        <p class="text-2xl font-bold">{{ inactiveUsers.length }}</p>
+                        <p>Archive Users</p>
                     </div>
                 </div>
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectRejected()">
+                <div class="bg-custom-tertiary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectRejected()">
                     <Icon class="text-5xl" icon="ei:close-o"  />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ rejectedApplicantsCount }}</p>
@@ -75,21 +75,21 @@
                     />
             </div>
             <div class="bg-white shadow font-poppins p-4 w-full lg:w-full lg:h-[35dvh] lg:col-span-2 rounded cursor-pointer grid grid-rows-3 gap-y-2" @click="redirectEmploy()">
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white">
+                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white">
                     <Icon class="text-5xl" icon="uit:bag" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ employedCount }}</p>
                         <p>Employed</p>
                     </div>
                 </div>
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white">
+                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white">
                     <Icon class="text-5xl" icon="streamline:office-worker" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ selfEmployedCount }}</p>
                         <p>Self-Employed</p>
                     </div>
                 </div>
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white">
+                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white">
                     <Icon class="text-5xl" icon="uil:bag-slash" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ unEmployedCount }}</p>
@@ -133,6 +133,8 @@ onMounted(() => {
     getGroupedBarangay()
     getTotalPwds()
     getTotalUsers()
+    getActiveUsers()
+    getDeletedUsers()
     getGroupedEmployment()
     getApprovedApplicant()
     getRejectedApplicant()
@@ -270,6 +272,42 @@ const getTotalUsers = async () => {
         }
     } catch (error) {
         console.log(error.message)
+    }
+}
+
+const activeUsers = ref([])
+
+const getActiveUsers = async () => {
+    try {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/get-all-users`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        if(res.data === 'no users found') return
+        
+        activeUsers.value = res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const inactiveUsers = ref([])
+
+const getDeletedUsers = async () => {
+    try {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/get-all-deleted-users`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        if(res.data === 'no users found') return
+        
+        inactiveUsers.value = res.data
+    } catch (error) {
+        console.log(error)
     }
 }
 

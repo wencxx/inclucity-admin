@@ -48,9 +48,16 @@
                         <tr v-if="paginatedApplicants.length > 0" v-for="applicant in paginatedApplicants" :key="applicant.id" class="border-b border-gray-500">
                             <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
-                            <td class="text-sm">{{ applicant.emailAddress }}</td>
-                            <td class="text-sm">{{ applicant.user?.age }}</td>
-                            <td class="text-sm">{{ applicant.user?.contactNumber }}</td>
+                            <td class="text-sm">{{ applicant.emailAddress || '---' }}</td>
+                            <td class="text-sm">
+                            {{
+                                applicant.user?.age 
+                                ? dobToAge(applicant.user.age).count + ' ' + dobToAge(applicant.user.age).unit 
+                                : '---'
+                            }}
+                            </td>
+
+                            <td class="text-sm">{{ applicant.user?.contactNumber || '---' }}</td>
                             <td class="text-sm">{{ applicant.gender }}</td>
                             <td class="text-sm">{{ applicant.barangay }}</td>
                             <td class="text-sm">{{ applicant.dateApplied?.split('T')[0] }}</td>
@@ -208,7 +215,11 @@
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Age:</p>
-                            <p class="w-2/3">{{ infoToShow.user?.age }}</p>
+                            <p class="w-2/3">
+                                {{
+                                    infoToShow.dateOfBirth ? dobToAge(infoToShow.dateOfBirth).count : ''
+                                }}
+                            </p>
                         </div>
                         <div class="flex items-center justif pl-10 gap-x-14">
                             <p class="text-gray-600 w-1/3 font-semibold">Birthday:</p>
@@ -273,6 +284,7 @@ import axios from 'axios'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
 import emailjs from 'emailjs-com';
+import dobToAge from 'dob-to-age'
 // import * as mammoth from 'mammoth'
 const serverUrl = import.meta.env.VITE_SERVER_URL
 

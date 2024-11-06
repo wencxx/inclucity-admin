@@ -151,6 +151,7 @@ import { computed, onMounted, ref } from "vue";
 import axios from 'axios'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
+import dobToAge from 'dob-to-age'
 import moment from 'moment'
 const serverUrl = import.meta.env.VITE_SERVER_URL
 

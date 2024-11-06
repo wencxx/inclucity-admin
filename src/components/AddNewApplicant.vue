@@ -75,8 +75,8 @@
                             <option>Cerebral Palsy</option>
                             <option>Down Syndrome</option>
                             <option class="font-semibold" disabled>*Acquired</option>
-                            <option>Chroniz Illness</option>
-                            <option>Infecations</option>
+                            <option>Chronic Illness</option>
+                            <option>Infections</option>
                             <option>Injury</option>
                         </select>
                     </div>
@@ -698,7 +698,7 @@ const sendApplication = async () => {
 
     try {
         loadingSubmitting.value = true
-        const res = await axios.post(`${serverUrl}/send-application`, applicationData, {
+        const res = await axios.post(`${serverUrl}/send-application-admin`, applicationData, {
             headers:{
                 "Authorization": `Bearer ${localStorage.getItem('token')}`,
                 "Content-Type": 'multipart/form-data'
