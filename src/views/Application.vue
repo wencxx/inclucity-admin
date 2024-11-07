@@ -470,7 +470,7 @@ const showModal = async (userId, appId, emailAdd, receiveEmail) => {
 
 const retypeModal = ref(false)
 const password = ref('')
-const controlNumber = ref('')
+const controlNumber = ref('03-1410-000-000-')
 
 const showModalRetype = async (userId, appId, emailAdd, receiveEmail) => {
     retypeModal.value = true
@@ -572,7 +572,7 @@ const updateApplicant = async (status, userId, appId, emailAdd) => {
         data.userId = userId
         data.applicationId = appId
         data.status = status
-        data.controlNumber = '03-1410-000-000-' + controlNumber.value
+        data.controlNumber = controlNumber.value
 
         try {
             const res = await axios.post(`${serverUrl}/update-application`, data ,{

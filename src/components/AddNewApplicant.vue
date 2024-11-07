@@ -491,7 +491,7 @@ const physicianByLname = ref('')
 const physicianByFname = ref('')
 const physicianByMname = ref('')
 
-const controlNumber = ref('')
+const controlNumber = ref('03-1410-000-000-')
 
 const photo1x1 = ref(null)
 const medicalCert = ref(null)
@@ -698,7 +698,7 @@ const sendApplication = async () => {
     applicationData.append('barangayCert', barangayCert.value);
     applicationData.append('status', 'approved');
     applicationData.append('typeOfApplication', 'Walk in');
-    applicationData.append('controlNumber', '03-1410-000-000-' + controlNumber.value);
+    applicationData.append('controlNumber', controlNumber.value);
 
     try {
         loadingSubmitting.value = true
