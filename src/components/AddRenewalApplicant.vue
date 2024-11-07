@@ -697,8 +697,9 @@ const sendApplication = async () => {
     applicationData.append('medicalCert', medicalCert.value);
     applicationData.append('barangayCert', barangayCert.value);
     applicationData.append('status', 'approved');
+    applicationData.append('typeOfApplicant', 'renewal');
     applicationData.append('typeOfApplication', 'Walk in');
-    applicationData.append('controlNumber', '03-1410-000-000-' + controlNumber.value);
+    applicationData.append('controlNumber', controlNumber.value);
 
     try {
         loadingSubmitting.value = true
