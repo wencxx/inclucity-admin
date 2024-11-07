@@ -139,6 +139,7 @@ import { jsPDF } from "jspdf"
 import dobToAge from 'dob-to-age'
 import html2canvas from "html2canvas"
 import { useAuthStore } from '../store/index'
+import moment from "moment";
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
 const authStore = useAuthStore()

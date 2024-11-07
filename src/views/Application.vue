@@ -296,6 +296,7 @@ import ImageModule from 'docxtemplater-image-module-free'
 import emailjs from 'emailjs-com';
 import dobToAge from 'dob-to-age'
 // import * as mammoth from 'mammoth'
+import moment from "moment";
 import { useAuthStore } from '../store/index'
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
