@@ -201,6 +201,7 @@
                         <h1 class="text-sm text-green-900">{{ convertApplicationNum(infoToShow.applicationNumber) }}</h1>
     
                         <button class=" bg-custom-primary text-white px-3 py-1 rounded  mt-20" @click="currentPageDets = 2">See Attachments</button>
+                        <button class=" bg-custom-primary text-white px-3 py-1 rounded mt-5" @click="generateForm">Download Form</button>
                         <button class="bg-custom-primary text-white px-3 py-1 rounded mt-5" @click="currentPageDets = 1">Application form</button>
                     </div>
                     <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 mx-auto h-[90%] my-auto p-20 capitalize bg-white rounded">
@@ -288,6 +289,10 @@ import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
+import PizZip from 'pizzip'
+import Docxtemplater from 'docxtemplater'
+import { saveAs } from 'file-saver'
+import ImageModule from 'docxtemplater-image-module-free'
 import emailjs from 'emailjs-com';
 import dobToAge from 'dob-to-age'
 // import * as mammoth from 'mammoth'
@@ -678,7 +683,10 @@ const downloadPDF = () => {
         pdf.text(String(pageNumber), pdf.internal.pageSize.width - 10, pdf.internal.pageSize.height - 10, { align: "right" });
     };
 
-    pdf.addImage(headerImage, 'PNG', 0, 0, 210, 35);
+    pdf.addImage(headerImage, 'PNG', 10, 0, 190, 35);
+
+    pdf.setFontSize(10);
+    pdf.text("New Applicants", 90, 43);
 
     html2canvas(table).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
@@ -709,6 +717,149 @@ const downloadPDF = () => {
 
     typeOfExport.value = ''
 };
+
+// download form
+const loadImageAsArrayBuffer = async (imageUrl) => {
+  const response = await fetch(imageUrl)
+  if (!response.ok) throw new Error('Network response was not ok')
+  return await response.arrayBuffer()
+}
+
+const generateForm = async () => {
+
+    try {
+        // const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
+        const response = await fetch('PRPWD-APPLICATION_FORM.docx')
+
+        if (!response.ok) throw new Error('Failed to fetch DOCX template')
+
+        const docxArrayBuffer = await response.arrayBuffer()
+
+        const imageArrayBuffer = await loadImageAsArrayBuffer(infoToShow.value.photo1x1)
+
+        const zip = new PizZip(docxArrayBuffer)
+
+        const imageModule = new ImageModule({
+            centered: false,
+            getImage: function () {
+                return imageArrayBuffer
+            },
+            getSize: function () {
+                return [200, 200]
+            },
+        })
+
+        const doc = new Docxtemplater(zip, {
+            modules: [imageModule],
+        })
+
+        doc.setData({
+            // image: infoToShow.value.photo1x1,
+            newApplicant: infoToShow.value.typeOfApplicant === 'new' ? '◾' : '◽',
+            renewal: infoToShow.value.typeOfApplicant === 'renewal' ? '◾' : '◽',
+            dateApplied: infoToShow.value.dateApplied,
+            dateOfBirth: infoToShow.value.dateOfBirth,
+            first: infoToShow.value.firstName,
+            middle: infoToShow.value.middleName,
+            last: infoToShow.value.lastName,
+            suffix: infoToShow.value.suffix,
+            houseNo: infoToShow.value.houseNoAndStreet,
+            barangay: infoToShow.value.barangay,
+            municipality: infoToShow.value.municipalityCity,
+            province: infoToShow.value.province,
+            region: infoToShow.value.region,
+            landlineNo: infoToShow.value.landlineNo,
+            mobileNo: infoToShow.value.mobileNo,
+            email: infoToShow.value.emailAddress,
+            fathersLname: infoToShow.value.fathersLname,
+            fathersFname: infoToShow.value.fathersFname,
+            fathersMname: infoToShow.value.fathersMname,
+            mothersLname: infoToShow.value.mothersLname,
+            mothersFname: infoToShow.value.mothersFname,
+            mothersMname: infoToShow.value.mothersMname,   
+            guardiansLname: infoToShow.value.guardiansLname,
+            guardiansFname: infoToShow.value.guardiansFname,
+            guardiansMname: infoToShow.value.guardiansMname,
+            Lname: infoToShow.value.accomplishedByLname,
+            Fname: infoToShow.value.accomplishedByFname,
+            Mname: infoToShow.value.accomplishedByMname,
+            controlNum: infoToShow.value.controlNumber || '',
+            sexcb: infoToShow.value.gender === 'Female' ? '◾' : '◽',
+            sexcb2: infoToShow.value.gender === 'Male' ? '◾' : '◽',
+            organizationAffiliated: infoToShow.value.organizationAffiliated,
+            contactPerson: infoToShow.value.contactInformation,
+            officeAddress: infoToShow.value.officeAddress,
+            telNo: infoToShow.value.telNo,
+            sssNo: infoToShow.value.sssNo,
+            gsisNo: infoToShow.value.gsisNo,
+            pagibigNo: infoToShow.value.pagibigNo,
+            psnNo: infoToShow.value.psnNo,
+            philHNo: infoToShow.value.philhealthNo,
+            physicianName: `${infoToShow.value.physicianByFname} ${infoToShow.value.physicianByMname} ${infoToShow.value.physicianByLname}`,
+            single: infoToShow.value.civilStatus === 'Single' ? '◾' : '◽',
+            seperated: infoToShow.value.civilStatus === 'Seperated' ? '◾' : '◽',
+            livein: infoToShow.value.civilStatus === 'Cohabitation' ? '◾' : '◽',
+            married: infoToShow.value.civilStatus === 'Married' ? '◾' : '◽',
+            widow: infoToShow.value.civilStatus === 'Widow/er' ? '◾' : '◽',
+            d: infoToShow.value.typeOfDisability === 'Deaf/Hard of hearing' ? '◾' : '◽',
+            id: infoToShow.value.typeOfDisability === 'Intellectual Disability' ? '◾' : '◽',
+            ld: infoToShow.value.typeOfDisability === 'Learning Disability' ? '◾' : '◽',
+            md: infoToShow.value.typeOfDisability === 'Mental Disability' ? '◾' : '◽',
+            pd: infoToShow.value.typeOfDisability === 'Physical Disability (Orthopedic)' ? '◾' : '◽',
+            psd: infoToShow.value.typeOfDisability === 'Psychosocial Disability' ? '◾' : '◽',
+            sli: infoToShow.value.typeOfDisability === 'Speech and Language Impairment' ? '◾' : '◽',
+            vd: infoToShow.value.typeOfDisability === 'Visual Disability' ? '◾' : '◽',
+            c: infoToShow.value.typeOfDisability === 'Cancer (RA11215)' ? '◾' : '◽',
+            rd: infoToShow.value.typeOfDisability === 'Rare Disease (RA107747)' ? '◾' : '◽',
+            aut: infoToShow.value.causeOfDisability === 'Autism' ? '◾' : '◽',
+            ad: infoToShow.value.causeOfDisability === 'ADHD' ? '◾' : '◽',
+            cp: infoToShow.value.causeOfDisability === 'Cerebral Palsy' ? '◾' : '◽',
+            ds: infoToShow.value.causeOfDisability === 'Down Syndrome' ? '◾' : '◽',
+            ci: infoToShow.value.causeOfDisability === 'Chronic Illness' ? '◾' : '◽',
+            i: infoToShow.value.causeOfDisability === 'Injury' ? '◾' : '◽',
+            na: infoToShow.value.educationalAttainment === 'None' ? '◾' : '◽',
+            k: infoToShow.value.educationalAttainment === 'Kindergarten' ? '◾' : '◽',
+            el: infoToShow.value.educationalAttainment === 'Elementary' ? '◾' : '◽',
+            jhs: infoToShow.value.educationalAttainment === 'Junior High School' ? '◾' : '◽',
+            shs: infoToShow.value.educationalAttainment === 'Senior High School' ? '◾' : '◽',
+            col: infoToShow.value.educationalAttainment === 'College' ? '◾' : '◽',
+            voc: infoToShow.value.educationalAttainment === 'Vocational' ? '◾' : '◽',
+            pg: infoToShow.value.educationalAttainment === 'Post Graduate' ? '◾' : '◽',
+            emp: infoToShow.value.statusOfEmployment === 'employed' ? '◾' : '◽',
+            une: infoToShow.value.statusOfEmployment === 'unemployed' ? '◾' : '◽',
+            sel: infoToShow.value.statusOfEmployment === 'self-employed' ? '◾' : '◽',
+            gov: infoToShow.value.categoryOfEmployment === 'government' ? '◾' : '◽',
+            pri: infoToShow.value.categoryOfEmployment === 'private' ? '◾' : '◽',
+            per: infoToShow.value.typeOfEmployment === 'permanent/regular' ? '◾' : '◽',
+            sea: infoToShow.value.typeOfEmployment === 'seasonal' ? '◾' : '◽',
+            cas: infoToShow.value.typeOfEmployment === 'casual' ? '◾' : '◽',
+            eme: infoToShow.value.typeOfEmployment === 'emergency' ? '◾' : '◽',
+            man: infoToShow.value.occupation === 'Managers' ? '◾' : '◽',
+            pro: infoToShow.value.occupation === 'Professionals' ? '◾' : '◽',
+            tec: infoToShow.value.occupation === 'Technicians and Associate Professionals' ? '◾' : '◽',
+            cle: infoToShow.value.occupation === 'Clerical Support Worker' ? '◾' : '◽',
+            ser: infoToShow.value.occupation === 'Service and Sales Worker' ? '◾' : '◽',
+            saf: infoToShow.value.occupation === 'Skilled Agricultural, Forestry and Fishery Workers' ? '◾' : '◽',
+            car: infoToShow.value.occupation === 'Craft and Related Trade Workers' ? '◾' : '◽',
+            pla: infoToShow.value.occupation === 'Plant and Machine Operators and Assemblers' ? '◾' : '◽',
+            ele: infoToShow.value.occupation === 'Elementary Occupation' ? '◾' : '◽',
+            arm: infoToShow.value.occupation === 'Armed Forces Occupation' ? '◾' : '◽',
+            oth: infoToShow.value.otherOccupation ? '◾' : '◽',
+            others: infoToShow.value.otherOccupation
+        })
+
+        doc.render()
+
+        const output = doc.getZip().generate({
+            type: 'blob',
+            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        })
+
+        saveAs(output, 'Application-form.docx')
+    } catch (error) {
+        console.error('Error generating document:', error)
+    }
+}
 
 onMounted(() => {
     getPendingApplications()

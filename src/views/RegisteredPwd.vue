@@ -489,7 +489,10 @@ const downloadPDF = () => {
             pdf.text(String(pageNumber), pdf.internal.pageSize.width - 10, pdf.internal.pageSize.height - 10, { align: "right" });
         };
 
-        pdf.addImage(headerImage, 'PNG', 0, 0, 210, 35);
+        pdf.addImage(headerImage, 'PNG', 10, 0, 190, 35);
+
+        pdf.setFontSize(10);
+        pdf.text("Expired Applicants", 90, 43);
 
         html2canvas(table).then((canvas) => {
             const imgData = canvas.toDataURL("image/png");
@@ -542,7 +545,10 @@ const downloadPDF = () => {
             pdf.text(String(pageNumber), pdf.internal.pageSize.width - 10, pdf.internal.pageSize.height - 10, { align: "right" });
         };
 
-        pdf.addImage(headerImage, 'PNG', 0, 0, 210, 35);
+        pdf.addImage(headerImage, 'PNG', 10, 0, 190, 35);
+
+        pdf.setFontSize(10);
+        pdf.text("Registered Applicants", 90, 43);
 
         html2canvas(table).then((canvas) => {
             const imgData = canvas.toDataURL("image/png");
