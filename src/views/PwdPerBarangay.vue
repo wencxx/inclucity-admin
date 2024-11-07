@@ -151,7 +151,7 @@
                             <td class="text-sm">{{ applicant.gender }}</td>
                             <td class="text-sm">{{ applicant.barangay }}</td>
                             <td class="text-sm">{{ applicant.typeOfDisability }}</td>
-                            <td class="text-sm">{{ applicant.causeOfDisability }}</td>
+                            <td class="text-sm">{{ applicant.causeOfDisability || applicant.otherCauseOfDisability }}</td>
                         </tr>
                     </tbody>
                     <tbody v-else class="bg-white text-center">

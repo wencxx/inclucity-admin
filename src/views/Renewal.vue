@@ -183,90 +183,102 @@
 
 
         <!-- application information -->
-        <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex items-center justify-center">
-            <div class="h-[90%] w-3/4 bg-gray-300 rounded-xl flex relative">
-                <Icon icon="mdi:close" class="absolute right-5 top-4 text-2xl cursor-pointer" @click="showAppDetails = false" />
-                <div class="w-1/5 h-full flex flex-col items-center py-10 gap-y-3">
-                    <div class="rounded-full bg-gray-200 w-[150px] aspect-square border flex items-center justify-center">
-                        <img v-if="infoToShow.photo1x1" :src="infoToShow.photo1x1" alt="1x1 photo" class="w-[130px] aspect-square rounded-full">
-                        <Icon v-else icon="mdi:user-circle" class="w-full h-full text-custom-primary"/>
+        <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex flex-col items-center justify-center">
+            <div class="h-[10%] w-full bg-custom-primary flex items-center justify-center text-white">
+                    <h1 class="text-2xl">General Information</h1>
+                    <Icon icon="mdi:close" class="absolute right-10 text-2xl cursor-pointer text-white hover:bg-gray-400 rounded" @click="showAppDetails = false" />
+            </div>
+            <div class="h-[90%] w-full flex items-center justify-center bg-white">
+                <div class="h-[90%] w-3/4 bg-gray-300 rounded-xl flex relative pr-10">
+                    <div class="w-1/5 h-full flex flex-col items-center py-10 gap-y-3">
+                        <div class="rounded-full bg-gray-200 w-[150px] aspect-square border flex items-center justify-center">
+                            <img v-if="infoToShow.photo1x1" :src="infoToShow.photo1x1" alt="1x1 photo" class="w-[130px] aspect-square rounded-full">
+                            <Icon v-else icon="mdi:user-circle" class="w-full h-full text-custom-primary"/>
+                        </div>
+                        <h2 class="text-sm">{{ infoToShow.status }}</h2>
+                        <h1 class="-my-2 capitalize">{{ infoToShow.firstName }} {{ infoToShow.middleName }} {{ infoToShow.lastName }}</h1>
+                        <h1 class="text-sm text-green-900">{{ convertApplicationNum(infoToShow.applicationNumber) }}</h1>
+    
+                        <button class=" bg-custom-primary text-white px-3 py-1 rounded  mt-20" @click="currentPageDets = 2">See Attachments</button>
+                        <button class=" bg-custom-primary text-white px-3 py-1 rounded mt-5" @click="generateForm">Download Form</button>
+                        <button class="bg-custom-primary text-white px-3 py-1 rounded mt-5" @click="currentPageDets = 1">Application form</button>
                     </div>
-                    <h2 class="text-sm">{{ infoToShow.status }}</h2>
-                    <h1 class="-my-2 capitalize">{{ infoToShow.firstName }} {{ infoToShow.middleName }} {{ infoToShow.lastName }}</h1>
-                    <h1 class="text-sm text-green-900">{{ convertApplicationNum(infoToShow.applicationNumber) }}</h1>
-
-                    <button class="bg-gray-200 px-3 py-1 rounded mt-20" @click="currentPageDets = 1">Details</button>
-                    <button class=" bg-gray-200 px-3 py-1 rounded" @click="currentPageDets = 2">View Attachments</button>
-                    <button class=" bg-gray-200 px-3 py-1 rounded" @click="generateForm()">Download Form</button>
-                </div>
-                <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 h-full p-20 capitalize">
-                    <div class="w-full h-full flex flex-col gap-y-10">
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Gender:</p>
-                            <p>{{ infoToShow.gender }}</p>
+                    <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 mx-auto h-[90%] my-auto p-20 capitalize bg-white rounded">
+                        <div class="w-full h-full flex flex-col gap-y-10">
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Gender:</p>
+                                <p class="w-2/3">{{ infoToShow.gender || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Contact Details:</p>
+                                <p class="w-2/3">{{ infoToShow.mobileNo || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Email Address:</p>
+                                <p class="w-2/3">{{ infoToShow.emailAddress || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Age:</p>
+                                <p class="w-2/3">
+                                    {{
+                                        infoToShow.dateOfBirth ? dobToAge(infoToShow.dateOfBirth)?.count : ''
+                                    }}
+                                </p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Birthday:</p>
+                                <p class="w-2/3">{{ infoToShow.dateOfBirth || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Civil Status:</p>
+                                <p class="w-2/3">{{ infoToShow.civilStatus || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Educational Attainment:</p>
+                                <p class="w-2/3">{{ infoToShow.educationalAttainment || '---' }}</p>
+                            </div>
                         </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Contact Details:</p>
-                            <p>{{ infoToShow.mobileNo }}</p>
-                        </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Email Address:</p>
-                            <p>{{ infoToShow.emailAddress }}</p>
-                        </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Age:</p>
-                            <p>
-                                {{
-                                    infoToShow.dateOfBirth ? dobToAge(infoToShow.dateOfBirth).count : ''
-                                }}
-                            </p>
-                        </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Birthday:</p>
-                            <p>{{ infoToShow.dateOfBirth }}</p>
-                        </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Civil Status:</p>
-                            <p>{{ infoToShow.civilStatus }}</p>
-                        </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Educational Attainment:</p>
-                            <p>{{ infoToShow.educationalAttainment }}</p>
-                        </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Status of employment:</p>
-                            <p>{{ infoToShow.statusOfEmployment }}</p>
-                        </div>
-                    </div>
-                    <div class="w-full h-full flex flex-col gap-y-10">
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Type of Disability:</p>
-                            <p>{{ infoToShow.typeOfDisability }}</p>
-                        </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Cause of Disability:</p>
-                            <p>{{ infoToShow.causeOfDisability }} {{ infoToShow.otherCauseOfDisability }}</p>
-                        </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Occupation:</p>
-                            <p>{{ infoToShow.occupation }} {{ infoToShow.otherOccupation }}</p>
-                        </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Accomplished by:</p>
-                            <p>{{ infoToShow.accomplishedBy }}</p>
-                        </div>
-                        <div class="flex items-center pl-10 gap-x-14">
-                            <p class="text-gray-600 font-semibold">Type of employment:</p>
-                            <p>{{ infoToShow.typeOfEmployment }}</p>
+                        <div class="w-full h-full flex flex-col gap-y-10">
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Type of Disability:</p>
+                                <p class="w-2/3">{{ infoToShow.typeOfDisability || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Cause of Disability:</p>
+                                <p class="w-2/3">{{ infoToShow.causeOfDisability || infoToShow.otherCauseOfDisability || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Occupation:</p>
+                                <p class="w-2/3">{{ infoToShow.occupation || infoToShow.otherOccupation || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Accomplished by:</p>
+                                <p class="w-2/3">{{ infoToShow.accomplishedBy || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Status of employment:</p>
+                                <p class="w-2/3">{{ infoToShow.statusOfEmployment || '---' }}</p>
+                            </div>
+                            <div class="flex items-center justif pl-10 gap-x-14">
+                                <p class="text-gray-600 w-1/3 font-semibold">Type of employment:</p>
+                                <p class="w-2/3">{{ infoToShow.typeOfEmployment || '---' }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div v-else class="w-4/5 h-full p-20 grid grid-cols-2 grid-rows-2 gap-10 overflow-auto">
-                    <img :src="infoToShow.photo1x1" alt="1x1 photo" class="w-full h-full">
-                    <img :src="infoToShow.barangayCert" alt="barangay certitificate" class="max-w-full max-h-full">
-                    <img :src="infoToShow.medicalCert" alt="medical certitificate" class="max-w-full max-h-full">
+                    <div v-else class="w-4/5 h-full p-20 grid grid-cols-2 grid-rows-2 gap-10 overflow-auto">
+                        <img :src="infoToShow.photo1x1" @click="zoomImage(infoToShow.photo1x1)" alt="1x1 photo" class="w-full h-full">
+                        <img :src="infoToShow.barangayCert" @click="zoomImage(infoToShow.barangayCert)" alt="barangay certitificate" class="max-w-full max-h-full">
+                        <img :src="infoToShow.medicalCert" @click="zoomImage(infoToShow.medicalCert)" alt="medical certitificate" class="max-w-full max-h-full">
+                        <img :src="infoToShow.oldID" @click="zoomImage(infoToShow.oldID)" alt="medical certitificate" class="max-w-full max-h-full">
+                    </div>
                 </div>
             </div>
+
+            <div @click.self="zoomImg = false" v-if="zoomImg" class="z-50 absolute top-0 left-0 bg-black/25 h-screen w-screen flex items-center justify-center">
+                <div @click="zoomImg = false" class="cursor-pointer bg-black/55 absolute top-4 right-4 p-1 rounded-full"><Icon icon="mdi:close" class="text-white text-xl" /></div>
+                <img :src="imageToZoom" class="max-h-[80%] max-w-[80%]">
+            </div>
+            
         </div>
         </section>
 </template>
@@ -292,6 +304,14 @@ const user = computed(() => authStore.user)
 
 const router = useRouter()
 const route = useRoute()
+
+const imageToZoom = ref('')
+const zoomImg = ref(false)
+
+const zoomImage = (image) => {
+    imageToZoom.value = image
+    zoomImg.value = true
+}
 
 const passwordType = ref('password')
 const iconType = ref('mdi:eye')
@@ -666,9 +686,11 @@ const loadImageAsArrayBuffer = async (imageUrl) => {
   return await response.arrayBuffer()
 }
 
-const generateForm = async (index) => {
+const generateForm = async () => {
+
     try {
-        const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
+        // const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
+        const response = await fetch('PRPWD-APPLICATION_FORM.docx')
 
         if (!response.ok) throw new Error('Failed to fetch DOCX template')
 
@@ -694,18 +716,97 @@ const generateForm = async (index) => {
 
         doc.setData({
             // image: infoToShow.value.photo1x1,
+            newApplicant: infoToShow.value.typeOfApplicant === 'new' ? '◾' : '◽',
+            renewal: infoToShow.value.typeOfApplicant === 'renewal' ? '◾' : '◽',
+            dateApplied: infoToShow.value.dateApplied,
+            dateOfBirth: infoToShow.value.dateOfBirth,
             first: infoToShow.value.firstName,
             middle: infoToShow.value.middleName,
             last: infoToShow.value.lastName,
+            suffix: infoToShow.value.suffix,
+            houseNo: infoToShow.value.houseNoAndStreet,
+            barangay: infoToShow.value.barangay,
+            municipality: infoToShow.value.municipalityCity,
+            province: infoToShow.value.province,
+            region: infoToShow.value.region,
+            landlineNo: infoToShow.value.landlineNo,
+            mobileNo: infoToShow.value.mobileNo,
+            email: infoToShow.value.emailAddress,
             fathersLname: infoToShow.value.fathersLname,
             fathersFname: infoToShow.value.fathersFname,
             fathersMname: infoToShow.value.fathersMname,
             mothersLname: infoToShow.value.mothersLname,
             mothersFname: infoToShow.value.mothersFname,
-            mothersMname: infoToShow.value.mothersMname,
+            mothersMname: infoToShow.value.mothersMname,   
             guardiansLname: infoToShow.value.guardiansLname,
             guardiansFname: infoToShow.value.guardiansFname,
             guardiansMname: infoToShow.value.guardiansMname,
+            Lname: infoToShow.value.accomplishedByLname,
+            Fname: infoToShow.value.accomplishedByFname,
+            Mname: infoToShow.value.accomplishedByMname,
+            controlNum: infoToShow.value.controlNumber || '',
+            sexcb: infoToShow.value.gender === 'Female' ? '◾' : '◽',
+            sexcb2: infoToShow.value.gender === 'Male' ? '◾' : '◽',
+            organizationAffiliated: infoToShow.value.organizationAffiliated,
+            contactPerson: infoToShow.value.contactInformation,
+            officeAddress: infoToShow.value.officeAddress,
+            telNo: infoToShow.value.telNo,
+            sssNo: infoToShow.value.sssNo,
+            gsisNo: infoToShow.value.gsisNo,
+            pagibigNo: infoToShow.value.pagibigNo,
+            psnNo: infoToShow.value.psnNo,
+            philHNo: infoToShow.value.philhealthNo,
+            physicianName: `${infoToShow.value.physicianByFname} ${infoToShow.value.physicianByMname} ${infoToShow.value.physicianByLname}`,
+            single: infoToShow.value.civilStatus === 'Single' ? '◾' : '◽',
+            seperated: infoToShow.value.civilStatus === 'Seperated' ? '◾' : '◽',
+            livein: infoToShow.value.civilStatus === 'Cohabitation' ? '◾' : '◽',
+            married: infoToShow.value.civilStatus === 'Married' ? '◾' : '◽',
+            widow: infoToShow.value.civilStatus === 'Widow/er' ? '◾' : '◽',
+            d: infoToShow.value.typeOfDisability === 'Deaf/Hard of hearing' ? '◾' : '◽',
+            id: infoToShow.value.typeOfDisability === 'Intellectual Disability' ? '◾' : '◽',
+            ld: infoToShow.value.typeOfDisability === 'Learning Disability' ? '◾' : '◽',
+            md: infoToShow.value.typeOfDisability === 'Mental Disability' ? '◾' : '◽',
+            pd: infoToShow.value.typeOfDisability === 'Physical Disability (Orthopedic)' ? '◾' : '◽',
+            psd: infoToShow.value.typeOfDisability === 'Psychosocial Disability' ? '◾' : '◽',
+            sli: infoToShow.value.typeOfDisability === 'Speech and Language Impairment' ? '◾' : '◽',
+            vd: infoToShow.value.typeOfDisability === 'Visual Disability' ? '◾' : '◽',
+            c: infoToShow.value.typeOfDisability === 'Cancer (RA11215)' ? '◾' : '◽',
+            rd: infoToShow.value.typeOfDisability === 'Rare Disease (RA107747)' ? '◾' : '◽',
+            aut: infoToShow.value.causeOfDisability === 'Autism' ? '◾' : '◽',
+            ad: infoToShow.value.causeOfDisability === 'ADHD' ? '◾' : '◽',
+            cp: infoToShow.value.causeOfDisability === 'Cerebral Palsy' ? '◾' : '◽',
+            ds: infoToShow.value.causeOfDisability === 'Down Syndrome' ? '◾' : '◽',
+            ci: infoToShow.value.causeOfDisability === 'Chronic Illness' ? '◾' : '◽',
+            i: infoToShow.value.causeOfDisability === 'Injury' ? '◾' : '◽',
+            na: infoToShow.value.educationalAttainment === 'None' ? '◾' : '◽',
+            k: infoToShow.value.educationalAttainment === 'Kindergarten' ? '◾' : '◽',
+            el: infoToShow.value.educationalAttainment === 'Elementary' ? '◾' : '◽',
+            jhs: infoToShow.value.educationalAttainment === 'Junior High School' ? '◾' : '◽',
+            shs: infoToShow.value.educationalAttainment === 'Senior High School' ? '◾' : '◽',
+            col: infoToShow.value.educationalAttainment === 'College' ? '◾' : '◽',
+            voc: infoToShow.value.educationalAttainment === 'Vocational' ? '◾' : '◽',
+            pg: infoToShow.value.educationalAttainment === 'Post Graduate' ? '◾' : '◽',
+            emp: infoToShow.value.statusOfEmployment === 'employed' ? '◾' : '◽',
+            une: infoToShow.value.statusOfEmployment === 'unemployed' ? '◾' : '◽',
+            sel: infoToShow.value.statusOfEmployment === 'self-employed' ? '◾' : '◽',
+            gov: infoToShow.value.categoryOfEmployment === 'government' ? '◾' : '◽',
+            pri: infoToShow.value.categoryOfEmployment === 'private' ? '◾' : '◽',
+            per: infoToShow.value.typeOfEmployment === 'permanent/regular' ? '◾' : '◽',
+            sea: infoToShow.value.typeOfEmployment === 'seasonal' ? '◾' : '◽',
+            cas: infoToShow.value.typeOfEmployment === 'casual' ? '◾' : '◽',
+            eme: infoToShow.value.typeOfEmployment === 'emergency' ? '◾' : '◽',
+            man: infoToShow.value.occupation === 'Managers' ? '◾' : '◽',
+            pro: infoToShow.value.occupation === 'Professionals' ? '◾' : '◽',
+            tec: infoToShow.value.occupation === 'Technicians and Associate Professionals' ? '◾' : '◽',
+            cle: infoToShow.value.occupation === 'Clerical Support Worker' ? '◾' : '◽',
+            ser: infoToShow.value.occupation === 'Service and Sales Worker' ? '◾' : '◽',
+            saf: infoToShow.value.occupation === 'Skilled Agricultural, Forestry and Fishery Workers' ? '◾' : '◽',
+            car: infoToShow.value.occupation === 'Craft and Related Trade Workers' ? '◾' : '◽',
+            pla: infoToShow.value.occupation === 'Plant and Machine Operators and Assemblers' ? '◾' : '◽',
+            ele: infoToShow.value.occupation === 'Elementary Occupation' ? '◾' : '◽',
+            arm: infoToShow.value.occupation === 'Armed Forces Occupation' ? '◾' : '◽',
+            oth: infoToShow.value.otherOccupation ? '◾' : '◽',
+            others: infoToShow.value.otherOccupation
         })
 
         doc.render()
@@ -715,7 +816,7 @@ const generateForm = async (index) => {
             mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         })
 
-        saveAs(output, 'parents-consent.docx')
+        saveAs(output, 'Application-form.docx')
     } catch (error) {
         console.error('Error generating document:', error)
     }

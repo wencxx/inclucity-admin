@@ -87,7 +87,10 @@
                             <td class="text-sm">{{ applicant.barangay }}</td>
                             <td class="text-sm">{{ applicant.typeOfDisability }}</td>
                             <td class="text-sm">{{ applicant.statusOfEmployment }}</td>
-                            <td class="text-sm">{{ applicant.typeOfEmployment }}</td>
+                            <td class="text-sm">
+                                <span v-if="applicant.statusOfEmployment !== 'unemployed'">{{ applicant.typeOfEmployment }}</span>
+                                <span v-else>---</span>
+                            </td>
                         </tr>
                     </tbody>
                     <tbody v-else class="bg-white text-center">
