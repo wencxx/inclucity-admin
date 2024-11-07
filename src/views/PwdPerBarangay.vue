@@ -231,14 +231,21 @@ const filteredApplicants = computed(() => {
 });
 
 const currentPage = ref(1)
-const itemsPerPage = ref(10)
+const itemsPerPage = ref(20)
 const totalPages = computed(() => Math.ceil(applicants.value?.length / itemsPerPage.value))
 
 const paginatedApplicants = computed(() => {
+    const sortedApplicants = [...filteredApplicants.value].sort((a, b) => {
+        if (a.barangay < b.barangay) return -1;
+        if (a.barangay > b.barangay) return 1;
+        return 0;
+    });
+
     const start = (currentPage.value - 1) * itemsPerPage.value;
     const end = start + itemsPerPage.value;
-    return filteredApplicants.value.slice(start, end);
+    return sortedApplicants.slice(start, end);
 });
+
 
 const prevPage = () => {
   if (currentPage.value > 1) {

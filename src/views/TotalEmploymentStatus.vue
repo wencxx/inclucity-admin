@@ -79,8 +79,8 @@
                             <th class=" text-sm">Employment Type</th>
                         </tr>
                     </thead>
-                    <tbody v-if="filteredApplicants.length > 0" class="bg-white text-center">
-                        <tr class="border-b border-gray-500" v-for="(applicant, index) in filteredApplicants" :key="index">
+                    <tbody v-if="paginatedApplicants.length > 0" class="bg-white text-center">
+                        <tr class="border-b border-gray-500" v-for="(applicant, index) in paginatedApplicants" :key="index">
                             <td class="md:py-3 text-sm font-semibold">{{ applicant.controlNumber }}</td>
                             <td class="text-sm">{{ applicant.firstName + ' ' + applicant.middleName + ' ' + applicant.lastName }}</td>
                             <td class="text-sm">{{ applicant.gender }}</td>
@@ -174,14 +174,23 @@ const filteredApplicants = computed(() => {
 });
 
 const currentPage = ref(1)
-const itemsPerPage = ref(10)
+const itemsPerPage = ref(20)
 const totalPages = computed(() => Math.ceil(applicants.value?.length / itemsPerPage.value))
 
 const paginatedApplicants = computed(() => {
+    // Sort applicants by barangay in alphabetical order
+    const sortedApplicants = filteredApplicants.value.slice().sort((a, b) => {
+        if (a.barangay < b.barangay) return -1;
+        if (a.barangay > b.barangay) return 1;
+        return 0;
+    });
+
+    // Apply pagination
     const start = (currentPage.value - 1) * itemsPerPage.value;
     const end = start + itemsPerPage.value;
-    return filteredApplicants.value.slice(start, end);
+    return sortedApplicants.slice(start, end);
 });
+
 
 const prevPage = () => {
   if (currentPage.value > 1) {
