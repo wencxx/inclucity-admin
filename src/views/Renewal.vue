@@ -32,7 +32,7 @@
                 <table class="w-[150dvw] lg:w-full border-collapse" id="userTable">
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
-                            <th class=" text-xs">Application Number</th>
+                            <th class=" text-xs">Control Number</th>
                             <th class=" text-sm">Full Name</th>
                             <th class=" text-sm">Email</th>
                             <th class=" text-sm">Age</th>
@@ -46,7 +46,7 @@
                     </thead>
                     <tbody v-if="!noApplicants" class="bg-white text-center">
                         <tr v-if="paginatedApplicants.length > 0" v-for="applicant in paginatedApplicants" :key="applicant.id" class="border-b border-gray-500">
-                            <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
+                            <td class="md:py-3 text-sm">{{ applicant.controlNumber }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
                             <td class="text-sm">{{ applicant.emailAddess || '---'  }}</td>
                             <td class="text-sm">

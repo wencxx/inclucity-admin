@@ -3,7 +3,7 @@
         <div class="lg:flex lg:justify-between space-y-3 lg:space-y-0">
             <div class="flex items-center w-1/6 h-10 relative cursor-default">
                 <h1 class="z-10 rounded w-1/2 h-full flex items-center justify-center text-white" :class="{ '!text-black shadow': route.query.page === 'expired' }" @click="toggleExpired('active')">Active</h1>
-                <h1 class="z-10 rounded w-1/2 h-full flex items-center justify-center shadow" :class="{ 'text-white shadow-none': route.query.page === 'expired' }" @click="toggleExpired('expired')">Expired</h1>
+                <h1 class="z-10 rounded w-1/2 h-full flex items-center justify-center shadow" :class="{ 'text-white shadow-none': route.query.page === 'expired' }" @click="toggleExpired('expired')">Inactive</h1>
                 <div class="bg-custom-primary rounded w-1/2 h-full left-0 absolute transition-all" :class="{ '!left-1/2': route.query.page === 'expired' }"></div>
             </div>
             <div class="flex items-center gap-x-3 h-10">

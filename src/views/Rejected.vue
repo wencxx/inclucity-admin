@@ -88,14 +88,6 @@
             <div class="w-[30dvw] flex flex-col items-center gap-y-5 p-5 xl:w-[20dvw] h-fit bg-white rounded-md shadow">
                 <h1 class="font-medium text-xl">Reasons</h1>
                 <div class="w-full flex gap-x-2 items-center">
-                    <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Outdated Barangay Indigency" >
-                    <label>Outdated Barangay Indigency</label>
-                </div>
-                <div class="w-full flex gap-x-2 items-center">
-                    <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Legality Issues" >
-                    <label>Legality Issues</label>
-                </div>
-                <div class="w-full flex gap-x-2 items-center">
                     <input type="radio" name="reasons" v-model="reasonForDeclining" class="w-5 aspect-square" value="Invalid Forms" >
                     <label>Invalid Forms</label>
                 </div>
