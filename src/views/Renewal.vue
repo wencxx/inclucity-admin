@@ -48,11 +48,17 @@
                         <tr v-if="paginatedApplicants.length > 0" v-for="applicant in paginatedApplicants" :key="applicant.id" class="border-b border-gray-500">
                             <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
-                            <td class="text-sm">{{ applicant.user?.email }}</td>
-                            <td class="text-sm">{{ applicant.user?.age }}</td>
-                            <td class="text-sm">{{ applicant.user?.contactNumber }}</td>
-                            <td class="text-sm">{{ applicant.gender }}</td>
-                            <td class="text-sm">{{ applicant.barangay }}</td>
+                            <td class="text-sm">{{ applicant.emailAddess || '---'  }}</td>
+                            <td class="text-sm">
+                                {{
+                                    applicant.user?.age 
+                                    ? dobToAge(applicant.user.age).count + ' ' + dobToAge(applicant.user.age).unit 
+                                    : '---'
+                                }}
+                            </td>
+                            <td class="text-sm">{{ applicant.user?.contactNumber || '---' }}</td>
+                            <td class="text-sm">{{ applicant.gender || '---' }}</td>
+                            <td class="text-sm">{{ applicant.barangay || '---' }}</td>
                             <td class="text-sm">{{ applicant.dateApplied?.split('T')[0] }}</td>
                             <td class="text-sm">
                                 <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto">
@@ -209,7 +215,11 @@
                         </div>
                         <div class="flex items-center pl-10 gap-x-14">
                             <p class="text-gray-600 font-semibold">Age:</p>
-                            <p>{{ infoToShow.user?.age }}</p>
+                            <p>
+                                {{
+                                    infoToShow.dateOfBirth ? dobToAge(infoToShow.dateOfBirth).count : ''
+                                }}
+                            </p>
                         </div>
                         <div class="flex items-center pl-10 gap-x-14">
                             <p class="text-gray-600 font-semibold">Birthday:</p>
@@ -265,6 +275,7 @@
 import { computed, onMounted, ref, useId } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
+import dobToAge from 'dob-to-age'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
 import PizZip from 'pizzip'
@@ -272,7 +283,11 @@ import Docxtemplater from 'docxtemplater'
 import { saveAs } from 'file-saver'
 import ImageModule from 'docxtemplater-image-module-free'
 // import * as mammoth from 'mammoth'
+import { useAuthStore } from '../store/index'
 const serverUrl = import.meta.env.VITE_SERVER_URL
+
+const authStore = useAuthStore()
+const user = computed(() => authStore.user)
 
 const router = useRouter()
 const route = useRoute()
@@ -335,8 +350,11 @@ const filteredApplicants = computed(() => {
     if (!searchQuery.value) return applicants.value || [];
     return applicants.value.filter(applicant => {
         const fullName = `${applicant.firstName} ${applicant.middleName} ${applicant.lastName}`.toLowerCase();
+        const controlNumber = convertApplicationNum(applicant.applicationNumber).toString().toLowerCase();
+        const age = dobToAge(applicant.user.age).count.toString().toLowerCase();
         const barangay = applicant.barangay.toLowerCase();
-        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase());
+        const gender = applicant.gender.toLowerCase();
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase()) || age.includes(searchQuery.value.toLowerCase())
     });
 });
 
@@ -583,8 +601,28 @@ const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
     const headerImage = "../../header.png"; 
+    const today = new Date()
 
-    pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+    // Function to add footer
+    const addFooter = (pdf, pageNumber) => {
+        pdf.setFontSize(10);
+        pdf.text("Approved by:", 10, pdf.internal.pageSize.height - 50);
+        pdf.setFontSize(12);
+        pdf.text("Lolita SP. Santos, RSW", 50, pdf.internal.pageSize.height - 50);
+        pdf.setFontSize(10);
+        pdf.text("____________________________________", 40, pdf.internal.pageSize.height - 49);
+        pdf.setFontSize(10);
+        pdf.text("City Social Welfare and Development Officer", 40, pdf.internal.pageSize.height - 44);
+        pdf.setFontSize(10);
+        pdf.text(`Prepared By: Admin - ${user.value.name}`, 10, pdf.internal.pageSize.height - 20);
+        pdf.setFontSize(10);
+        pdf.text(`Date: ${moment(today).format('ll')}`, 10, pdf.internal.pageSize.height - 15);
+        pdf.setFontSize(10);
+        pdf.text(`Time: ${moment(today).format('LT')}`, 10, pdf.internal.pageSize.height - 10);
+        pdf.text(String(pageNumber), pdf.internal.pageSize.width - 10, pdf.internal.pageSize.height - 10, { align: "right" });
+    };
+
+    pdf.addImage(headerImage, 'PNG', 0, 0, 210, 35);
 
     html2canvas(table).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
@@ -594,15 +632,19 @@ const downloadPDF = () => {
 
         let heightLeft = imgHeight;
         let position = 50; 
+        let pageNumber = 1;
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        addFooter(pdf, pageNumber);
         heightLeft -= pageHeight - 40; 
 
         while (heightLeft >= 0) {
             pdf.addPage(); 
+            pageNumber++;
             pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
             position = heightLeft - imgHeight + 40; 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+            addFooter(pdf, pageNumber); 
             heightLeft -= pageHeight - 40;
         }
 
@@ -610,7 +652,7 @@ const downloadPDF = () => {
     });
 
     typeOfExport.value = ''
-}
+};
 
 
 // download form
@@ -677,6 +719,7 @@ const generateForm = async (index) => {
 
 onMounted(() => {
     getPendingApplications()
+    authStore.getUser()
 })
 </script>
 

@@ -22,9 +22,9 @@
                     </thead>
                     <tbody v-if="announcements.length > 0" class="bg-white text-center">
                         <tr v-if="paginatedAnnouncements.length > 0" v-for="announcement in paginatedAnnouncements" :key="announcement._id" class="border-b border-gray-500">
-                            <td class="md:py-3">{{ announcement.postTitle }}</td>
-                            <td>{{ announcement.datePosted.split('T')[0] }}</td>
-                            <td>
+                            <td class="md:py-3 w-2/4">{{ announcement.postTitle }}</td>
+                            <td class="w-1/4">{{ announcement.datePosted.split('T')[0] }}</td>
+                            <td class="w-1/4">
                                 <div class="flex items-center justify-center gap-x-2">
                                     <div class="relative group">
                                         <Icon icon="ph:eye" class="text-xl cursor-pointer" @click="viewPost(announcement._id)" />

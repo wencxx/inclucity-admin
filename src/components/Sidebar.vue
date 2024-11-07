@@ -23,10 +23,10 @@
                         <div class="h-6 w-[2px] bg-white"></div>
                         <span class="mt-1">PWD per Barangay</span>
                     </router-link>
-                    <router-link :to="{ name: 'total number of pwd' }" class="px-10 flex items-center gap-x-5 py-2 font-medium hover:bg-activeLink">
+                    <!-- <router-link :to="{ name: 'total number of pwd' }" class="px-10 flex items-center gap-x-5 py-2 font-medium hover:bg-activeLink">
                         <div class="h-6 w-[2px] bg-white"></div>
                         <span class="mt-1">Total Number of PWD</span>
-                    </router-link>
+                    </router-link> -->
                     <router-link :to="{ name: 'total employment status' }" class="px-10 flex items-center gap-x-5 py-2 font-medium hover:bg-activeLink">
                         <div class="h-6 w-[2px] bg-white"></div>
                         <span class="mt-1">PWD Employment Status</span>

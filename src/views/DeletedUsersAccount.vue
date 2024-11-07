@@ -20,7 +20,7 @@
                     <Icon icon="ph:export" />
                     Export
                 </button> -->
-                <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
+                <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-8">
                     <option value="" disabled>Export</option>
                     <option>PDF</option>
                     <option>CSV</option>
@@ -43,8 +43,8 @@
                         </tr>
                     </thead>
                     <tbody  v-if="!noUsers" class="bg-white text-center">
-                        <tr v-if="paginatedUsers.length > 0" v-for="user in paginatedUsers" :key="user.id" class="border-b border-gray-500">
-                            <td class="md:p-3">{{ user._id }}</td>
+                        <tr v-if="paginatedUsers.length > 0" v-for="(user, index) in paginatedUsers" :key="user.id" class="border-b border-gray-500">
+                            <td class="md:p-3">{{ formatNumber(users.indexOf(user) + 1) }}</td>
                             <td>{{ user.name }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.contactNumber }}</td>
@@ -102,7 +102,15 @@ import { computed, onMounted, ref } from "vue";
 import axios from 'axios'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
+import { useAuthStore } from '../store/index'
 const serverUrl = import.meta.env.VITE_SERVER_URL
+
+const authStore = useAuthStore()
+const user = computed(() => authStore.user)
+
+const formatNumber = (number) => {
+    return number.toString().padStart(4, '0');
+}
 
 const users = ref(null)
 const noUsers = ref(false)
@@ -217,8 +225,28 @@ const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
     const headerImage = "../../header.png"; 
+    const today = new Date()
 
-    pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+    // Function to add footer
+    const addFooter = (pdf, pageNumber) => {
+        pdf.setFontSize(10);
+        pdf.text("Approved by:", 10, pdf.internal.pageSize.height - 50);
+        pdf.setFontSize(12);
+        pdf.text("Lolita SP. Santos, RSW", 50, pdf.internal.pageSize.height - 50);
+        pdf.setFontSize(10);
+        pdf.text("____________________________________", 40, pdf.internal.pageSize.height - 49);
+        pdf.setFontSize(10);
+        pdf.text("City Social Welfare and Development Officer", 40, pdf.internal.pageSize.height - 44);
+        pdf.setFontSize(10);
+        pdf.text(`Prepared By: Admin - ${user.value.name}`, 10, pdf.internal.pageSize.height - 20);
+        pdf.setFontSize(10);
+        pdf.text(`Date: ${moment(today).format('ll')}`, 10, pdf.internal.pageSize.height - 15);
+        pdf.setFontSize(10);
+        pdf.text(`Time: ${moment(today).format('LT')}`, 10, pdf.internal.pageSize.height - 10);
+        pdf.text(String(pageNumber), pdf.internal.pageSize.width - 10, pdf.internal.pageSize.height - 10, { align: "right" });
+    };
+
+    pdf.addImage(headerImage, 'PNG', 0, 0, 210, 35);
 
     html2canvas(table).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
@@ -228,15 +256,19 @@ const downloadPDF = () => {
 
         let heightLeft = imgHeight;
         let position = 50; 
+        let pageNumber = 1;
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        addFooter(pdf, pageNumber);
         heightLeft -= pageHeight - 40; 
 
         while (heightLeft >= 0) {
             pdf.addPage(); 
+            pageNumber++;
             pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
             position = heightLeft - imgHeight + 40; 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+            addFooter(pdf, pageNumber); 
             heightLeft -= pageHeight - 40;
         }
 
@@ -244,10 +276,11 @@ const downloadPDF = () => {
     });
 
     typeOfExport.value = ''
-}
+};
 
 onMounted(() => {
     getAllUsers()
+    authStore.getUser()
 })
 </script>
 

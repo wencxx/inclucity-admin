@@ -222,7 +222,11 @@ import PizZip from 'pizzip'
 import Docxtemplater from 'docxtemplater'
 import { saveAs } from 'file-saver'
 import ImageModule from 'docxtemplater-image-module-free'
+import { useAuthStore } from '../store/index'
 const serverUrl = import.meta.env.VITE_SERVER_URL
+
+const authStore = useAuthStore()
+const user = computed(() => authStore.user)
 
 const router = useRouter()
 const route = useRoute()
@@ -252,10 +256,11 @@ const filteredApplicants = computed(() => {
     if (!searchQuery.value) return applicants.value || [];
     return applicants.value.filter(applicant => {
         const fullName = `${applicant.firstName} ${applicant.middleName} ${applicant.lastName}`.toLowerCase();
+        const controlNumber = applicant.controlNumber.toLowerCase();
         const barangay = applicant.barangay.toLowerCase();
         const gender = applicant.gender.toLowerCase();
         const disability = applicant.typeOfDisability.toLowerCase();
-        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || disability.includes(searchQuery.value.toLowerCase());
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || disability.includes(searchQuery.value.toLowerCase());
     });
 });
 
@@ -327,10 +332,11 @@ const filteredExpiredApplicants = computed(() => {
     if (!searchQuery.value) return expiredApplicants.value || [];
     return expiredApplicants.value.filter(applicant => {
         const fullName = `${applicant.firstName} ${applicant.middleName} ${applicant.lastName}`.toLowerCase();
+        const controlNumber = applicant.controlNumber.toLowerCase();
         const barangay = applicant.barangay.toLowerCase();
         const gender = applicant.gender.toLowerCase();
         const disability = applicant.typeOfDisability.toLowerCase();
-        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || disability.includes(searchQuery.value.toLowerCase());
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || disability.includes(searchQuery.value.toLowerCase());
     });
 });
 
@@ -462,8 +468,28 @@ const downloadPDF = () => {
         const pdf = new jsPDF();
         const table = document.getElementById("expired");
         const headerImage = "../../header.png"; 
+        const today = new Date()
 
-        pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+        // Function to add footer
+        const addFooter = (pdf, pageNumber) => {
+            pdf.setFontSize(10);
+            pdf.text("Approved by:", 10, pdf.internal.pageSize.height - 50);
+            pdf.setFontSize(12);
+            pdf.text("Lolita SP. Santos, RSW", 50, pdf.internal.pageSize.height - 50);
+            pdf.setFontSize(10);
+            pdf.text("____________________________________", 40, pdf.internal.pageSize.height - 49);
+            pdf.setFontSize(10);
+            pdf.text("City Social Welfare and Development Officer", 40, pdf.internal.pageSize.height - 44);
+            pdf.setFontSize(10);
+            pdf.text(`Prepared By: Admin - ${user.value.name}`, 10, pdf.internal.pageSize.height - 20);
+            pdf.setFontSize(10);
+            pdf.text(`Date: ${moment(today).format('ll')}`, 10, pdf.internal.pageSize.height - 15);
+            pdf.setFontSize(10);
+            pdf.text(`Time: ${moment(today).format('LT')}`, 10, pdf.internal.pageSize.height - 10);
+            pdf.text(String(pageNumber), pdf.internal.pageSize.width - 10, pdf.internal.pageSize.height - 10, { align: "right" });
+        };
+
+        pdf.addImage(headerImage, 'PNG', 0, 0, 210, 35);
 
         html2canvas(table).then((canvas) => {
             const imgData = canvas.toDataURL("image/png");
@@ -473,15 +499,19 @@ const downloadPDF = () => {
 
             let heightLeft = imgHeight;
             let position = 50; 
+            let pageNumber = 1;
 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            addFooter(pdf, pageNumber);
             heightLeft -= pageHeight - 40; 
 
             while (heightLeft >= 0) {
                 pdf.addPage(); 
+                pageNumber++;
                 pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
                 position = heightLeft - imgHeight + 40; 
                 pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+                addFooter(pdf, pageNumber); 
                 heightLeft -= pageHeight - 40;
             }
 
@@ -491,8 +521,28 @@ const downloadPDF = () => {
         const pdf = new jsPDF();
         const table = document.getElementById("active");
         const headerImage = "../../header.png"; 
+        const today = new Date()
 
-        pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+        // Function to add footer
+        const addFooter = (pdf, pageNumber) => {
+            pdf.setFontSize(10);
+            pdf.text("Approved by:", 10, pdf.internal.pageSize.height - 50);
+            pdf.setFontSize(12);
+            pdf.text("Lolita SP. Santos, RSW", 50, pdf.internal.pageSize.height - 50);
+            pdf.setFontSize(10);
+            pdf.text("____________________________________", 40, pdf.internal.pageSize.height - 49);
+            pdf.setFontSize(10);
+            pdf.text("City Social Welfare and Development Officer", 40, pdf.internal.pageSize.height - 44);
+            pdf.setFontSize(10);
+            pdf.text(`Prepared By: Admin - ${user.value.name}`, 10, pdf.internal.pageSize.height - 20);
+            pdf.setFontSize(10);
+            pdf.text(`Date: ${moment(today).format('ll')}`, 10, pdf.internal.pageSize.height - 15);
+            pdf.setFontSize(10);
+            pdf.text(`Time: ${moment(today).format('LT')}`, 10, pdf.internal.pageSize.height - 10);
+            pdf.text(String(pageNumber), pdf.internal.pageSize.width - 10, pdf.internal.pageSize.height - 10, { align: "right" });
+        };
+
+        pdf.addImage(headerImage, 'PNG', 0, 0, 210, 35);
 
         html2canvas(table).then((canvas) => {
             const imgData = canvas.toDataURL("image/png");
@@ -502,15 +552,19 @@ const downloadPDF = () => {
 
             let heightLeft = imgHeight;
             let position = 50; 
+            let pageNumber = 1;
 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            addFooter(pdf, pageNumber);
             heightLeft -= pageHeight - 40; 
 
             while (heightLeft >= 0) {
                 pdf.addPage(); 
+                pageNumber++;
                 pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
                 position = heightLeft - imgHeight + 40; 
                 pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight); 
+                addFooter(pdf, pageNumber); 
                 heightLeft -= pageHeight - 40;
             }
 
@@ -666,90 +720,90 @@ const generateForm = async (index) => {
     }
 }
 
-// const generateFormExpired = async (index) => {
+const generateFormExpired = async (index) => {
 
-//     const applicantData = expiredApplicants.value[index]
-//     try {
-//         const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
+    const applicantData = expiredApplicants.value[index]
+    try {
+        const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
 
-//         if (!response.ok) throw new Error('Failed to fetch DOCX template')
+        if (!response.ok) throw new Error('Failed to fetch DOCX template')
 
-//         const docxArrayBuffer = await response.arrayBuffer()
+        const docxArrayBuffer = await response.arrayBuffer()
 
-//         const imageArrayBuffer = await loadImageAsArrayBuffer(applicantData.photo1x1)
+        const imageArrayBuffer = await loadImageAsArrayBuffer(applicantData.photo1x1)
 
-//         const zip = new PizZip(docxArrayBuffer)
+        const zip = new PizZip(docxArrayBuffer)
 
-//         const imageModule = new ImageModule({
-//             centered: false,
-//             getImage: function () {
-//                 return imageArrayBuffer
-//             },
-//             getSize: function () {
-//                 return [200, 200]
-//             },
-//         })
+        const imageModule = new ImageModule({
+            centered: false,
+            getImage: function () {
+                return imageArrayBuffer
+            },
+            getSize: function () {
+                return [200, 200]
+            },
+        })
 
-//         const doc = new Docxtemplater(zip, {
-//             modules: [imageModule],
-//         })
+        const doc = new Docxtemplater(zip, {
+            modules: [imageModule],
+        })
 
-//         doc.setData({
-//             // image: infoToShow.value.photo1x1,
-//             newApplicant: applicantData.typeOfApplicant === 'new' ? '◾' : '◽',
-//             renewal: applicantData.typeOfApplicant === 'renewal' ? '◾' : '◽',
-//             dateApplied: applicantData.dateApplied,
-//             dateOfBirth: applicantData.dateOfBirth,
-//             middle: applicantData.middleName,
-//             last: applicantData.lastName,
-//             suffix: applicantData.suffix,
-//             houseNo: applicantData.houseNoAndStreet,
-//             barangay: applicantData.barangay,
-//             municipality: applicantData.municipalityCity,
-//             province: applicantData.province,
-//             region: applicantData.region,
-//             landlineNo: applicantData.landlineNo,
-//             mobileNo: applicantData.mobileNo,
-//             email: applicantData.emailAddress,
-//             fathersLname: applicantData.fathersLname,
-//             fathersFname: applicantData.fathersFname,
-//             fathersMname: applicantData.fathersMname,
-//             mothersLname: applicantData.mothersLname,
-//             mothersFname: applicantData.mothersFname,
-//             mothersMname: applicantData.mothersMname,
-//             guardiansLname: applicantData.guardiansLname,
-//             guardiansFname: applicantData.guardiansFname,
-//             guardiansMname: applicantData.guardiansMname,
-//             Lname: applicantData.accomplishedByLname,
-//             Fname: applicantData.accomplishedByFname,
-//             Mname: applicantData.accomplishedByMname,
-//             controlNum: applicantData.controlNumber,
-//             sexcb: applicantData.gender === 'Female' ? '◾' : '◽',
-//             sexcb2: applicantData.gender === 'Male' ? '◾' : '◽',
-//             organizationAffiliated: applicantData.organizationAffiliated,
-//             contactPerson: applicantData.contactInformation,
-//             officeAddress: applicantData.officeAddress,
-//             telNo: applicantData.telNo,
-//             sssNo: applicantData.sssNo,
-//             gsisNo: applicantData.gsisNo,
-//             pagibigNo: applicantData.pagibigNo,
-//             psnNo: applicantData.psnNo,
-//             philHNo: applicantData.philhealthNo,
-//             physicianName: `${applicantData.physicianByFname} ${applicantData.physicianByMname} ${applicantData.physicianByLname}`
-//         })
+        doc.setData({
+            // image: infoToShow.value.photo1x1,
+            newApplicant: applicantData.typeOfApplicant === 'new' ? '◾' : '◽',
+            renewal: applicantData.typeOfApplicant === 'renewal' ? '◾' : '◽',
+            dateApplied: applicantData.dateApplied,
+            dateOfBirth: applicantData.dateOfBirth,
+            middle: applicantData.middleName,
+            last: applicantData.lastName,
+            suffix: applicantData.suffix,
+            houseNo: applicantData.houseNoAndStreet,
+            barangay: applicantData.barangay,
+            municipality: applicantData.municipalityCity,
+            province: applicantData.province,
+            region: applicantData.region,
+            landlineNo: applicantData.landlineNo,
+            mobileNo: applicantData.mobileNo,
+            email: applicantData.emailAddress,
+            fathersLname: applicantData.fathersLname,
+            fathersFname: applicantData.fathersFname,
+            fathersMname: applicantData.fathersMname,
+            mothersLname: applicantData.mothersLname,
+            mothersFname: applicantData.mothersFname,
+            mothersMname: applicantData.mothersMname,
+            guardiansLname: applicantData.guardiansLname,
+            guardiansFname: applicantData.guardiansFname,
+            guardiansMname: applicantData.guardiansMname,
+            Lname: applicantData.accomplishedByLname,
+            Fname: applicantData.accomplishedByFname,
+            Mname: applicantData.accomplishedByMname,
+            controlNum: applicantData.controlNumber,
+            sexcb: applicantData.gender === 'Female' ? '◾' : '◽',
+            sexcb2: applicantData.gender === 'Male' ? '◾' : '◽',
+            organizationAffiliated: applicantData.organizationAffiliated,
+            contactPerson: applicantData.contactInformation,
+            officeAddress: applicantData.officeAddress,
+            telNo: applicantData.telNo,
+            sssNo: applicantData.sssNo,
+            gsisNo: applicantData.gsisNo,
+            pagibigNo: applicantData.pagibigNo,
+            psnNo: applicantData.psnNo,
+            philHNo: applicantData.philhealthNo,
+            physicianName: `${applicantData.physicianByFname} ${applicantData.physicianByMname} ${applicantData.physicianByLname}`
+        })
 
-//         doc.render()
+        doc.render()
 
-//         const output = doc.getZip().generate({
-//             type: 'blob',
-//             mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-//         })
+        const output = doc.getZip().generate({
+            type: 'blob',
+            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        })
 
-//         saveAs(output, 'parents-consent.docx')
-//     } catch (error) {
-//         console.error('Error generating document:', error)
-//     }
-// }
+        saveAs(output, 'parents-consent.docx')
+    } catch (error) {
+        console.error('Error generating document:', error)
+    }
+}
 
 // toggle add applicant
 const addApplicantModal = ref(false)
@@ -761,6 +815,7 @@ const addApplicant = async () => {
 onMounted(() => {
     getApprovedApplications()
     getExpiredApplications()
+    authStore.getUser()
 })
 </script>
 
