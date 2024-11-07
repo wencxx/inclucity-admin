@@ -326,7 +326,7 @@ const downloadPDF = () => {
     const pdf = new jsPDF();
     const table = document.getElementById("userTable");
     const headerImage = "../../header.png"; 
-    const today = new Date()
+    const today = new Date();
 
     // Function to add footer
     const addFooter = (pdf, pageNumber) => {
@@ -352,7 +352,21 @@ const downloadPDF = () => {
     pdf.setFontSize(10);
     pdf.text("Registered Users", 90, 43);
 
+    // Hide the last column
+    const lastColumnStyle = document.createElement('style');
+    lastColumnStyle.innerHTML = `
+        #userTable td:last-child,
+        #userTable th:last-child {
+            display: none;
+        }
+    `;
+
+    document.head.appendChild(lastColumnStyle);
+
     html2canvas(table).then((canvas) => {
+        // Remove the style after screenshot
+        lastColumnStyle.remove();
+
         const imgData = canvas.toDataURL("image/png");
         const imgWidth = 190;
         const pageHeight = pdf.internal.pageSize.height;
@@ -381,6 +395,7 @@ const downloadPDF = () => {
 
     typeOfExport.value = ''
 };
+
 
 
 onMounted(() => {

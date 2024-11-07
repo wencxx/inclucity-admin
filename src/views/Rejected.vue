@@ -400,7 +400,22 @@ const downloadPDF = () => {
     pdf.setFontSize(10);
     pdf.text("Rejected Applicants", 90, 43);
 
+    // Hide the last column
+    const lastColumnStyle = document.createElement('style');
+    lastColumnStyle.innerHTML = `
+        #userTable td:last-child,
+        #userTable th:last-child {
+            display: none;
+        }
+    `;
+
+    document.head.appendChild(lastColumnStyle);
+
     html2canvas(table).then((canvas) => {
+
+        lastColumnStyle.remove();
+
+
         const imgData = canvas.toDataURL("image/png");
         const imgWidth = 190;
         const pageHeight = pdf.internal.pageSize.height;

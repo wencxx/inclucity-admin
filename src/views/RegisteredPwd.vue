@@ -495,7 +495,25 @@ const downloadPDF = () => {
         pdf.setFontSize(10);
         pdf.text("Expired Applicants", 90, 43);
 
+        // Combine the styles to hide both the last and second-to-last columns
+        const hiddenColumnsStyle = document.createElement('style');
+        hiddenColumnsStyle.innerHTML = `
+            #expired td:last-child,
+            #expired th:last-child,
+            #expired td:nth-last-child(2),
+            #expired th:nth-last-child(2),
+            #expired td:nth-last-child(3),
+            #expired th:nth-last-child(3) {
+                display: none;
+            }
+        `;
+
+        document.head.appendChild(hiddenColumnsStyle);
+
         html2canvas(table).then((canvas) => {
+
+            hiddenColumnsStyle.remove();
+
             const imgData = canvas.toDataURL("image/png");
             const imgWidth = 190;
             const pageHeight = pdf.internal.pageSize.height;
@@ -551,7 +569,23 @@ const downloadPDF = () => {
         pdf.setFontSize(10);
         pdf.text("Registered Applicants", 90, 43);
 
+        // Combine the styles to hide both the last and second-to-last columns
+        const hiddenColumnsStyle = document.createElement('style');
+        hiddenColumnsStyle.innerHTML = `
+            #active td:last-child,
+            #active th:last-child,
+            #active td:nth-last-child(2),
+            #active th:nth-last-child(2) {
+                display: none;
+            }
+        `;
+
+        document.head.appendChild(hiddenColumnsStyle);
+
         html2canvas(table).then((canvas) => {
+
+            hiddenColumnsStyle.remove();
+
             const imgData = canvas.toDataURL("image/png");
             const imgWidth = 190;
             const pageHeight = pdf.internal.pageSize.height;

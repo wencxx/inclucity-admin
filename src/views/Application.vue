@@ -689,7 +689,23 @@ const downloadPDF = () => {
     pdf.setFontSize(10);
     pdf.text("New Applicants", 90, 43);
 
+    // Combine the styles to hide both the last and second-to-last columns
+    const hiddenColumnsStyle = document.createElement('style');
+    hiddenColumnsStyle.innerHTML = `
+        #userTable td:last-child,
+        #userTable th:last-child,
+        #userTable td:nth-last-child(2),
+        #userTable th:nth-last-child(2) {
+            display: none;
+        }
+    `;
+
+    document.head.appendChild(hiddenColumnsStyle);
+
     html2canvas(table).then((canvas) => {
+
+        hiddenColumnsStyle.remove();
+
         const imgData = canvas.toDataURL("image/png");
         const imgWidth = 190;
         const pageHeight = pdf.internal.pageSize.height;
