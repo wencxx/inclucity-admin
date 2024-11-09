@@ -49,14 +49,14 @@
                             <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
                             <td class="text-sm">{{ applicant.emailAddress || '---' }}</td>
-                            <td class="text-sm">
-                            {{
-                                applicant.user?.age 
-                                ? dobToAge(applicant.user.age).count + ' ' + dobToAge(applicant.user.age).unit 
-                                : '---'
-                            }}
+                            <td class="text-sm" v-if="new Date(applicant.dateOfBirth).getFullYear() < new Date().getFullYear()">
+                                {{
+                                    applicant.user?.age 
+                                    ? dobToAge(applicant.dateOfBirth).count + ' ' + dobToAge(applicant.dateOfBirth).unit 
+                                    : '---'
+                                }}
                             </td>
-
+                            <td class="text-sm" v-else>0 years old</td>
                             <td class="text-sm">{{ applicant.user?.contactNumber || '---' }}</td>
                             <td class="text-sm">{{ applicant.gender }}</td>
                             <td class="text-sm">{{ applicant.barangay }}</td>
@@ -347,6 +347,7 @@ const getPendingApplications = async () => {
         console.log(error)
     }
 }
+
 
 // show app details
 const showAppDetails = ref(false)
