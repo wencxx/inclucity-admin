@@ -226,12 +226,13 @@ const filteredApplicants = computed(() => {
         const gender = applicant.gender.toLowerCase();
         const typeOfDisability = applicant.typeOfDisability.toLowerCase();
         const causeOfDisability = applicant.causeOfDisability.toLowerCase();
-        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || typeOfDisability.includes(searchQuery.value.toLowerCase()) || causeOfDisability.includes(searchQuery.value.toLowerCase());
+        const controlNumber = applicant.controlNumber.toLowerCase();
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || typeOfDisability.includes(searchQuery.value.toLowerCase()) || causeOfDisability.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase());
     });
 });
 
 const currentPage = ref(1)
-const itemsPerPage = ref(20)
+const itemsPerPage = ref(10)
 const totalPages = computed(() => Math.ceil(applicants.value?.length / itemsPerPage.value))
 
 const paginatedApplicants = computed(() => {
@@ -429,7 +430,7 @@ const downloadPDF = () => {
             heightLeft -= pageHeight - 40;
         }
 
-        pdf.save("Table.pdf");
+        pdf.save("Records-of-PWD-per-barangay.pdf");
     });
 
     typeOfExport.value = ''

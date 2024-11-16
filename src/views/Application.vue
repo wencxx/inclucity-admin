@@ -184,12 +184,12 @@
 
 
         <!-- application information -->
-        <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex flex-col items-center justify-center">
-            <div class="h-[10%] w-full bg-custom-primary flex items-center justify-center text-white">
+        <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex flex-col items-center justify-center p-20">
+            <div class="h-[10%] bg-custom-primary flex items-center justify-center text-white relative w-[80%]">
                     <h1 class="text-2xl">General Information</h1>
                     <Icon icon="mdi:close" class="absolute right-10 text-2xl cursor-pointer text-white hover:bg-gray-400 rounded" @click="showAppDetails = false" />
             </div>
-            <div class="h-[90%] w-full flex items-center justify-center bg-white">
+            <div class="h-[90%] w-[80%] flex items-center justify-center bg-white">
                 <div class="h-[90%] w-3/4 bg-gray-300 rounded-xl flex relative pr-10">
                     <div class="w-1/5 h-full flex flex-col items-center py-10 gap-y-3">
                         <div class="rounded-full bg-gray-200 w-[150px] aspect-square border flex items-center justify-center">
@@ -204,8 +204,8 @@
                         <button class=" bg-custom-primary text-white px-3 py-1 rounded mt-5" @click="generateForm">Download Form</button>
                         <button class="bg-custom-primary text-white px-3 py-1 rounded mt-5" @click="currentPageDets = 1">Application form</button>
                     </div>
-                    <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 mx-auto h-[90%] my-auto p-20 capitalize bg-white rounded">
-                        <div class="w-full h-full flex flex-col gap-y-10">
+                    <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 mx-auto h-[90%] my-auto p-10 capitalize bg-white rounded">
+                        <div class="w-full h-full flex flex-col gap-y-5">
                             <div class="flex items-center justif pl-10 gap-x-14">
                                 <p class="text-gray-600 w-1/3 font-semibold">Gender:</p>
                                 <p class="w-2/3">{{ infoToShow.gender || '---' }}</p>
@@ -375,10 +375,11 @@ const filteredApplicants = computed(() => {
     return applicants.value.filter(applicant => {
         const fullName = `${applicant.firstName} ${applicant.middleName} ${applicant.lastName}`.toLowerCase();
         const controlNumber = convertApplicationNum(applicant.applicationNumber).toString().toLowerCase();
-        const age = dobToAge(applicant.user.age).count.toString().toLowerCase();
+        const age = dobToAge(applicant.dateOfBirth).count.toString().toLowerCase();
         const barangay = applicant.barangay.toLowerCase();
         const gender = applicant.gender.toLowerCase();
-        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase()) || age.includes(searchQuery.value.toLowerCase())
+        const appDate = applicant.dateApplied.toLowerCase();
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase()) || age?.includes(searchQuery.value.toLowerCase()) || appDate.includes(searchQuery.value.toLowerCase())
     });
 });
 
@@ -690,7 +691,6 @@ const downloadPDF = () => {
     pdf.setFontSize(10);
     pdf.text("New Applicants", 90, 43);
 
-    // Combine the styles to hide both the last and second-to-last columns
     const hiddenColumnsStyle = document.createElement('style');
     hiddenColumnsStyle.innerHTML = `
         #userTable td:last-child,
@@ -730,7 +730,7 @@ const downloadPDF = () => {
             heightLeft -= pageHeight - 40;
         }
 
-        pdf.save("Table.pdf");
+        pdf.save("PWD-ID-Application.pdf");
     });
 
     typeOfExport.value = ''

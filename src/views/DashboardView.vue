@@ -4,7 +4,7 @@
             <h1 class="text-xl font-manrope font-semibold">Welcome Admin!</h1>
             <div class="flex justify-between lg:justify-normal items-center gap-x-3">
                 <div class="bg-white w-fit flex items-center py-2 px-3 rounded shadow">
-                    <input type="text" placeholder="Search" class="bg-transparent h-5 focus:outline-none">
+                    <input type="text" placeholder="Search" class="bg-transparent h-5 focus:outline-none" v-model="searchQuery">
                     <Icon icon="iconoir:search" />
                 </div>
                 <!-- <select class="rounded h-8 shadow px-2">
@@ -21,28 +21,28 @@
         </div>
        <div class="grid lg:grid-cols-7 place-items-center lg:place-items-start gap-5 mt-5" ref="captureDiv" id="dashboard">
             <div class="bg-white shadow font-poppins p-3 md:p-5 lg:p-5 w-full lg:w-full lg:h-[20dvh] lg:col-span-7 rounded-md cursor-pointer grid grid-cols-4 gap-x-10">
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectUsers()">
+                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectUsers()" :class="{ 'scale-110': searchQuery.toLowerCase().includes('registered') }">
                     <Icon class="text-5xl" icon="heroicons:user-group" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ activeUsers.length }}</p>
                         <p>Registered User</p>
                     </div>
                 </div>
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectExpired()">
+                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectExpired()" :class="{ 'scale-110': searchQuery.toLowerCase().includes('archive') }">
                     <Icon class="text-5xl" icon="hugeicons:passport-expired" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ inactiveUsers.length }}</p>
                         <p>Archive Users</p>
                     </div>
                 </div>
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectRejected()">
+                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectRejected()" :class="{ 'scale-110': searchQuery.toLowerCase().includes('rejected') }">
                     <Icon class="text-5xl" icon="ei:close-o"  />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ rejectedApplicantsCount }}</p>
                         <p>Rejected Applicants</p>
                     </div>
                 </div>
-                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectApproved()">
+                <div class="bg-custom-primary w-full h-full rounded p-4 flex justify-between items-center text-white" @click="redirectApproved()" :class="{ 'scale-110': searchQuery.toLowerCase().includes('approved') }">
                     <Icon class="text-5xl" icon="duo-icons:approved" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ approvedApplicantsCount }}</p>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" @click="redirect()">
+            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" @click="redirect()" :class="{ 'scale-110': searchQuery && nopwipb.includes(searchQuery.toLowerCase()) }">
                     <h1 class="font-bold text-gray-600 text-sm lg:text-lg">Number of Persons with Impairment per Barangay</h1>
                     <Bar
                         class="!w-full block"
@@ -58,7 +58,7 @@
                         :data="chartDataBar"
                     />
             </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()">
+            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()" :class="{ 'scale-110': searchQuery && totalNum.includes(searchQuery.toLowerCase()) }">
                     <h1 class="font-bold text-gray-600 text-sm xl:text-lg">Total number of PWDs in Malolos</h1>
                     <Doughnut
                         class="!w-2/4 !h-2/4  xl:!w-3/5 xl:!h-full"
@@ -66,7 +66,23 @@
                         :data="chartDataDoughnut"
                     />
             </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" @click="redirectEmploy()">
+            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" :class="{ 'scale-110': searchQuery && top5.includes(searchQuery.toLowerCase()) }">
+                    <h1 class="font-bold text-gray-600 text-sm lg:text-lg">Top 5 Disability in Malolos</h1>
+                    <Bar
+                        class="!w-full block"
+                        :options="chartOptionsBar3"
+                        :data="chartDataBar3"
+                    />
+            </div>
+            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()" :class="{ 'scale-110': searchQuery && numbOfApplicants.includes(searchQuery.toLowerCase()) }">
+                    <h1 class="font-bold text-gray-600 text-sm xl:text-lg">Total number of Applicants in Malolos</h1>
+                    <Doughnut
+                        class="!w-2/4 !h-2/4  xl:!w-3/5 xl:!h-full"
+                        :options="chartOptionsDougnut"
+                        :data="chartDataDoughnut2"
+                    />
+            </div>
+            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" @click="redirectEmploy()" :class="{ 'scale-110': searchQuery && empRate.includes(searchQuery.toLowerCase()) }">
                     <h1 class="font-bold text-gray-600 text-sm lg:text-lg">Employment Rate Status</h1>
                     <Bar
                         class="!w-full block"
@@ -75,43 +91,27 @@
                     />
             </div>
             <div class="bg-white shadow font-poppins p-4 w-full lg:w-full lg:h-[35dvh] lg:col-span-3 rounded cursor-pointer grid grid-rows-3 gap-y-2" @click="redirectEmploy()">
-                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white">
+                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white" :class="{ 'scale-110': searchQuery.toLowerCase().includes('employed') }">
                     <Icon class="text-5xl" icon="uit:bag" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ employedCount }}</p>
                         <p>Employed</p>
                     </div>
                 </div>
-                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white">
+                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white" :class="{ 'scale-110': searchQuery.toLowerCase().includes('self--employed') }">
                     <Icon class="text-5xl" icon="streamline:office-worker" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ selfEmployedCount }}</p>
                         <p>Self-Employed</p>
                     </div>
                 </div>
-                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white">
+                <div class="bg-custom-secondary w-full h-full rounded p-4 flex justify-between items-center text-white" :class="{ 'scale-110': searchQuery.toLowerCase().includes('unemployed') }">
                     <Icon class="text-5xl" icon="uil:bag-slash" />
                     <div class="flex flex-col gap-2 items-end">
                         <p class="text-2xl font-bold">{{ unEmployedCount }}</p>
                         <p>Unemployed</p>
                     </div>
                 </div>
-            </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer">
-                    <h1 class="font-bold text-gray-600 text-sm lg:text-lg">Top 5 Disability in Malolos</h1>
-                    <Bar
-                        class="!w-full block"
-                        :options="chartOptionsBar3"
-                        :data="chartDataBar3"
-                    />
-            </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()">
-                    <h1 class="font-bold text-gray-600 text-sm xl:text-lg">Total number of Applicants in Malolos</h1>
-                    <Doughnut
-                        class="!w-2/4 !h-2/4  xl:!w-3/5 xl:!h-full"
-                        :options="chartOptionsDougnut"
-                        :data="chartDataDoughnut2"
-                    />
             </div>
        </div>
     </section>
@@ -126,6 +126,13 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
+
+const searchQuery = ref('')
+const nopwipb = ref('number of persons with impairment per barangay')
+const totalNum = ref('total number of pwds in malolos')
+const top5 = ref('top 5 disability in malolos')
+const numbOfApplicants = ref('total number of applicants in malolos')
+const empRate = ref('employment rate status')
 
 const router = useRouter()
 
@@ -225,7 +232,8 @@ const chartOptionsBar3 = {
         x: {
             ticks: {
                 font: {
-                    size: 5,
+                    size: 10,
+                    weight: 'bold'
                 }
             }
         },

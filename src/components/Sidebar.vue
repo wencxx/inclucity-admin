@@ -60,7 +60,7 @@
                         <Icon icon="hugeicons:id-verified" class="text-3xl" />
                         <span class="mt-1">Released ID</span>
                     </router-link> -->
-                    <router-link :to="{ name: 'declined Applications' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
+                    <router-link :to="{ name: 'rejected Applications' }" class="px-5 flex items-center gap-x-3 py-2 font-medium hover:bg-activeLink">
                         <Icon icon="mdi:person-remove-outline" class="text-3xl" />
                         <span class="mt-1">Rejected Applications</span>
                     </router-link>

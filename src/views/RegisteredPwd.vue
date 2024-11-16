@@ -25,7 +25,7 @@
         <!-- table -->
         <div v-if="route.query.page === 'expired'" class="w-full mt-12 flex flex-col gap-y-5">
             <div class="w-full overflow-x-auto  rounded-md">
-                <table class="w-[150dvw] lg:w-full border-collapse" id="expired">
+                <table class="w-[150dvw] lg:w-full lg:min-w-[140%] border-collapse" id="expired">
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
                             <th class="text-xs">CONTROL NUMBER</th>
@@ -92,8 +92,8 @@
             </div>
         </div>
         <div v-else class="w-full mt-12 flex flex-col gap-y-5">
-            <div class="w-full overflow-x-auto  rounded-md">
-                <table class="w-[150dvw] lg:w-full border-collapse" id="active">
+            <div class="w-full overflow-x-auto rounded-md">
+                <table class="w-[150dvw] lg:w-full lg:min-w-[140%] border-collapse" id="active">
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
                             <th class="text-xs">CONTROL NUMBER</th>
@@ -143,7 +143,7 @@
                                     <button class="bg-gray-200 py-1 text-gray-700 text-lg px-3 rounded-md w-fit mx-auto relative group" @click="generateForm(index)">
                                         <Icon icon="fluent:form-24-regular" />
                                         <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
-                                            <p class="text-xs">download form</p>
+                                            <p class="text-xs capitalize">download form</p>
                                         </div>
                                     </button>
                                 </div>
@@ -260,8 +260,9 @@ const filteredApplicants = computed(() => {
         const controlNumber = applicant.controlNumber.toLowerCase();
         const barangay = applicant.barangay.toLowerCase();
         const gender = applicant.gender.toLowerCase();
+        const appDate = applicant.dateApplied.toLowerCase();
         const disability = applicant.typeOfDisability.toLowerCase();
-        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || disability.includes(searchQuery.value.toLowerCase());
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase()) || gender === searchQuery.value.toLowerCase() || disability.includes(searchQuery.value.toLowerCase()) || appDate.includes(searchQuery.value.toLowerCase());
     });
 });
 
@@ -336,8 +337,9 @@ const filteredExpiredApplicants = computed(() => {
         const controlNumber = applicant.controlNumber.toLowerCase();
         const barangay = applicant.barangay.toLowerCase();
         const gender = applicant.gender.toLowerCase();
+        const appDate = applicant.dateApplied.toLowerCase();
         const disability = applicant.typeOfDisability.toLowerCase();
-        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || disability.includes(searchQuery.value.toLowerCase());
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase()) || gender === searchQuery.value.toLowerCase() || disability.includes(searchQuery.value.toLowerCase()) || appDate.includes(searchQuery.value.toLowerCase());
     });
 });
 
@@ -537,7 +539,7 @@ const downloadPDF = () => {
                 heightLeft -= pageHeight - 40;
             }
 
-            pdf.save("Table.pdf");
+            pdf.save("Expired PWD.pdf");
         });
     }else{
         const pdf = new jsPDF();
@@ -609,7 +611,7 @@ const downloadPDF = () => {
                 heightLeft -= pageHeight - 40;
             }
 
-            pdf.save("Table.pdf");
+            pdf.save("Registered PWD.pdf");
         });
     }
 
@@ -861,7 +863,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.overflow-x-auto::-webkit-scrollbar {
+/* .overflow-x-auto::-webkit-scrollbar {
     display: none;
-}
+} */
 </style>

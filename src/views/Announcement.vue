@@ -210,11 +210,19 @@
                         <label class="text-lg">Insert links</label>
                         <input type="text" v-model="postDetails.postUrl" placeholder="seperated by comma" class="bg-gray-200 pl-2 focus:outline-none rounded h-10" disabled>
                     </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <img v-for="(img, index) in postDetails.mediaUrls" :key="img" :src="img" class="w-full aspect-square rounded" @click="viewImage(postDetails.mediaUrls, index)">
+                    </div>
                     <div class="flex items-center justify-end">
                         <button class="bg-red-500 py-1 w-1/3 rounded text-white shadow hover:bg-red-600" type="button" @click="viewPostModal = false">close</button>
                     </div>
                 </form>
             </div>
+        </div>
+        <!-- view images -->
+        <div v-if="imagesToView.length" class="absolute top-0 left-0 w-screen h-screen bg-white/25 flex items-center justify-center">
+            <Icon icon="mdi:close" class="absolute top-5 right-5 text-3xl cursor-pointer" @click="imagesToView = []" />
+            <img :src="imagesToView[currentViewing]" alt="" class="max-w-7xl h-[80dvh] rounded-md">
         </div>
     </section>
 </template>
@@ -230,6 +238,15 @@ const route = useRoute()
 onMounted(() => {
     getNews()
 })
+
+// images to view
+const imagesToView = ref([])
+const currentViewing = ref(0)
+
+const viewImage = (images, index) => {
+    imagesToView.value = images
+    currentViewing.value = index
+}
 
 const announcements = ref([])
 
@@ -255,7 +272,7 @@ const filteredAnnouncements = computed(() => {
         return announcements.value;
     }
     return announcements.value.filter(announcement =>
-        announcement.postTitle.toLowerCase().includes(searchQuery.value.toLowerCase())
+        announcement.postTitle.toLowerCase().includes(searchQuery.value.toLowerCase()) || announcement.datePosted.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
 

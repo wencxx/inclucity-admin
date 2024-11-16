@@ -65,7 +65,7 @@ const routes = [
     },
     {
         path: '/rejected',
-        name: 'declined Applications',
+        name: 'rejected Applications',
         component: RejectedApplications,
         meta: {
             requiresAuth: true

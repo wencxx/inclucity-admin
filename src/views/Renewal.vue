@@ -372,10 +372,11 @@ const filteredApplicants = computed(() => {
     return applicants.value.filter(applicant => {
         const fullName = `${applicant.firstName} ${applicant.middleName} ${applicant.lastName}`.toLowerCase();
         const controlNumber = convertApplicationNum(applicant.applicationNumber).toString().toLowerCase();
-        const age = dobToAge(applicant.user.age).count.toString().toLowerCase();
+        const age = dobToAge(applicant.dateOfBirth).count.toString().toLowerCase();
         const barangay = applicant.barangay.toLowerCase();
         const gender = applicant.gender.toLowerCase();
-        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || controlNumber.includes(searchQuery.value.toLowerCase()) || age.includes(searchQuery.value.toLowerCase())
+        const appDate = applicant.dateApplied.toLowerCase();
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender == searchQuery.value.toLowerCase() || controlNumber.includes(searchQuery.value.toLowerCase()) || age.includes(searchQuery.value.toLowerCase()) || appDate.includes(searchQuery.value.toLowerCase())
     });
 });
 
@@ -688,7 +689,7 @@ const downloadPDF = () => {
             heightLeft -= pageHeight - 40;
         }
 
-        pdf.save("Table.pdf");
+        pdf.save("PWD-ID-Renewal.pdf");
     });
 
     typeOfExport.value = ''

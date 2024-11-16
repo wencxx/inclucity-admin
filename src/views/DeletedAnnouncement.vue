@@ -15,9 +15,9 @@
                 <table class="w-[150dvw] lg:w-full border-collapse">
                     <thead class="bg-custom-primary text-white md:h-10 font-manrope font-extralight tracking-wide">
                         <tr class="w-full">
-                            <th class="md:w-1/12">TITLE</th>
-                            <th class="md:w-2/12">DATE POSTED</th>
-                            <th class="md:w-2/12">ACTIONS</th>
+                            <th class="md:w-1/3">TITLE</th>
+                            <th class="md:w-1/3">DATE POSTED</th>
+                            <th class="md:w-1/3">ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody v-if="announcements.length > 0" class="bg-white text-center">
@@ -29,13 +29,13 @@
                                     <div class="relative group">
                                         <Icon icon="ph:eye" class="text-xl cursor-pointer" @click="viewPost(announcement._id)"/>
                                         <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
-                                            <p class="text-xs">View announcement</p>
+                                            <p class="text-xs">View Announcement</p>
                                         </div>
                                     </div>
                                     <div class="relative group">
                                         <Icon icon="mdi:restore" class="text-xl cursor-pointer text-green-500" @click="showDeleteModal(announcement._id)" />
                                         <div class="absolute rounded top-[100%] right-0 w-32 bg-black/45 text-white py-1 hidden group-hover:block z-50">
-                                            <p class="text-xs">Restore announcement</p>
+                                            <p class="text-xs">Restore Announcement</p>
                                         </div>
                                     </div>
                                 </div>
@@ -145,11 +145,19 @@
                         <label class="text-lg">Insert links</label>
                         <input type="text" v-model="postDetails.postUrl" placeholder="seperated by comma" class="bg-gray-200 pl-2 focus:outline-none rounded h-10" disabled>
                     </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <img v-for="(img, index) in postDetails.mediaUrls" :key="img" :src="img" class="w-full aspect-square rounded" @click="viewImage(postDetails.mediaUrls, index)">
+                    </div>
                     <div class="flex items-center justify-end">
                         <button class="bg-red-500 py-1 w-1/3 rounded text-white shadow hover:bg-red-600" type="button" @click="viewPostModal = false">close</button>
                     </div>
                 </form>
             </div>
+        </div>
+        <!-- view images -->
+        <div v-if="imagesToView.length" class="absolute top-0 left-0 w-screen h-screen bg-white/25 flex items-center justify-center">
+            <Icon icon="mdi:close" class="absolute top-5 right-5 text-3xl cursor-pointer" @click="imagesToView = []" />
+            <img :src="imagesToView[currentViewing]" alt="" class="max-w-7xl h-[80dvh] rounded-md">
         </div>
     </section>
 </template>
@@ -165,6 +173,15 @@ const route = useRoute()
 onMounted(() => {
     getNews()
 })
+
+// images to view
+const imagesToView = ref([])
+const currentViewing = ref(0)
+
+const viewImage = (images, index) => {
+    imagesToView.value = images
+    currentViewing.value = index
+}
 
 const announcements = ref([])
 
@@ -190,7 +207,7 @@ const filteredAnnouncements = computed(() => {
         return announcements.value;
     }
     return announcements.value.filter(announcement =>
-        announcement.postTitle.toLowerCase().includes(searchQuery.value.toLowerCase())
+        announcement.postTitle.toLowerCase().includes(searchQuery.value.toLowerCase()) || announcement.datePosted.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
 

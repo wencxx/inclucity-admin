@@ -176,7 +176,8 @@ const filteredApplicants = computed(() => {
         const age = dobToAge(applicant.user.age).count.toString().toLowerCase();
         const barangay = applicant.barangay.toLowerCase();
         const gender = applicant.gender.toLowerCase();
-        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase()) || applicationNumber.includes(searchQuery.value.toLowerCase()) || age.includes(searchQuery.value.toLowerCase())
+        const dateApplied = applicant.dateApplied.toLowerCase();
+        return fullName.includes(searchQuery.value.toLowerCase()) || barangay.includes(searchQuery.value.toLowerCase()) || gender === searchQuery.value.toLowerCase() || applicationNumber.includes(searchQuery.value.toLowerCase()) || age.includes(searchQuery.value.toLowerCase()) || dateApplied.includes(searchQuery.value.toLowerCase())
     });
 });
 
@@ -366,7 +367,7 @@ const downloadCSV = () => {
     let blob = new Blob([csvContent], { type: 'text/csv' });
     let link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'Table.csv';
+    link.download = 'Rejected applicants.csv';
     link.click();
 }
 
@@ -439,7 +440,7 @@ const downloadPDF = () => {
             heightLeft -= pageHeight - 40;
         }
 
-        pdf.save("Table.pdf");
+        pdf.save("Rejected applicants.pdf");
     });
 
     typeOfExport.value = ''

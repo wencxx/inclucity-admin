@@ -51,8 +51,11 @@
                             <td>{{ user.address }}</td>
                             <td>{{ user.gender }}</td>
                             <td>
-                                <div class="flex justify-center w-full gap-x-2">
+                                <div class="flex justify-center w-full gap-x-2 relative group">
                                     <Icon icon="mdi:restore" class="text-2xl text-green-500 hover:text-green-700" @click="deleteConfirmation = true, userTobeDeleted = user._id" />
+                                    <div class="absolute rounded top-[100%] right-0 w-24 bg-black/45 text-white py-1 hidden group-hover:block z-50">
+                                        <p class="text-xs">Restore User</p>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -139,9 +142,10 @@ const filteredUsers = computed(() => {
     return users.value.filter(user => {
         const fullName = `${user.name}`.toLowerCase();
         const email = user.email.toLowerCase();
+        const id = formatNumber(users.value.indexOf(user) + 1).toLowerCase();
         const address = user.address.toLowerCase();
         const gender = user.gender.toLowerCase();
-        return fullName.includes(searchQuery.value.toLowerCase()) || email.includes(searchQuery.value.toLowerCase()) || address.includes(searchQuery.value.toLowerCase()) || gender.includes(searchQuery.value.toLowerCase());
+        return fullName.includes(searchQuery.value.toLowerCase()) || email.includes(searchQuery.value.toLowerCase()) || address.includes(searchQuery.value.toLowerCase()) || gender === searchQuery.value.toLowerCase() || id.includes(searchQuery.value.toLowerCase())
     });
 });
 
