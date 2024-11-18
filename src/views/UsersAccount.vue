@@ -49,7 +49,7 @@
                             <td>{{ user.name }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.contactNumber }}</td>
-                            <td>{{ user.address }}</td>
+                            <td>{{ user.address + ', ' +  (user.municipality || ' ')}}</td>
                             <td>{{ user.gender }}</td>
                             <td>{{ formatBday(user.age) }}</td>
                             <td>

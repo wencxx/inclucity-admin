@@ -127,7 +127,7 @@
                             <td class="text-sm">
                                 <div class="bg-orange-200 py-1 text-orange-700 text-sm px-3 rounded-md w-fit mx-auto capitalize">
                                     <select class="bg-transparent" @change="showReleaseModal(applicant._id, applicant.isIdReleased, $event.target.value)">
-                                        <option value="false">Unreleased</option>
+                                        <option value="false">Pending</option>
                                         <option value="true" :selected="applicant.isIdReleased">Released</option>
                                     </select>
                                 </div>
