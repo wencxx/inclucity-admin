@@ -558,6 +558,10 @@ const saveDashboard = () => {
         const headerImage = "../../header.png"; 
 
         pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
+         pdf.setFontSize(12);
+        pdf.text("Dashboards", 90, 50);
+        // pdf.setFontSize(10);
+        // pdf.text("This table provides a detailed list of user accounts registered within the system. It includes essential information such as user identification, contact details, and demographic data. Below is a summary of the current records:", 10, 60, { maxWidth: 190 });
 
         html2canvas(table).then((canvas) => {
             const imgData = canvas.toDataURL("image/png");
@@ -566,7 +570,7 @@ const saveDashboard = () => {
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
             let heightLeft = imgHeight;
-            let position = 50; 
+            let position =  70; 
 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
             heightLeft -= pageHeight - 40; 

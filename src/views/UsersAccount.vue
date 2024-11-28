@@ -293,34 +293,42 @@ const update = async () => {
 const typeOfExport = ref('')
 
 const handleExportChange = () => {
-    if(typeOfExport.value === 'CSV'){
-        downloadCSV()
-    }else{
-        downloadPDF()
+    if (typeOfExport.value === "CSV") {
+        downloadCSV();
+    } else if (typeOfExport.value === "PDf") {
+        downloadPDF();
     }
-}
+    typeOfExport.value = ""
+};
+
 
 // download as csv
 const downloadCSV = () => {
-    let table = document.getElementById('userTable');
-    let rows = table.querySelectorAll('tr');
-    let csvContent = '';
+    const allUsers = filteredUsers.value;
+    if (!allUsers.length) return alert("No users to export!");
 
-    rows.forEach(row => {
-        let rowData = [];
-        let cols = row.querySelectorAll('td, th');
-        for (let i = 0; i < cols.length - 1; i++) {
-            rowData.push(cols[i].innerText);
-        }
-        csvContent += rowData.join(',') + '\n';
-    });
+    const csvContent = [
+        ["ID", "Full Name", "Email", "Phone Number", "Address", "Gender", "Birthdate"],
+        ...allUsers.map((user, index) => [
+            formatNumber(index + 1),
+            user.name,
+            user.email,
+            user.contactNumber,
+            `${user.address}, ${user.municipality || ''}`,
+            user.gender,
+            formatBday(user.age),
+        ]),
+    ]
+        .map(row => row.join(","))
+        .join("\n");
 
-    let blob = new Blob([csvContent], { type: 'text/csv' });
-    let link = document.createElement('a');
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = 'Table.csv';
+    link.download = "users.csv";
     link.click();
-}
+};
+
 
 const downloadPDF = () => {
     const pdf = new jsPDF();
@@ -328,7 +336,6 @@ const downloadPDF = () => {
     const headerImage = "../../header.png"; 
     const today = new Date();
 
-    // Function to add footer
     const addFooter = (pdf, pageNumber) => {
         pdf.setFontSize(10);
         pdf.text("Approved by:", 10, pdf.internal.pageSize.height - 50);
@@ -349,8 +356,10 @@ const downloadPDF = () => {
 
     pdf.addImage(headerImage, 'PNG', 10, 0, 190, 35);
 
-    pdf.setFontSize(10);
+    pdf.setFontSize(12);
     pdf.text("Registered Users", 90, 43);
+    pdf.setFontSize(10);
+    pdf.text("This table provides a detailed list of user accounts registered within the system. It includes essential information such as user identification, contact details, and demographic data. Below is a summary of the current records:", 10, 50, { maxWidth: 190 });
 
     // Hide the last column
     const lastColumnStyle = document.createElement('style');
@@ -373,7 +382,7 @@ const downloadPDF = () => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         let heightLeft = imgHeight;
-        let position = 50; 
+        let position = 60; 
         let pageNumber = 1;
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
@@ -390,7 +399,7 @@ const downloadPDF = () => {
             heightLeft -= pageHeight - 40;
         }
 
-        pdf.save("Table.pdf");
+        pdf.save("Users.pdf");
     });
 
     typeOfExport.value = ''
