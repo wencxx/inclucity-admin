@@ -570,6 +570,8 @@ const downloadPDF = () => {
 
         pdf.setFontSize(10);
         pdf.text("Registered Applicants", 90, 43);
+        pdf.setFontSize(10);
+        pdf.text("This table contains a detailed list of the Registered PWD. The table contains their Control Number, Full Name, Email, Age, Phone Number, Gender, Barangay and Application Date.", 10, 50, { maxWidth: 190 });
 
         // Combine the styles to hide both the last and second-to-last columns
         const hiddenColumnsStyle = document.createElement('style');
@@ -594,7 +596,7 @@ const downloadPDF = () => {
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
             let heightLeft = imgHeight;
-            let position = 50; 
+            let position = 60; 
             let pageNumber = 1;
 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
@@ -620,17 +622,21 @@ const downloadPDF = () => {
 
 // download form
 const loadImageAsArrayBuffer = async (imageUrl) => {
-  const response = await fetch(imageUrl)
-  if (!response.ok) throw new Error('Network response was not ok')
-  return await response.arrayBuffer()
-}
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) throw new Error('Network response was not ok');
+    return await response.arrayBuffer();
+  } catch (error) {
+    console.error('Error fetching image:', error);
+  }
+};
+
 
 const generateForm = async (index) => {
 
     const applicantData = applicants.value[index]
 
     try {
-        // const response = await fetch('/public/PRPWD-APPLICATION_FORM.docx')
         const response = await fetch('PRPWD-APPLICATION_FORM.docx')
 
         if (!response.ok) throw new Error('Failed to fetch DOCX template')
@@ -644,10 +650,10 @@ const generateForm = async (index) => {
         const imageModule = new ImageModule({
             centered: false,
             getImage: function () {
-                return imageArrayBuffer
+                return new Uint8Array(imageArrayBuffer);
             },
             getSize: function () {
-                return [200, 200]
+                return [70, 100]
             },
         })
 
@@ -656,7 +662,7 @@ const generateForm = async (index) => {
         })
 
         doc.setData({
-            // image: infoToShow.value.photo1x1,
+            image: 'image',
             newApplicant: applicantData.typeOfApplicant === 'new' ? '◾' : '◽',
             renewal: applicantData.typeOfApplicant === 'renewal' ? '◾' : '◽',
             dateApplied: applicantData.dateApplied,
@@ -757,7 +763,7 @@ const generateForm = async (index) => {
             mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         })
 
-        saveAs(output, 'Application-form.docx')
+        saveAs(output, `${applicantData.firstName + '-' + applicantData.middleName + '-' + applicantData.lastName}-Application-form.docx`)
     } catch (error) {
         console.error('Error generating document:', error)
     }
@@ -780,10 +786,10 @@ const generateFormExpired = async (index) => {
         const imageModule = new ImageModule({
             centered: false,
             getImage: function () {
-                return imageArrayBuffer
+                return new Uint8Array(imageArrayBuffer);
             },
             getSize: function () {
-                return [200, 200]
+                return [70, 100]
             },
         })
 
@@ -791,8 +797,9 @@ const generateFormExpired = async (index) => {
             modules: [imageModule],
         })
 
+
         doc.setData({
-            // image: infoToShow.value.photo1x1,
+            image: 'image',
             newApplicant: applicantData.typeOfApplicant === 'new' ? '◾' : '◽',
             renewal: applicantData.typeOfApplicant === 'renewal' ? '◾' : '◽',
             dateApplied: applicantData.dateApplied,
@@ -842,7 +849,7 @@ const generateFormExpired = async (index) => {
             mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         })
 
-        saveAs(output, 'parents-consent.docx')
+        saveAs(output, `${applicantData.firstName + '-' + applicantData.middleName + '-' + applicantData.lastName}-Application-form.docx`)
     } catch (error) {
         console.error('Error generating document:', error)
     }

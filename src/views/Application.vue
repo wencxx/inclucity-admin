@@ -122,13 +122,10 @@
                 <div class="w-full flex gap-x-2 items-center">
                     <input type="input" v-model="reasonForDeclining" placeholder="Enter reason of rejection" class="w-full h-8 rounded border pl-2" list="reasons">
                     <datalist id="reasons">
-                        <option>Outdated Barangay Indigency</option>
-                        <option>Legality Issues</option>
                         <option>Invalid Forms</option>
                         <option>Invalid 1x1 Picture</option>
                         <option>Invalid Barangay Certificate</option>
                         <option>Invalid Medical Certificate</option>
-                        <option>Others</option>
                     </datalist>
                 </div>
                 <div v-if="reasonForDeclining === 'Others'" class="w-full flex gap-x-2 items-center">
@@ -590,7 +587,7 @@ const updateApplicant = async (status, userId, appId, emailAdd) => {
                 const templateParams = {
                     email: emailAdd,
                     header: 'Application Approved',
-                    message:  `Congratulations! Your application has been approved. Please proceed with the next steps to finalize the process. If you have any questions or need further assistance, feel free to contact our support team.`
+                    message:  `Congratulations! Your application has been approved with Control Number ${controlNumber.value}. Please proceed with the next steps to finalize the process. If you have any questions or need further assistance, feel free to contact our support team.`
                 }
 
                 // Sending email
@@ -690,6 +687,8 @@ const downloadPDF = () => {
 
     pdf.setFontSize(10);
     pdf.text("New Applicants", 90, 43);
+    pdf.setFontSize(10);
+    pdf.text("This table contains a detailed list of the PWD ID Applicants. The table contains their Application Number, Full Name, Email, Age, Phone Number, Gender, Barangay and Application Date.", 10, 50, { maxWidth: 190 });
 
     const hiddenColumnsStyle = document.createElement('style');
     hiddenColumnsStyle.innerHTML = `
@@ -713,7 +712,7 @@ const downloadPDF = () => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         let heightLeft = imgHeight;
-        let position = 50; 
+        let position = 60; 
         let pageNumber = 1;
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
@@ -873,7 +872,7 @@ const generateForm = async () => {
             mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         })
 
-        saveAs(output, 'Application-form.docx')
+        saveAs(output, `${infoToShow.value.firstName + '-' + infoToShow.value.middleName + '-' + infoToShow.value.lastName}-Application-form.docx`)
     } catch (error) {
         console.error('Error generating document:', error)
     }

@@ -648,6 +648,8 @@ const downloadPDF = () => {
 
     pdf.setFontSize(10);
     pdf.text("Renewal Applicants", 90, 43);
+    pdf.setFontSize(10);
+    pdf.text("This table contains a detailed list of the PWD ID Renewals. The table contains their Control Number, Full Name, Email, Age, Phone Number, Gender, Barangay and Application Date.", 10, 50, { maxWidth: 190 });
 
     // Combine the styles to hide both the last and second-to-last columns
     const hiddenColumnsStyle = document.createElement('style');
@@ -672,7 +674,7 @@ const downloadPDF = () => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         let heightLeft = imgHeight;
-        let position = 50; 
+        let position = 60; 
         let pageNumber = 1;
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);

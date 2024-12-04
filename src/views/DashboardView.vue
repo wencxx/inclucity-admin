@@ -1,7 +1,7 @@
 <template>
     <section class="h-[94dvh] overflow-auto font-poppins py-10 px-5 lg:px-10 bg-gray-100" id="mainContent">
         <div class="lg:flex justify-between">
-            <h1 class="text-xl font-manrope font-semibold">Welcome Admin!</h1>
+            <h1 class="text-xl font-manrope font-semibold">Welcome Admin {{ currentUser?.name }}!</h1>
             <div class="flex justify-between lg:justify-normal items-center gap-x-3">
                 <div class="bg-white w-fit flex items-center py-2 px-3 rounded shadow">
                     <input type="text" placeholder="Search" class="bg-transparent h-5 focus:outline-none" v-model="searchQuery">
@@ -126,6 +126,10 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
+import { useAuthStore } from '../store'
+
+const authStore = useAuthStore()
+const currentUser = computed(() => authStore.user)
 
 const searchQuery = ref('')
 const nopwipb = ref('number of persons with impairment per barangay')
@@ -148,6 +152,7 @@ onMounted(() => {
     getExpiredApplicant()
     getTotalEmployment()
     getGroupedDisablity()
+    authStore.getUser()
 })
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement, ChartDataLabels)
@@ -558,10 +563,10 @@ const saveDashboard = () => {
         const headerImage = "../../header.png"; 
 
         pdf.addImage(headerImage, 'PNG', 10, 10, 190, 30);
-         pdf.setFontSize(12);
+        pdf.setFontSize(12);
         pdf.text("Dashboards", 90, 50);
-        // pdf.setFontSize(10);
-        // pdf.text("This table provides a detailed list of user accounts registered within the system. It includes essential information such as user identification, contact details, and demographic data. Below is a summary of the current records:", 10, 60, { maxWidth: 190 });
+        pdf.setFontSize(10);
+        pdf.text("These are the existing data of the Inclucity Malolos. This contains data such as total numbers of Registered Users, Archive Users, Rejected Applicants and Approved Applicants. It also contains graphical representation of data of Number of Persons with Impairment per Barangay, Total number of PWDs in Malolos, the Top Disabilities in Malolos, Total number of Applicants in Malolos, Employment Rate Status and the total number of Employed, Self-Employed and Unemployed persons.", 10, 60, { maxWidth: 190 });
 
         html2canvas(table).then((canvas) => {
             const imgData = canvas.toDataURL("image/png");
@@ -570,7 +575,7 @@ const saveDashboard = () => {
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
             let heightLeft = imgHeight;
-            let position =  70; 
+            let position =  80; 
 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
             heightLeft -= pageHeight - 40; 
