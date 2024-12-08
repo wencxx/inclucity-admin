@@ -361,6 +361,9 @@
             </div>
             <!-- control buttons -->
             <div v-if="currentPage < 10" class="flex gap-x-10 mt-8 justify-center lg:mx-auto lg:px-0">
+                <button v-if="currentPage == 1" @click="emit('closeModal')" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
+                    <span>Close</span>
+                </button>
                 <button v-if="currentPage !== 1" @click="prev()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
                     <Icon icon="ri:arrow-left-s-line" class="text-2xl" />
                     <span>Back</span>

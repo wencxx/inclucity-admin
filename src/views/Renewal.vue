@@ -10,7 +10,10 @@
                     <Icon icon="ph:export" />
                     Export
                 </button> -->
-
+                <button class="bg-custom-primary h-full text-white p-2 rounded-md shadow hover:bg-red-950 flex items-center gap-x-1" @click="addApplicantModal = true">
+                    <Icon icon="mingcute:user-add-line" />
+                    Add
+                </button>
                 <select v-model="typeOfExport" @change="handleExportChange" class="px-2 bg-custom-primary text-white rounded h-full">
                     <option value="" disabled>Export</option>
                     <option>PDF</option>
@@ -183,12 +186,12 @@
 
 
         <!-- application information -->
-        <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex flex-col items-center justify-center">
-            <div class="h-[10%] w-full bg-custom-primary flex items-center justify-center text-white">
+        <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex flex-col items-center justify-center p-20">
+            <div class="h-[10%] bg-custom-primary flex items-center justify-center text-white relative w-[80%]">
                     <h1 class="text-2xl">General Information</h1>
                     <Icon icon="mdi:close" class="absolute right-10 text-2xl cursor-pointer text-white hover:bg-gray-400 rounded" @click="showAppDetails = false" />
             </div>
-            <div class="h-[90%] w-full flex items-center justify-center bg-white">
+            <div class="h-[90%] w-[80%] flex items-center justify-center bg-white">
                 <div class="h-[90%] w-3/4 bg-gray-300 rounded-xl flex relative pr-10">
                     <div class="w-1/5 h-full flex flex-col items-center py-10 gap-y-3">
                         <div class="rounded-full bg-gray-200 w-[150px] aspect-square border flex items-center justify-center">
@@ -203,8 +206,8 @@
                         <button class=" bg-custom-primary text-white px-3 py-1 rounded mt-5" @click="generateForm">Download Form</button>
                         <button class="bg-custom-primary text-white px-3 py-1 rounded mt-5" @click="currentPageDets = 1">Application form</button>
                     </div>
-                    <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 mx-auto h-[90%] my-auto p-20 capitalize bg-white rounded">
-                        <div class="w-full h-full flex flex-col gap-y-10">
+                    <div v-if="currentPageDets == 1" class="grid grid-cols-2 w-4/5 mx-auto h-[90%] my-auto p-10 capitalize bg-white rounded">
+                        <div class="w-full h-full flex flex-col gap-y-5">
                             <div class="flex items-center justif pl-10 gap-x-14">
                                 <p class="text-gray-600 w-1/3 font-semibold">Gender:</p>
                                 <p class="w-2/3">{{ infoToShow.gender || '---' }}</p>
@@ -221,7 +224,7 @@
                                 <p class="text-gray-600 w-1/3 font-semibold">Age:</p>
                                 <p class="w-2/3">
                                     {{
-                                        infoToShow.dateOfBirth ? dobToAge(infoToShow.dateOfBirth)?.count : ''
+                                        infoToShow.dateOfBirth ? dobToAge(infoToShow.dateOfBirth).count : ''
                                     }}
                                 </p>
                             </div>
@@ -268,7 +271,7 @@
                     <div v-else class="w-4/5 h-full p-20 grid grid-cols-2 grid-rows-2 gap-10 overflow-auto">
                         <img :src="infoToShow.photo1x1" @click="zoomImage(infoToShow.photo1x1)" alt="1x1 photo" class="w-full h-full">
                         <img :src="infoToShow.barangayCert" @click="zoomImage(infoToShow.barangayCert)" alt="barangay certitificate" class="max-w-full max-h-full">
-                        <img :src="infoToShow.medicalCert" @click="zoomImage(infoToShow.medicalCert)" alt="medical certitificate" class="max-w-full max-h-full">
+                        <img :src="infoToShow.medicalCert" @click="zoomImage(infoToShow.medicalCert)" alt="medical certitificate" class="max-w-full max-h-full border">
                         <img :src="infoToShow.oldID" @click="zoomImage(infoToShow.oldID)" alt="medical certitificate" class="max-w-full max-h-full">
                     </div>
                 </div>
@@ -280,10 +283,13 @@
             </div>
             
         </div>
+
+        <AddRenewal v-if="addApplicantModal" @click.self="addApplicantModal = false"  @closeModal="addApplicantModal = false" @addedNewApplicant="addedRenewal"/>
         </section>
 </template>
 
 <script setup>
+import AddRenewal from '../components/AddRenewalApplicant.vue'
 import { computed, onMounted, ref, useId } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
@@ -298,6 +304,8 @@ import ImageModule from 'docxtemplater-image-module-free'
 import moment from "moment";
 import { useAuthStore } from '../store/index'
 const serverUrl = import.meta.env.VITE_SERVER_URL
+
+const addApplicantModal = ref(false)
 
 const authStore = useAuthStore()
 const user = computed(() => authStore.user)
@@ -326,7 +334,7 @@ const changePasswordType = () => {
     }
 }
 
-const applicants = ref(null)
+const applicants = ref([])
 
 const noApplicants = ref(false)
 
@@ -344,6 +352,22 @@ const getPendingApplications = async () => {
     } catch (error) {
         console.log(error)
     }
+}
+
+function formDataToObject(formData) {
+  const obj = {};
+  formData.forEach((value, key) => {
+    obj[key] = value;
+  });
+  return obj;
+}
+
+const addedRenewal = (data) => {
+    addApplicantModal.value = false
+
+    const applicantData = formDataToObject(data)
+    applicants.value.push(applicantData)
+    noApplicants.value = false
 }
 
 // show app details
@@ -844,6 +868,9 @@ const generateForm = async () => {
 onMounted(() => {
     getPendingApplications()
     authStore.getUser()
+    router.push({
+        query: ''
+    })
 })
 </script>
 

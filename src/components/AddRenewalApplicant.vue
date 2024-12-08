@@ -9,6 +9,12 @@
             </div>
             <!-- second step -->
             <div v-if="currentPage == 1" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+                <h1 class="text-black font-semibold text-xl uppercase">Old PWD ID</h1>
+                <div class="grid md:grid-cols-2 gap-x-10 gap-y-3">
+                    <input type="file" class="h-10 rounded" accept=".jpg, .jpeg, .png" @change="handleImageUpload('oldID', $event)" required>
+                </div>
+            </div>
+            <div v-if="currentPage == 2" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
                 <h1 class="text-black font-semibold text-xl uppercase">Personal Information</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-3">
                     <div class="flex flex-col gap-y-1">
@@ -20,7 +26,7 @@
                         <input type="text" placeholder="Enter first name" class="h-10 border pl-2 rounded capitalize" v-model="firstName">
                     </div>
                     <div class="flex flex-col gap-y-1">
-                        <label class="font-semibold">Middle Name *</label>
+                        <label class="font-semibold">Middle Name (optional)</label>
                         <input type="text" placeholder="Enter middle name" class="h-10 border pl-2 rounded capitalize" v-model="middleName">
                     </div>
                     <div class="flex flex-col gap-y-1">
@@ -54,7 +60,7 @@
                 </div>
             </div>
             <!-- third step -->
-            <div v-if="currentPage == 2" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+            <div v-if="currentPage == 3" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
                 <h1 class="text-black font-semibold text-xl uppercase">Type and Cause of Disability</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-2 py-2">
@@ -151,7 +157,7 @@
                 </div>
             </div>
             <!-- fourth step -->
-            <div v-if="currentPage == 3" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+            <div v-if="currentPage == 4" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
                 <h1 class="text-black font-semibold text-xl uppercase">Contact Details</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
@@ -186,7 +192,7 @@
                 </div>
             </div>
             <!-- fifth step -->
-            <div v-if="currentPage == 4" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+            <div v-if="currentPage == 5" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
                 <h1 class="text-black font-semibold text-xl uppercase">Status of Employment</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-2 w-full py-2">
@@ -219,7 +225,7 @@
                 </div>
             </div>
             <!-- ninth step -->
-            <div v-if="currentPage == 5" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+            <div v-if="currentPage == 6" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
                 <h1 v-if="statusOfEmployment == 'employed' || statusOfEmployment == 'self-employed'" class="text-black font-semibold text-xl uppercase">Occupation</h1>
                 <div v-if="statusOfEmployment == 'employed' || statusOfEmployment == 'self-employed'" class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-2 w-full py-2">
@@ -264,7 +270,7 @@
                 </div>
             </div>
             <!-- eleventh step -->
-            <div v-if="currentPage == 6" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+            <div v-if="currentPage == 7" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
                 <h1 class="text-black font-semibold text-xl uppercase">ID Reference no.</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
@@ -290,7 +296,7 @@
                 </div>
             </div>
             <!-- twelve step -->
-            <div v-if="currentPage == 7" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+            <div v-if="currentPage == 8" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
                 <h1 class="text-black font-semibold text-xl uppercase">Family Background</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
@@ -314,7 +320,7 @@
                 </div>
             </div>
             <!-- thirteenth step -->
-            <div v-if="currentPage == 8 " class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+            <div v-if="currentPage == 9" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
                 <h1 class="text-black font-semibold text-xl uppercase">Accomplished By *</h1>
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <div class="flex flex-col gap-y-1">
@@ -337,10 +343,11 @@
                 </div>
             </div>
             <!-- fourteenth step -->
-            <div v-if="currentPage == 9" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
+            <div v-if="currentPage == 10" class="w-full lg:mx-auto flex flex-col gap-y-5 font-manrope">
                 <div class="grid md:grid-cols-2 gap-x-10 gap-y-5">
                     <h1 v-if="alreadySubmitted" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Application already submitted</h1>
                     <h1 v-if="imageMissing" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Please upload required images</h1>
+                    <h1 v-if="invalidControlNumber" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Invalid Control Number</h1>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Upload 1x1 photo *</label>
                         <input type="file" class="h-10 rounded" accept=".jpg, .jpeg, .png" @change="handleImageUpload('1x1photo', $event)" required>
@@ -360,24 +367,27 @@
                 </div>
             </div>
             <!-- control buttons -->
-            <div v-if="currentPage < 10" class="flex gap-x-10 mt-8 justify-center lg:mx-auto lg:px-0">
+            <div v-if="currentPage < 11" class="flex gap-x-10 mt-8 justify-center lg:mx-auto lg:px-0">
+                <button v-if="currentPage == 1" @click="emit('closeModal')" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
+                    <span>Close</span>
+                </button>
                 <button v-if="currentPage !== 1" @click="prev()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
                     <Icon icon="ri:arrow-left-s-line" class="text-2xl" />
                     <span>Back</span>
                 </button>
-                <button v-if="currentPage == '9' && !loadingSubmitting" @click="sendApplication()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
+                <button v-if="currentPage == '10' && !loadingSubmitting" @click="sendApplication()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
                     <span>Submit</span>
                     <Icon icon="bi:send-arrow-up" class="text-xl" />
                 </button>
                 <button v-if="loadingSubmitting" @click="sendApplication()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md animate-pulse" disabled>
                     <span>Loading...</span>
                 </button>
-                <button :class="{ 'ml-auto': currentPage == 1 }"  v-if="currentPage != '9'" @click="next()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
+                <button :class="{ 'ml-auto': currentPage == 1 }"  v-if="currentPage != '10'" @click="next()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
                     <span>Next</span>
                     <Icon icon="ri:arrow-right-s-line" class="text-2xl" />
                 </button>
             </div>
-            <div v-if="currentPage > 9" class="flex flex-col gap-y-10 mt-8 items-center lg:mx-auto lg:px-0">
+            <div v-if="currentPage > 10" class="flex flex-col gap-y-10 mt-8 items-center lg:mx-auto lg:px-0">
                 <h1 class="text-3xl font-poppins">Opss nothings here</h1>
                 <button @click="prev()" class="flex items-center justify-center gap-x-2 bg-custom-primary text-white text-xl w-1/2 py-1 pr-1 rounded-md">
                     <span>Go Back</span>
@@ -491,11 +501,12 @@ const physicianByLname = ref('')
 const physicianByFname = ref('')
 const physicianByMname = ref('')
 
-const controlNumber = ref('')
+const controlNumber = ref('03-1410-000-000-')
 
 const photo1x1 = ref(null)
 const medicalCert = ref(null)
 const barangayCert = ref(null)
+const oldID = ref(null)
 
 const handleImageUpload = (imageType, event) => {
     if (imageType === '1x1photo') {
@@ -504,6 +515,8 @@ const handleImageUpload = (imageType, event) => {
         medicalCert.value = event.target.files[0];
     } else if (imageType === 'barangayCert') {
         barangayCert.value = event.target.files[0];
+    } else if (imageType === 'oldID') {
+        oldID.value = event.target.files[0];
     }
 };
 
@@ -518,10 +531,14 @@ const hasEmptyFields = ref(false)
 
 const next = () => {
     if(currentPage.value === 1){
+        if(!oldID.value) return hasEmptyFields.value = true
+
+        hasEmptyFields.value = false
+        router.push({ query : { page: currentPage.value + 1 }})
+    }else if(currentPage.value === 2){
         const pageData = [
             lastName.value,
             firstName.value,
-            middleName.value,
             dateOfBirth.value,
         ]
 
@@ -531,7 +548,7 @@ const next = () => {
         }
         hasEmptyFields.value = false
         router.push({ query : { page: currentPage.value + 1 }})
-    }else if(currentPage.value === 2){
+    }else if(currentPage.value === 3){
         const pageData = [
             typeOfDisability.value,
             causeOfDisability.value,
@@ -545,7 +562,7 @@ const next = () => {
         }
         hasEmptyFields.value = false
         router.push({ query : { page: currentPage.value + 1 }})
-    }else if(currentPage.value === 3){
+    }else if(currentPage.value === 4){
         const pageData = [
             educationalAttainment.value,
             mobileNo.value
@@ -557,7 +574,7 @@ const next = () => {
         }
         hasEmptyFields.value = false
         router.push({ query : { page: currentPage.value + 1 }})
-    }else if(currentPage.value === 4){
+    }else if(currentPage.value === 5){
         const pageData = [
             categoryOfEmployment.value,
             typeOfEmployment.value,
@@ -576,7 +593,7 @@ const next = () => {
 
         hasEmptyFields.value = false
         router.push({ query : { page: currentPage.value + 1 }})
-    }else if(currentPage.value === 5){
+    }else if(currentPage.value === 6){
         if (!occupation.value && !otherOccupation.value) {
             hasEmptyFields.value = true
             return;
@@ -584,7 +601,7 @@ const next = () => {
 
         hasEmptyFields.value = false
         router.push({ query : { page: currentPage.value + 1 }})
-    }else if(currentPage.value === 8){
+    }else if(currentPage.value === 9){
         const pageData = [
             accomplishedByLname.value,
             accomplishedByFname.value,
@@ -637,10 +654,10 @@ const changeOccupation = (type) => {
 
 const alreadySubmitted = ref(false)
 const imageMissing = ref(false)
+const invalidControlNumber = ref(false)
 const loadingSubmitting = ref(false)
 
 const sendApplication = async () => {
-
     if(!photo1x1.value || !medicalCert.value || !barangayCert.value) return imageMissing.value = true
     const applicationData = new FormData()
 
@@ -696,23 +713,26 @@ const sendApplication = async () => {
     applicationData.append('photo1x1', photo1x1.value);
     applicationData.append('medicalCert', medicalCert.value);
     applicationData.append('barangayCert', barangayCert.value);
-    applicationData.append('status', 'approved');
+    applicationData.append('oldID', oldID.value);
+    applicationData.append('status', 'pending');
     applicationData.append('typeOfApplicant', 'renewal');
     applicationData.append('typeOfApplication', 'Walk in');
     applicationData.append('controlNumber', controlNumber.value);
 
     try {
+        invalidControlNumber.value = false
         loadingSubmitting.value = true
-        const res = await axios.post(`${serverUrl}/send-application-admin`, applicationData, {
+        const res = await axios.post(`${serverUrl}/send-renewal-admin`, applicationData, {
             headers:{
                 "Authorization": `Bearer ${localStorage.getItem('token')}`,
                 "Content-Type": 'multipart/form-data'
             }
         }) 
 
+        if(res.data === 'Invalid Control Number') return invalidControlNumber.value = true
         if(res.data === 'already submitted') return alreadySubmitted.value = true
 
-        emit('addedNewApplicant')
+        emit('addedNewApplicant', applicationData)
         router.push({ query : { }})
     } catch (error) {
         if (error.response) {
