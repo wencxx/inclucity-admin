@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" @click="redirect()" :class="{ 'scale-110': searchQuery && nopwipb.includes(searchQuery.toLowerCase()) }">
+            <div v-if="barangay.length" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" @click="redirect()" :class="{ 'scale-110': searchQuery && nopwipb.includes(searchQuery.toLowerCase()) }">
                     <h1 class="font-bold text-gray-600 text-sm lg:text-lg">Number of Persons with Impairment per Barangay</h1>
                     <Bar
                         class="!w-full block"
@@ -58,7 +58,7 @@
                         :data="chartDataBar"
                     />
             </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()" :class="{ 'scale-110': searchQuery && totalNum.includes(searchQuery.toLowerCase()) }">
+            <div v-if="barangay.length" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()" :class="{ 'scale-110': searchQuery && totalNum.includes(searchQuery.toLowerCase()) }">
                     <h1 class="font-bold text-gray-600 text-sm xl:text-lg">Total number of PWDs in Malolos</h1>
                     <Doughnut
                         class="!w-2/4 !h-2/4  xl:!w-3/5 xl:!h-full"
@@ -66,7 +66,7 @@
                         :data="chartDataDoughnut"
                     />
             </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" :class="{ 'scale-110': searchQuery && top5.includes(searchQuery.toLowerCase()) }">
+            <div v-if="barangay.length" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" :class="{ 'scale-110': searchQuery && top5.includes(searchQuery.toLowerCase()) }">
                     <h1 class="font-bold text-gray-600 text-sm lg:text-lg">Top 5 Disability in Malolos</h1>
                     <Bar
                         class="!w-full block"
@@ -74,7 +74,7 @@
                         :data="chartDataBar3"
                     />
             </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()" :class="{ 'scale-110': searchQuery && numbOfApplicants.includes(searchQuery.toLowerCase()) }">
+            <div v-if="barangay.length" class="bg-white shadow font-poppins p-3 md:p-5 xl:p-10 w-full xl:w-full xl:h-[35dvh] xl:col-span-3 flex flex-col items-center rounded cursor-pointer" @click="redirectTotal()" :class="{ 'scale-110': searchQuery && numbOfApplicants.includes(searchQuery.toLowerCase()) }">
                     <h1 class="font-bold text-gray-600 text-sm xl:text-lg">Total number of Applicants in Malolos</h1>
                     <Doughnut
                         class="!w-2/4 !h-2/4  xl:!w-3/5 xl:!h-full"
@@ -82,7 +82,7 @@
                         :data="chartDataDoughnut2"
                     />
             </div>
-            <div v-if="barangay.length > 0" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" @click="redirectEmploy()" :class="{ 'scale-110': searchQuery && empRate.includes(searchQuery.toLowerCase()) }">
+            <div v-if="barangay.length" class="bg-white shadow font-poppins p-3 md:p-5 lg:p-10 w-full lg:w-full lg:h-[35dvh] lg:col-span-4 rounded cursor-pointer" @click="redirectEmploy()" :class="{ 'scale-110': searchQuery && empRate.includes(searchQuery.toLowerCase()) }">
                     <h1 class="font-bold text-gray-600 text-sm lg:text-lg">Employment Rate Status</h1>
                     <Bar
                         class="!w-full block"

@@ -348,6 +348,7 @@
                     <h1 v-if="alreadySubmitted" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Application already submitted</h1>
                     <h1 v-if="imageMissing" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Please upload required images</h1>
                     <h1 v-if="invalidControlNumber" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Invalid Control Number</h1>
+                    <h1 v-if="notExpired" class="md:col-span-2 bg-red-500 text-white pl-3 py-1 rounded">Application not expired</h1>
                     <div class="flex flex-col gap-y-1">
                         <label class="font-semibold">Upload 1x1 photo *</label>
                         <input type="file" class="h-10 rounded" accept=".jpg, .jpeg, .png" @change="handleImageUpload('1x1photo', $event)" required>
@@ -655,6 +656,7 @@ const changeOccupation = (type) => {
 const alreadySubmitted = ref(false)
 const imageMissing = ref(false)
 const invalidControlNumber = ref(false)
+const notExpired = ref(false)
 const loadingSubmitting = ref(false)
 
 const sendApplication = async () => {
@@ -721,6 +723,7 @@ const sendApplication = async () => {
 
     try {
         invalidControlNumber.value = false
+        notExpired.value = false
         loadingSubmitting.value = true
         const res = await axios.post(`${serverUrl}/send-renewal-admin`, applicationData, {
             headers:{
@@ -730,6 +733,7 @@ const sendApplication = async () => {
         }) 
 
         if(res.data === 'Invalid Control Number') return invalidControlNumber.value = true
+        if(res.data === 'not expired') return notExpired.value = true
         if(res.data === 'already submitted') return alreadySubmitted.value = true
 
         emit('addedNewApplicant', applicationData)

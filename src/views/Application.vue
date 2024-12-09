@@ -45,7 +45,7 @@
                         </tr>
                     </thead>
                     <tbody v-if="!noApplicants" class="bg-white text-center">
-                        <tr v-if="paginatedApplicants.length > 0" v-for="applicant in paginatedApplicants" :key="applicant.id" class="border-b border-gray-500">
+                        <tr v-if="paginatedApplicants.length" v-for="applicant in paginatedApplicants" :key="applicant.id" class="border-b border-gray-500">
                             <td class="md:py-3 text-sm">{{ convertApplicationNum(applicant.applicationNumber) }}</td>
                             <td class="text-sm">{{ applicant.firstName }} {{ applicant.middleName }} {{ applicant.lastName }}</td>
                             <td class="text-sm">{{ applicant.emailAddress || '---' }}</td>
@@ -133,7 +133,7 @@
                 </div>
                 <div class="w-full flex justify-end items-center gap-x-2">
                     <button class="bg-green-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" type="button" @click="declineModal = false">Cancel</button>
-                    <button class="bg-red-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" @click="updateApplicant('decline', uid, aid)">Decline</button>
+                    <button class="bg-red-500 text-white w-1/4 text-sm rounded py-1 hover:shadow" @click="updateApplicant('decline', uid, aid, emailAddress)">Decline</button>
                 </div>
             </div>
         </div>
@@ -178,7 +178,6 @@
                 <Icon icon="oui:arrow-right" class="text-3xl" />
             </button>
         </div>
-
 
         <!-- application information -->
         <div v-if="showAppDetails" class="absolute h-screen w-screen top-0 left-0 bg-black/25 flex flex-col items-center justify-center p-20">
@@ -532,9 +531,10 @@ const updateApplicant = async (status, userId, appId, emailAdd) => {
                 }
             })
 
+            console.log(res.data)
             if(res.data === 'application rejected succesfully'){
+                declineModal.value = false
                 applicants.value = applicants.value.filter(applicant => applicant._id != appId)
-                // fetchDoc()
                 declinedSuccessful.value = true
 
                 const templateParams = {
@@ -559,8 +559,6 @@ const updateApplicant = async (status, userId, appId, emailAdd) => {
                 setTimeout(() => {
                     declinedSuccessful.value = false
                 }, 3000)
-
-                console.log(res.data)
             }
         } catch (error) {
             console.log(error)
@@ -572,6 +570,7 @@ const updateApplicant = async (status, userId, appId, emailAdd) => {
         data.applicationId = appId
         data.status = status
         data.controlNumber = controlNumber.value
+        data.acceptedBy = user.value.name
 
         try {
             const res = await axios.post(`${serverUrl}/update-application`, data ,{
