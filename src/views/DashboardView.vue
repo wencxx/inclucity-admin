@@ -566,7 +566,7 @@ const saveDashboard = () => {
         pdf.setFontSize(12);
         pdf.text("Dashboards", 90, 50);
         pdf.setFontSize(10);
-        pdf.text("These are the existing data of the Inclucity Malolos. This contains data such as total numbers of Registered Users, Archive Users, Rejected Applicants and Approved Applicants. It also contains graphical representation of data of Number of Persons with Impairment per Barangay, Total number of PWDs in Malolos, the Top Disabilities in Malolos, Total number of Applicants in Malolos, Employment Rate Status and the total number of Employed, Self-Employed and Unemployed persons.", 10, 60, { maxWidth: 190 });
+        pdf.text("These are the existing data of the Inclucity Malolos. This contains data such as total numbers of Registered Users, Archive Users, Rejected Applicants and Approved Applicants. It also contains graphical representation of data of Number of Persons with Impairment per Barangay, Total number of PWDs in Malolos, the Top Disabilities in Malolos, Total number of Applicants in Malolos, Employment Rate Status and the total number of Employed, Self-Employed and Unemployed persons.", 10, 220, { maxWidth: 190 });
 
         html2canvas(table).then((canvas) => {
             const imgData = canvas.toDataURL("image/png");
@@ -575,7 +575,7 @@ const saveDashboard = () => {
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
             let heightLeft = imgHeight;
-            let position =  80; 
+            let position =  55; 
 
             pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
             heightLeft -= pageHeight - 40; 

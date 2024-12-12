@@ -302,7 +302,7 @@ const downloadPDF = () => {
     pdf.setFontSize(10);
     pdf.text("PWD Employment Status", 90, 43);
     pdf.setFontSize(10);
-    pdf.text("This table contains a detailed list of the PWDs' Employment Status. The table contains their Control Number, Full name, Gender, Barangay, Disability, Status of Employment and its types..", 10, 50, { maxWidth: 190 });
+    pdf.text("This table contains a detailed list of the PWDs' Employment Status. The table contains their Control Number, Full name, Gender, Barangay, Disability, Status of Employment and its types..", 10, 117, { maxWidth: 190 });
 
     html2canvas(table).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
@@ -311,7 +311,7 @@ const downloadPDF = () => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         let heightLeft = imgHeight;
-        let position = 60; 
+        let position = 48; 
         let pageNumber = 1;
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);

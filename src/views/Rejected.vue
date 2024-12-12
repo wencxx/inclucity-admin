@@ -401,7 +401,7 @@ const downloadPDF = () => {
     pdf.setFontSize(10);
     pdf.text("Rejected Applicants", 90, 43);
     pdf.setFontSize(10);
-    pdf.text("This table contains a detailed list of the Rejected Applicants. The table contains their Application Number, Full Name, Email, Age, Phone Number, Gender, Barangay and Application Date.", 10, 50, { maxWidth: 190 });
+    pdf.text("This table contains a detailed list of the Rejected Applicants. The table contains their Application Number, Full Name, Email, Age, Phone Number, Gender, Barangay and Application Date.", 10, 117, { maxWidth: 190 });
 
     // Hide the last column
     const lastColumnStyle = document.createElement('style');
@@ -425,7 +425,7 @@ const downloadPDF = () => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         let heightLeft = imgHeight;
-        let position = 60; 
+        let position = 48; 
         let pageNumber = 1;
 
         pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
